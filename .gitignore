@@ -47,11 +47,5 @@ __pycache__/
 .Python
 pip-log.txt
 pip-delete-this-directory.txt
-
-# Old AI Remixer specific files that shouldn't go to git
-ai_remixer/venv/
-ai_remixer/runtime_data/
-ai_remixer/uploads/
-ai_remixer/exports/
-ai_remixer/__pycache__/
+# Python Caches
 **/__pycache__/
