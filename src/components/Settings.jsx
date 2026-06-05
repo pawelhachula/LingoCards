@@ -1,0 +1,242 @@
+import React, { useState } from "react";
+import * as Icons from "lucide-react";
+
+export default function Settings({ stats, onUpdateStats, theme, onThemeChange, onResetData }) {
+  const [dailyGoal, setDailyGoal] = useState(stats.dailyTarget || 10);
+  const [speechSpeed, setSpeechSpeed] = useState(localStorage.getItem("lingocards_speech_speed") || "1.0");
+  const [autoplayAudio, setAutoplayAudio] = useState(localStorage.getItem("lingocards_autoplay") === "true");
+  const [muteInterface, setMuteInterface] = useState(localStorage.getItem("lingocards_mute") === "true");
+  const [showConfirmReset, setShowConfirmReset] = useState(false);
+  const [resetConfirmText, setResetConfirmText] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+
+  const handleSaveSettings = (e) => {
+    e.preventDefault();
+    setSuccessMsg("");
+
+    // Save daily goal to stats
+    const updatedStats = { ...stats, dailyTarget: parseInt(dailyGoal) };
+    onUpdateStats(updatedStats);
+
+    // Save speech speed, autoplay, and mute to localStorage
+    localStorage.setItem("lingocards_speech_speed", speechSpeed);
+    localStorage.setItem("lingocards_autoplay", autoplayAudio.toString());
+    localStorage.setItem("lingocards_mute", muteInterface.toString());
+
+    setSuccessMsg("Ustawienia zostały pomyślnie zapisane!");
+    setTimeout(() => setSuccessMsg(""), 3000);
+  };
+
+  const handleResetDataConfirm = () => {
+    if (resetConfirmText.toLowerCase() === "reset") {
+      onResetData();
+      setShowConfirmReset(false);
+      setResetConfirmText("");
+      setSuccessMsg("Wszystkie dane zostały zresetowane!");
+      setTimeout(() => setSuccessMsg(""), 3000);
+    }
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto w-full animate-slide-in flex flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <div className="p-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl border border-indigo-500/15">
+          <Icons.Settings size={22} />
+        </div>
+        <div>
+          <h2 className="text-2xl font-black text-white tracking-tight">Ustawienia aplikacji</h2>
+          <p className="text-slate-400 text-xs">Dostosuj cele nauki, dźwięki i opcje profilu</p>
+        </div>
+      </div>
+
+      <div className="glass-card p-6">
+        <form onSubmit={handleSaveSettings} className="flex flex-col gap-6">
+          {/* Daily Goal Settings */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/5">
+            <div>
+              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                <Icons.Target size={16} className="text-amber-500" />
+                Cel dzienny nauki
+              </h4>
+              <p className="text-[11px] text-slate-500 mt-0.5">Liczba słówek do opanowania każdego dnia</p>
+            </div>
+            <select
+              value={dailyGoal}
+              onChange={(e) => setDailyGoal(e.target.value)}
+              className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500/60 w-32"
+            >
+              <option value="3">3 słówka</option>
+              <option value="5">5 słówek</option>
+              <option value="10">10 słówek</option>
+              <option value="15">15 słówek</option>
+              <option value="20">20 słówek</option>
+              <option value="30">30 słówek</option>
+            </select>
+          </div>
+
+          {/* Speech speed */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/5">
+            <div>
+              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                <Icons.Volume2 size={16} className="text-cyan-500" />
+                Prędkość lektora (TTS)
+              </h4>
+              <p className="text-[11px] text-slate-500 mt-0.5">Tempo wymowy lektora w języku angielskim</p>
+            </div>
+            <select
+              value={speechSpeed}
+              onChange={(e) => setSpeechSpeed(e.target.value)}
+              className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500/60 w-32"
+            >
+              <option value="0.8">Zwolnione (0.8x)</option>
+              <option value="1.0">Standardowe (1.0x)</option>
+              <option value="1.2">Szybkie (1.2x)</option>
+              <option value="1.5">Bardzo szybkie (1.5x)</option>
+            </select>
+          </div>
+
+          {/* Autoplay Audio Toggle */}
+          <div className="flex items-center justify-between gap-4 pb-5 border-b border-white/5">
+            <div>
+              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                <Icons.PlayCircle size={16} className="text-indigo-400" />
+                Autoodtwarzanie audio
+              </h4>
+              <p className="text-[11px] text-slate-500 mt-0.5">Odtwarzaj lektora automatycznie po odwróceniu karty</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={autoplayAudio}
+                onChange={() => setAutoplayAudio(!autoplayAudio)}
+                className="sr-only peer"
+              />
+              <div className="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500 peer-checked:after:bg-white"></div>
+            </label>
+          </div>
+
+          {/* Mute interface sounds */}
+          <div className="flex items-center justify-between gap-4 pb-5 border-b border-white/5">
+            <div>
+              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                <Icons.VolumeX size={16} className="text-rose-500" />
+                Wycisz dźwięki interfejsu
+              </h4>
+              <p className="text-[11px] text-slate-500 mt-0.5">Wycisz sygnały dźwiękowe poprawnej/błędnej odpowiedzi</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={muteInterface}
+                onChange={() => setMuteInterface(!muteInterface)}
+                className="sr-only peer"
+              />
+              <div className="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500 peer-checked:after:bg-white"></div>
+            </label>
+          </div>
+
+          {/* Quick Theme Picker */}
+          <div className="flex flex-col gap-3 pb-5 border-b border-white/5">
+            <div>
+              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                <Icons.Palette size={16} className="text-pink-500" />
+                Motyw graficzny
+              </h4>
+              <p className="text-[11px] text-slate-500 mt-0.5">Wybierz kolorystykę aplikacji</p>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-1">
+              {[
+                { id: "graphite", label: "Graphite", color: "bg-[#6366f1]" },
+                { id: "green", label: "Bottle Green", color: "bg-[#10b981]" },
+                { id: "navy", label: "Deep Navy", color: "bg-[#2563eb]" },
+                { id: "sakura", label: "Sakura (Jasny)", color: "bg-[#db2777]" },
+                { id: "forest", label: "Forest (Jasny)", color: "bg-[#059669]" },
+                { id: "amber", label: "Amber (Jasny)", color: "bg-[#d97706]" },
+              ].map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => onThemeChange(t.id)}
+                  className={`flex items-center gap-2 p-2.5 rounded-xl border text-xs font-bold transition-all hover:bg-white/5 ${
+                    theme === t.id ? "border-[var(--text-primary)] bg-white/5" : "border-white/5 opacity-70"
+                  }`}
+                >
+                  <span className={`w-3.5 h-3.5 rounded-full ${t.color}`} />
+                  <span className="text-[var(--text-primary)]">{t.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {successMsg && (
+            <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs p-3.5 rounded-xl flex items-center gap-2">
+              <Icons.CheckCircle size={16} />
+              <span>{successMsg}</span>
+            </div>
+          )}
+
+          <button type="submit" className="btn btn-primary py-3 flex items-center justify-center gap-2 font-bold hover:scale-105 transition-transform self-end">
+            <Icons.Save size={16} />
+            Zapisz ustawienia
+          </button>
+        </form>
+      </div>
+
+      {/* Danger Zone: Reset Data */}
+      <div className="glass-card p-6 border-rose-500/10">
+        <h4 className="text-sm font-bold text-rose-400 flex items-center gap-2 mb-1.5">
+          <Icons.ShieldAlert size={18} />
+          Strefa zagrożenia
+        </h4>
+        <p className="text-[11px] text-slate-500 mb-4 leading-relaxed">
+          Zresetowanie danych usunie wszystkie statystyki nauki, zdobyte osiągnięcia oraz własne talie dla tego użytkownika. Te operacje są nieodwracalne.
+        </p>
+
+        {!showConfirmReset ? (
+          <button
+            type="button"
+            onClick={() => setShowConfirmReset(true)}
+            className="btn py-2.5 text-xs font-bold text-rose-400 border border-rose-500/20 bg-rose-500/5 hover:bg-rose-500/10 transition-colors"
+          >
+            Resetuj postępy i dane
+          </button>
+        ) : (
+          <div className="bg-rose-500/5 border border-rose-500/10 p-4 rounded-xl flex flex-col gap-3">
+            <span className="text-[10px] text-rose-300 font-bold uppercase tracking-wider">
+              Aby potwierdzić, wpisz słowo <strong className="text-white">reset</strong> poniżej:
+            </span>
+            <div className="flex gap-2 flex-col sm:flex-row">
+              <input
+                type="text"
+                value={resetConfirmText}
+                onChange={(e) => setResetConfirmText(e.target.value)}
+                placeholder="wpisz 'reset'"
+                className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500/60 font-semibold placeholder-slate-700"
+              />
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleResetDataConfirm}
+                  disabled={resetConfirmText.toLowerCase() !== "reset"}
+                  className="btn bg-rose-600 hover:bg-rose-700 text-white text-xs py-2 px-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Tak, zresetuj
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowConfirmReset(false);
+                    setResetConfirmText("");
+                  }}
+                  className="btn btn-secondary text-xs py-2 px-4"
+                >
+                  Anuluj
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -6,9 +6,9 @@ export default function Dashboard({ decks, stats, onSelectDeck, onNavigate }) {
   const learnedCount = Object.keys(stats.learnedCards || {}).length;
   const progressPercent = totalCards > 0 ? Math.round((learnedCount / totalCards) * 100) : 0;
   
-  const dailyTarget = 10;
+  const dailyTarget = stats.dailyTarget || 10;
   const dailyProgress = Math.min(stats.dailyCount || 0, dailyTarget);
-  const dailyPercent = Math.round((dailyProgress / dailyTarget) * 100);
+  const dailyPercent = dailyTarget > 0 ? Math.round((dailyProgress / dailyTarget) * 100) : 0;
 
   return (
     <div className="flex flex-col gap-8 animate-slide-in">

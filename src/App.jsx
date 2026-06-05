@@ -7,6 +7,7 @@ import Matcher from "./components/Matcher";
 import Creator from "./components/Creator";
 import Auth from "./components/Auth";
 import Profile from "./components/Profile";
+import Settings from "./components/Settings";
 import * as Icons from "lucide-react";
 
 export default function App() {
@@ -14,7 +15,8 @@ export default function App() {
   const [view, setView] = useState("dashboard"); // 'dashboard', 'learn', 'quiz', 'match', 'creator', 'profile'
   const [decks, setDecks] = useState([]);
   const [selectedDeck, setSelectedDeck] = useState(null);
-  const [theme, setTheme] = useState("graphite"); // 'graphite' | 'green' | 'navy' | 'sakura' | 'forest' | 'amber'
+  const [theme, setTheme] = useState("navy"); // default to navy (Deep Navy)
+  // 'graphite' | 'green' | 'navy' | 'sakura' | 'forest' | 'amber'
   
   const [stats, setStats] = useState({
     streak: 0,
@@ -30,7 +32,7 @@ export default function App() {
   // Check login session & theme on mount
   useEffect(() => {
     // Load Theme
-    const savedTheme = localStorage.getItem("lingocards_theme") || "graphite";
+    const savedTheme = localStorage.getItem("lingocards_theme") || "navy";
     setTheme(savedTheme);
 
     // Load Session
@@ -143,28 +145,81 @@ export default function App() {
     setView("dashboard");
   };
 
-  const handleUpdateAvatar = (newAvatar) => {
-    if (!currentUser) return;
+  const handleUpdateProfile = (newUsername, newAvatar) => {
+    if (!currentUser) return { success: false, message: "Brak zalogowanego użytkownika." };
 
-    const updatedUser = { ...currentUser, avatar: newAvatar };
-    setCurrentUser(updatedUser);
-    localStorage.setItem("lingocards_current_user", JSON.stringify(updatedUser));
+    const oldUsername = currentUser.username;
+    const cleanNewUsername = newUsername.trim();
 
+    if (!cleanNewUsername) {
+      return { success: false, message: "Nazwa użytkownika nie może być pusta." };
+    }
+
+    if (cleanNewUsername.length < 3) {
+      return { success: false, message: "Nazwa użytkownika musi mieć co najmniej 3 znaki." };
+    }
+
+    // Check if username already exists in registry
+    if (cleanNewUsername.toLowerCase() !== oldUsername.toLowerCase()) {
+      const usersStr = localStorage.getItem("lingocards_users");
+      if (usersStr) {
+        try {
+          const users = JSON.parse(usersStr);
+          const nameTaken = users.some(u => u.username.toLowerCase() === cleanNewUsername.toLowerCase());
+          if (nameTaken) {
+            return { success: false, message: "Ta nazwa użytkownika jest już zajęta." };
+          }
+        } catch (e) {
+          console.error("Error checking username uniqueness", e);
+        }
+      }
+
+      // Migrate namespaced localStorage keys
+      const oldDecksKey = `lingocards_decks_${oldUsername.toLowerCase()}`;
+      const newDecksKey = `lingocards_decks_${cleanNewUsername.toLowerCase()}`;
+      const oldStatsKey = `lingocards_stats_${oldUsername.toLowerCase()}`;
+      const newStatsKey = `lingocards_stats_${cleanNewUsername.toLowerCase()}`;
+
+      const decksData = localStorage.getItem(oldDecksKey);
+      if (decksData) {
+        localStorage.setItem(newDecksKey, decksData);
+        localStorage.removeItem(oldDecksKey);
+      }
+
+      const statsData = localStorage.getItem(oldStatsKey);
+      if (statsData) {
+        localStorage.setItem(newStatsKey, statsData);
+        localStorage.removeItem(oldStatsKey);
+      }
+    }
+
+    // Update user registry
     const usersStr = localStorage.getItem("lingocards_users");
     if (usersStr) {
       try {
         const users = JSON.parse(usersStr);
         const updatedUsers = users.map(u => {
-          if (u.username.toLowerCase() === currentUser.username.toLowerCase()) {
-            return { ...u, avatar: newAvatar };
+          if (u.username.toLowerCase() === oldUsername.toLowerCase()) {
+            return { ...u, username: cleanNewUsername, avatar: newAvatar };
           }
           return u;
         });
         localStorage.setItem("lingocards_users", JSON.stringify(updatedUsers));
       } catch (e) {
-        console.error(e);
+        console.error("Error updating user registry", e);
       }
     }
+
+    const updatedUser = { ...currentUser, username: cleanNewUsername, avatar: newAvatar };
+    setCurrentUser(updatedUser);
+    localStorage.setItem("lingocards_current_user", JSON.stringify(updatedUser));
+    
+    // If username changed, reload states with the new namespace
+    if (cleanNewUsername.toLowerCase() !== oldUsername.toLowerCase()) {
+      loadUserData(cleanNewUsername);
+    }
+
+    return { success: true, message: "Profil został zaktualizowany!" };
   };
 
   const handleSetStats = (newStats) => {
@@ -173,6 +228,33 @@ export default function App() {
       const userStatsKey = `lingocards_stats_${currentUser.username.toLowerCase()}`;
       localStorage.setItem(userStatsKey, JSON.stringify(newStats));
     }
+  };
+
+  const handleResetData = () => {
+    if (!currentUser) return;
+    const username = currentUser.username;
+    
+    // Reset statistics namespace
+    const userStatsKey = `lingocards_stats_${username.toLowerCase()}`;
+    const defaultStatsObj = {
+      streak: 0,
+      dailyCount: 0,
+      lastActiveDate: new Date().toISOString().split("T")[0],
+      learnedCards: {},
+      starredCards: {},
+      quizTotal: 0,
+      quizCorrect: 0,
+      matchesWon: 0,
+      dailyTarget: 10
+    };
+    setStats(defaultStatsObj);
+    localStorage.setItem(userStatsKey, JSON.stringify(defaultStatsObj));
+
+    // Reset decks namespace
+    const userDecksKey = `lingocards_decks_${username.toLowerCase()}`;
+    setDecks(defaultDecks);
+    localStorage.setItem(userDecksKey, JSON.stringify(defaultDecks));
+    setSelectedDeck(defaultDecks[0]);
   };
 
   const handleCreateDeck = (newDeck) => {
@@ -404,6 +486,19 @@ export default function App() {
           </div>
 
           {/* User profile button */}
+          {/* Settings gear button */}
+          <button 
+            onClick={() => setView("settings")}
+            className={`flex items-center justify-center p-2.5 rounded-xl border scale-hover ${
+              view === "settings" 
+                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
+                : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
+            }`}
+            title="Ustawienia"
+          >
+            <Icons.Settings size={16} />
+          </button>
+
           <button 
             onClick={() => setView("profile")}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border scale-hover ${
@@ -412,7 +507,11 @@ export default function App() {
                 : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
             }`}
           >
-            <span className="text-base">{currentUser.avatar || "🧙‍♂️"}</span>
+            {currentUser.avatar && currentUser.avatar.startsWith("data:") ? (
+              <img src={currentUser.avatar} alt="Avatar" className="w-5 h-5 rounded-full object-cover border border-white/20" />
+            ) : (
+              <span className="text-base">{currentUser.avatar || "👑"}</span>
+            )}
             <span className="hidden lg:inline text-xs font-bold">{currentUser.username}</span>
           </button>
 
@@ -468,7 +567,11 @@ export default function App() {
             view === "profile" ? "text-indigo-400" : "text-slate-500 hover:text-slate-300"
           }`}
         >
-          <span className="text-lg leading-none h-5 block">{currentUser.avatar || "🧙‍♂️"}</span>
+          {currentUser.avatar && currentUser.avatar.startsWith("data:") ? (
+            <img src={currentUser.avatar} alt="Avatar" className="w-5 h-5 rounded-full object-cover border border-white/20 mb-0.5" />
+          ) : (
+            <span className="text-lg leading-none h-5 block">{currentUser.avatar || "👑"}</span>
+          )}
           <span>Profil</span>
         </button>
       </div>
@@ -528,7 +631,17 @@ export default function App() {
             onLogout={handleLogout}
             stats={stats}
             decks={decks}
-            onUpdateAvatar={handleUpdateAvatar}
+            onUpdateProfile={handleUpdateProfile}
+          />
+        )}
+
+        {view === "settings" && (
+          <Settings 
+            stats={stats}
+            onUpdateStats={handleSetStats}
+            theme={theme}
+            onThemeChange={handleThemeChange}
+            onResetData={handleResetData}
           />
         )}
       </main>

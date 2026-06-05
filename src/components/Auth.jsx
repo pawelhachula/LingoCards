@@ -6,7 +6,7 @@ export default function Auth({ onLogin }) {
   const [tab, setTab] = useState("login"); // 'login' | 'register'
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [selectedAvatar, setSelectedAvatar] = useState("🧙‍♂️");
+  const [selectedAvatar, setSelectedAvatar] = useState("👑");
   
   // Google Sign-In Mock states
   const [showGoogleModal, setShowGoogleModal] = useState(false);
@@ -17,7 +17,7 @@ export default function Auth({ onLogin }) {
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const avatarsList = ["🧙‍♂️", "👩‍🚀", "🦉", "🦊", "🕵️‍♂️", "🐼", "🤖", "🦄", "🦁", "🐨"];
+  const avatarsList = ["👑", "🦄", "🐉", "🐙", "🦊", "🦁", "🐼", "🦉", "🚀", "🛸", "👾", "🦖", "🦥", "🦩", "🍕", "🐱", "🐯", "👻", "👽", "🐨"];
 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
