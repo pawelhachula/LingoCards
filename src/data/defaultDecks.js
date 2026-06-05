@@ -114,6 +114,42 @@ export const defaultDecks = [
         partOfSpeech: "phrase",
         exampleEnglish: "I'm sorry, I didn't break your cup on purpose.",
         examplePolish: "Przepraszam, nie stłukłem twojego kubka specjalnie."
+      },
+      {
+        id: "everyday-13",
+        english: "Hit the sack",
+        polish: "Iść spać / walnąć w kimono",
+        pronunciation: "/hɪt ðə sæk/",
+        partOfSpeech: "idiom",
+        exampleEnglish: "I'm exhausted, I'm going to hit the sack.",
+        examplePolish: "Jestem wykończony, idę spać."
+      },
+      {
+        id: "everyday-14",
+        english: "Piece of cake",
+        polish: "Bułka z masłem / pestka",
+        pronunciation: "/piːs əv keɪk/",
+        partOfSpeech: "idiom",
+        exampleEnglish: "Don't worry about the English exam; it's going to be a piece of cake.",
+        examplePolish: "Nie martw się egzaminem z angielskiego; to będzie bułka z masłem."
+      },
+      {
+        id: "everyday-15",
+        english: "For good",
+        polish: "Na stałe / na dobre",
+        pronunciation: "/fɔːr ɡʊd/",
+        partOfSpeech: "phrase",
+        exampleEnglish: "She is planning to move to Canada for good.",
+        examplePolish: "Planuje przeprowadzić się do Kanady na stałe."
+      },
+      {
+        id: "everyday-16",
+        english: "To put off",
+        polish: "Odkładać na później",
+        pronunciation: "/pʊt ɔːf/",
+        partOfSpeech: "phrasal verb",
+        exampleEnglish: "Never put off until tomorrow what you can do today.",
+        examplePolish: "Nigdy nie odkładaj na jutro tego, co możesz zrobić dzisiaj."
       }
     ]
   },
@@ -174,7 +210,7 @@ export const defaultDecks = [
         id: "business-6",
         english: "On the same page",
         polish: "Zgadzać się / mieć to samo zdanie",
-        pronunciation: "/ɑːn ðə seɪm peɪdʒ/",
+        pronunciation: "/aːn ðə seɪm peɪdʒ/",
         partOfSpeech: "phrase",
         exampleEnglish: "Before we present to the client, let's make sure we are all on the same page.",
         examplePolish: "Zanim przedstawimy to klientowi, upewnijmy się, że wszyscy się zgadzamy."
@@ -223,6 +259,51 @@ export const defaultDecks = [
         partOfSpeech: "verb",
         exampleEnglish: "Let's schedule a conference call for tomorrow morning.",
         examplePolish: "Zaplanujmy telekonferencję na jutro rano."
+      },
+      {
+        id: "business-12",
+        english: "To delegate",
+        polish: "Delegować / przekazywać (zadania)",
+        pronunciation: "/ˈdel.ɪ.ɡeɪt/",
+        partOfSpeech: "verb",
+        exampleEnglish: "A good manager knows how to delegate tasks to team members.",
+        examplePolish: "Dobry menedżer wie, jak delegować zadania członkom zespołu."
+      },
+      {
+        id: "business-13",
+        english: "ASAP (As Soon As Possible)",
+        polish: "Najszybciej jak to możliwe",
+        pronunciation: "/ˌeɪ.es.eɪˈpiː/",
+        partOfSpeech: "phrase",
+        exampleEnglish: "Please send me the report ASAP.",
+        examplePolish: "Proszę, prześlij mi ten raport najszybciej jak to możliwe."
+      },
+      {
+        id: "business-14",
+        english: "Cut corners",
+        polish: "Iść na skróty (kosztem jakości)",
+        pronunciation: "/kʌt ˈkɔːr.nərz/",
+        partOfSpeech: "idiom",
+        exampleEnglish: "We cannot afford to cut corners on safety regulations.",
+        examplePolish: "Nie możemy sobie pozwolić na chodzenie na skróty w kwestii przepisów bezpieczeństwa."
+      },
+      {
+        id: "business-15",
+        english: "Bottom line",
+        polish: "Rezultat finansowy / najważniejsza kwestia",
+        pronunciation: "/ˌbɑːt.əm ˈlaɪn/",
+        partOfSpeech: "noun",
+        exampleEnglish: "The bottom line is that we need to increase our sales.",
+        examplePolish: "Najważniejsza kwestia jest taka, że musimy zwiększyć naszą sprzedaż."
+      },
+      {
+        id: "business-16",
+        english: "Work-life balance",
+        polish: "Równowaga między pracą a życiem prywatnym",
+        pronunciation: "/ˌwɝːk.laɪf ˈbæl.əns/",
+        partOfSpeech: "noun",
+        exampleEnglish: "Many modern companies prioritize work-life balance for their employees.",
+        examplePolish: "Wiele nowoczesnych firm stawia na równowagę między pracą a życiem prywatnym swoich pracowników."
       }
     ]
   },
@@ -313,7 +394,7 @@ export const defaultDecks = [
         pronunciation: "/rent ə kɑːr/",
         partOfSpeech: "phrase",
         exampleEnglish: "We decided to rent a car to explore the island at our own pace.",
-        examplePolish: "Zdecydowaliśmy się wynająć samochód, aby zwiedzać wyspę we własnym tempie."
+        examplePolish: "Zdecydowaliśmy się wynająć samochód, aby zwiedzać wyspę we własnym temie."
       },
       {
         id: "travel-10",
@@ -323,6 +404,51 @@ export const defaultDecks = [
         partOfSpeech: "noun",
         exampleEnglish: "We did a lot of sightseeing on our trip to Paris.",
         examplePolish: "Podczas naszej wycieczki do Paryża sporo zwiedzaliśmy."
+      },
+      {
+        id: "travel-11",
+        english: "Jet lag",
+        polish: "Zmęczenie po podróży (różnica czasu)",
+        pronunciation: "/ˈdʒet læɡ/",
+        partOfSpeech: "noun",
+        exampleEnglish: "It took me three days to get over my jet lag after flying from New York.",
+        examplePolish: "Trzy dni zajęło mi dojście do siebie po zmianie strefy czasowej po locie z Nowego Jorku."
+      },
+      {
+        id: "travel-12",
+        english: "Sight",
+        polish: "Widok / atrakcja turystyczna",
+        pronunciation: "/saɪt/",
+        partOfSpeech: "noun",
+        exampleEnglish: "We spent the day looking at the sights of Rome.",
+        examplePolish: "Spędziliśmy dzień oglądając atrakcje Rzymu."
+      },
+      {
+        id: "travel-13",
+        english: "To set off",
+        polish: "Wyruszyć w podróż",
+        pronunciation: "/set ɔːf/",
+        partOfSpeech: "phrasal verb",
+        exampleEnglish: "We need to set off early tomorrow to avoid the morning traffic.",
+        examplePolish: "Musimy wyruszyć wczesnym rankiem jutro, aby uniknąć porannego tłoku."
+      },
+      {
+        id: "travel-14",
+        english: "Souvenir",
+        polish: "Pamiątka (z podróży)",
+        pronunciation: "/ˌsuː.vəˈnɪr/",
+        partOfSpeech: "noun",
+        exampleEnglish: "I bought a small model of the Eiffel Tower as a souvenir.",
+        examplePolish: "Kupiłem mały model Wieży Eiffla jako pamiątkę."
+      },
+      {
+        id: "travel-15",
+        english: "Customs",
+        polish: "Odprawa celna / cło",
+        pronunciation: "/ˈkʌs.təmz/",
+        partOfSpeech: "noun",
+        exampleEnglish: "We had to go through customs at the airport.",
+        examplePolish: "Musieliśmy przejść przez odprawę celną na lotnisku."
       }
     ]
   },
@@ -423,6 +549,51 @@ export const defaultDecks = [
         partOfSpeech: "adjective",
         exampleEnglish: "She gave an eloquent speech that moved the audience to tears.",
         examplePolish: "Wygłosiła elokwentne przemówienie, które poruszyło widownię do łez."
+      },
+      {
+        id: "advanced-11",
+        english: "Procrastinate",
+        polish: "Zwlekać / odkładać na później (prokrastynować)",
+        pronunciation: "/proʊˈkræs.tə.neɪt/",
+        partOfSpeech: "verb",
+        exampleEnglish: "If you procrastinate, you will miss the deadline.",
+        examplePolish: "Jeśli będziesz zwlekać, spóźnisz się z terminem."
+      },
+      {
+        id: "advanced-12",
+        english: "Resilient",
+        polish: "Odporny / potrafiący się podnieść / elastyczny",
+        pronunciation: "/rɪˈzɪl.jənt/",
+        partOfSpeech: "adjective",
+        exampleEnglish: "She is a resilient person who recovers quickly from setbacks.",
+        examplePolish: "Ona jest odporną osobą, która szybko podnosi się po niepowodzeniach."
+      },
+      {
+        id: "advanced-13",
+        english: "Scrutinize",
+        polish: "Szczegółowo badać / analizować",
+        pronunciation: "/ˈskruː.t̬ən.aɪz/",
+        partOfSpeech: "verb",
+        exampleEnglish: "The auditors will scrutinize every transaction from the past year.",
+        examplePolish: "Audytorzy szczegółowo zbadają każdą transakcję z minionego roku."
+      },
+      {
+        id: "advanced-14",
+        english: "Meticulously",
+        polish: "Skrupulatnie / pieczołowicie",
+        pronunciation: "/məˈtɪk.jə.ləs.li/",
+        partOfSpeech: "adverb",
+        exampleEnglish: "The data was meticulously collected over a period of three years.",
+        examplePolish: "Dane były skrupulatnie gromadzone przez okres trzech lat."
+      },
+      {
+        id: "advanced-15",
+        english: "Paradox",
+        polish: "Paradoks",
+        pronunciation: "/ˈpær.ə.dɑːks/",
+        partOfSpeech: "noun",
+        exampleEnglish: "It's a curious paradox that drinking warm water can cool you down.",
+        examplePolish: "To ciekawy paradoks, że picie ciepłej wody może cię ochłodzić."
       }
     ]
   },
@@ -450,7 +621,7 @@ export const defaultDecks = [
         pronunciation: "/spɪl ðə biːnz/",
         partOfSpeech: "idiom",
         exampleEnglish: "We planned a surprise party, but my brother spilled the beans.",
-        examplePolish: "Planowaliśmy imprezę niespodziankę, ale mój brat wypaplać sekret."
+        examplePolish: "Planowaliśmy imprezę niespodziankę, ale mój brat wypaplał sekret."
       },
       {
         id: "idioms-3",
@@ -514,6 +685,51 @@ export const defaultDecks = [
         partOfSpeech: "idiom",
         exampleEnglish: "My brother lives in Canada, so we only see him once in a blue moon.",
         examplePolish: "Mój brat mieszka w Kanadzie, więc widzimy go bardzo rzadko."
+      },
+      {
+        id: "idioms-10",
+        english: "Break the ice",
+        polish: "Przełamać lody (w relacjach)",
+        pronunciation: "/breɪk ðə aɪs/",
+        partOfSpeech: "idiom",
+        exampleEnglish: "A small joke is a great way to break the ice during a meeting.",
+        examplePolish: "Krótki żart to świetny sposób na przełamanie lodów podczas spotkania."
+      },
+      {
+        id: "idioms-11",
+        english: "To look into",
+        polish: "Zbadać / przyjrzeć się sprawie",
+        pronunciation: "/lʊk ˈlʊk ɪn.tuː/",
+        partOfSpeech: "phrasal verb",
+        exampleEnglish: "The police are looking into the cause of the accident.",
+        examplePolish: "Policja bada przyczyny wypadku."
+      },
+      {
+        id: "idioms-12",
+        english: "Cost an arm and a leg",
+        polish: "Kosztować majątek / krocie",
+        pronunciation: "/kɔːst ən ɑːrm ənd ə leɡ/",
+        partOfSpeech: "idiom",
+        exampleEnglish: "Buying a new smartphone these days can cost an arm and a leg.",
+        examplePolish: "Kupno nowego smartfona w dzisiejszych czasach może kosztować majątek."
+      },
+      {
+        id: "idioms-13",
+        english: "To bring up",
+        polish: "Wspomnieć o czymś / poruszyć temat",
+        pronunciation: "/brɪŋ ʌp/",
+        partOfSpeech: "phrasal verb",
+        exampleEnglish: "Don't bring up the budget problem during the lunch meeting.",
+        examplePolish: "Nie poruszaj tematu problemów z budżetem podczas lunchu biznesowego."
+      },
+      {
+        id: "idioms-14",
+        english: "On the tip of one's tongue",
+        polish: "Na końcu języka",
+        pronunciation: "/aːn ðə tɪp əv wʌnz tʌŋ/",
+        partOfSpeech: "idiom",
+        exampleEnglish: "Her phone number was on the tip of my tongue, but I couldn't remember it.",
+        examplePolish: "Jej numer telefonu miałem na końcu języka, ale nie mogłem go sobie przypomnieć."
       }
     ]
   },
@@ -578,6 +794,60 @@ export const defaultDecks = [
         partOfSpeech: "phrase",
         exampleEnglish: "We had a group dinner and ended up splitting the bill equally.",
         examplePolish: "Jedliśmy grupową kolację i ostatecznie podzieliliśmy rachunek po równo."
+      },
+      {
+        id: "restaurant-7",
+        english: "Course",
+        polish: "Danie (część posiłku)",
+        pronunciation: "/kɔːrs/",
+        partOfSpeech: "noun",
+        exampleEnglish: "The dinner consisted of a five-course meal.",
+        examplePolish: "Kolacja składała się z pięciodaniowego posiłku."
+      },
+      {
+        id: "restaurant-8",
+        english: "To recommend",
+        polish: "Polecać",
+        pronunciation: "/ˌrek.əˈmend/",
+        partOfSpeech: "verb",
+        exampleEnglish: "What dish would you recommend to a first-time visitor?",
+        examplePolish: "Jakie danie poleciłby Pan komuś, kto odwiedza Was po raz pierwszy?"
+      },
+      {
+        id: "restaurant-9",
+        english: "Beverage",
+        polish: "Napój",
+        pronunciation: "/ˈbev.ɚ.ɪdʒ/",
+        partOfSpeech: "noun",
+        exampleEnglish: "We offer a wide selection of alcoholic and non-alcoholic beverages.",
+        examplePolish: "Oferujemy szeroki wybór napojów alkoholowych i bezalkoholowych."
+      },
+      {
+        id: "restaurant-10",
+        english: "Garnish",
+        polish: "Przybrać potrawę / posypka / dekoracja",
+        pronunciation: "/ˈɡɑːr.nɪʃ/",
+        partOfSpeech: "noun",
+        exampleEnglish: "The chef added a sprinkle of parsley as a garnish.",
+        examplePolish: "Szef kuchni dodał posypkę z pietruszki jako dekorację."
+      },
+      {
+        id: "restaurant-11",
+        english: "Spicy",
+        polish: "Ostry / pikantny",
+        pronunciation: "/ˈspaɪ.si/",
+        partOfSpeech: "adjective",
+        exampleEnglish: "Be careful, this curry sauce is extremely spicy.",
+        examplePolish: "Uważaj, ten sos curry jest niezwykle pikantny."
+      },
+      {
+        id: "restaurant-12",
+        english: "Side dish",
+        polish: "Dodatek do dania głównego",
+        pronunciation: "/ˈsaɪd ˌdɪʃ/",
+        partOfSpeech: "noun",
+        exampleEnglish: "I ordered a side dish of roasted vegetables with my steak.",
+        examplePolish: "Zamówiłem pieczone warzywa jako dodatek do steku."
       }
     ]
   },
@@ -642,6 +912,60 @@ export const defaultDecks = [
         partOfSpeech: "noun",
         exampleEnglish: "Most startups use cloud computing to host their web servers.",
         examplePolish: "Większość startupów korzysta z przetwarzania w chmurze do hostowania swoich serwerów."
+      },
+      {
+        id: "tech-7",
+        english: "Database",
+        polish: "Baza danych",
+        pronunciation: "/ˈdeɪ.t̬ə.beɪs/",
+        partOfSpeech: "noun",
+        exampleEnglish: "We need to optimize the database queries to improve loading speed.",
+        examplePolish: "Musimy zoptymalizować zapytania do bazy danych, aby poprawić szybkość ładowania."
+      },
+      {
+        id: "tech-8",
+        english: "Deployment",
+        polish: "Wdrożenie / udostępnienie na serwerze",
+        pronunciation: "/dɪˈplɔɪ.mənt/",
+        partOfSpeech: "noun",
+        exampleEnglish: "The deployment to Vercel was triggered automatically after the git push.",
+        examplePolish: "Wdrożenie na Vercela zostało uruchomione automatycznie po git push."
+      },
+      {
+        id: "tech-9",
+        english: "Repository",
+        polish: "Repozytorium (repo)",
+        pronunciation: "/rɪˈpɑː.zɪ.tɔːr.i/",
+        partOfSpeech: "noun",
+        exampleEnglish: "You should clone the Git repository to start working locally.",
+        examplePolish: "Powinieneś sklonować repozytorium Git, aby zacząć pracować lokalnie."
+      },
+      {
+        id: "tech-10",
+        english: "Framework",
+        polish: "Szkielet programistyczny / framework",
+        pronunciation: "/ˈfreɪm.wɝːk/",
+        partOfSpeech: "noun",
+        exampleEnglish: "React is a very popular frontend framework for building user interfaces.",
+        examplePolish: "React to bardzo popularny framework frontendowy do budowania interfejsów użytkownika."
+      },
+      {
+        id: "tech-11",
+        english: "Responsive design",
+        polish: "Responsywny wygląd (dostosowany do telefonów)",
+        pronunciation: "/rɪˈspɑːn.sɪv dɪˈzaɪn/",
+        partOfSpeech: "noun",
+        exampleEnglish: "A good website must have a responsive design to look great on phones.",
+        examplePolish: "Dobra strona internetowa musi mieć responsywny wygląd, aby wyglądać świetnie na telefonach."
+      },
+      {
+        id: "tech-12",
+        english: "Bug",
+        polish: "Błąd w programie / usterka",
+        pronunciation: "/bʌɡ/",
+        partOfSpeech: "noun",
+        exampleEnglish: "The developer fixed the bug that was causing the app to crash during signup.",
+        examplePolish: "Programista naprawił błąd, który powodował zawieszanie się aplikacji podczas rejestracji."
       }
     ]
   }

@@ -14,7 +14,7 @@ export default function App() {
   const [view, setView] = useState("dashboard"); // 'dashboard', 'learn', 'quiz', 'match', 'creator', 'profile'
   const [decks, setDecks] = useState([]);
   const [selectedDeck, setSelectedDeck] = useState(null);
-  const [theme, setTheme] = useState("graphite"); // 'graphite' | 'green' | 'navy'
+  const [theme, setTheme] = useState("graphite"); // 'graphite' | 'green' | 'navy' | 'sakura' | 'forest' | 'amber'
   
   const [stats, setStats] = useState({
     streak: 0,
@@ -350,7 +350,7 @@ export default function App() {
                 className="bg-transparent text-white focus:outline-none cursor-pointer font-bold border-none p-0 pr-6"
               >
                 {displayedDecks.map(d => (
-                  <option key={d.id} value={d.id} className="bg-[#0c0f1d] text-white">{d.title}</option>
+                  <option key={d.id} value={d.id} className="bg-[var(--bg-main)] text-[var(--text-primary)]">{d.title}</option>
                 ))}
               </select>
             </div>
@@ -361,23 +361,45 @@ export default function App() {
             <button 
               onClick={() => handleThemeChange("graphite")} 
               className={`w-4 h-4 rounded-full bg-[#6366f1] border-2 transition-all hover:scale-110 ${
-                theme === "graphite" ? "border-white scale-105" : "border-transparent opacity-60"
+                theme === "graphite" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
               }`}
-              title="Aurora Graphite"
+              title="Aurora Graphite (Ciemny)"
             />
             <button 
               onClick={() => handleThemeChange("green")} 
               className={`w-4 h-4 rounded-full bg-[#10b981] border-2 transition-all hover:scale-110 ${
-                theme === "green" ? "border-white scale-105" : "border-transparent opacity-60"
+                theme === "green" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
               }`}
-              title="Bottle Green"
+              title="Bottle Green (Ciemny)"
             />
             <button 
               onClick={() => handleThemeChange("navy")} 
               className={`w-4 h-4 rounded-full bg-[#2563eb] border-2 transition-all hover:scale-110 ${
-                theme === "navy" ? "border-white scale-105" : "border-transparent opacity-60"
+                theme === "navy" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
               }`}
-              title="Deep Navy"
+              title="Deep Navy (Ciemny)"
+            />
+            <div className="w-[1px] h-3 bg-white/20 mx-0.5" />
+            <button 
+              onClick={() => handleThemeChange("sakura")} 
+              className={`w-4 h-4 rounded-full bg-[#db2777] border-2 transition-all hover:scale-110 ${
+                theme === "sakura" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
+              }`}
+              title="Light Sakura (Jasny)"
+            />
+            <button 
+              onClick={() => handleThemeChange("forest")} 
+              className={`w-4 h-4 rounded-full bg-[#059669] border-2 transition-all hover:scale-110 ${
+                theme === "forest" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
+              }`}
+              title="Light Forest (Jasny)"
+            />
+            <button 
+              onClick={() => handleThemeChange("amber")} 
+              className={`w-4 h-4 rounded-full bg-[#d97706] border-2 transition-all hover:scale-110 ${
+                theme === "amber" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
+              }`}
+              title="Light Amber (Jasny)"
             />
           </div>
 
