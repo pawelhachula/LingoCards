@@ -706,20 +706,6 @@ export default function App() {
             )}
           </div>
 
-          {/* User profile button */}
-          {/* Stats icon button */}
-          <button 
-            onClick={() => setView("stats")}
-            className={`flex items-center justify-center p-2.5 rounded-xl border scale-hover ${
-              view === "stats" 
-                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
-                : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
-            }`}
-            title="Analityka i Statystyki"
-          >
-            <Icons.BarChart2 size={16} />
-          </button>
-
           {/* Leaderboard button */}
           <button 
             onClick={() => setView("leaderboard")}
@@ -731,19 +717,6 @@ export default function App() {
             title="Ranking Rywalizacji"
           >
             <Icons.Trophy size={16} />
-          </button>
-
-          {/* Referrals Gift button */}
-          <button 
-            onClick={() => setView("referrals")}
-            className={`flex items-center justify-center p-2.5 rounded-xl border scale-hover ${
-              view === "referrals" 
-                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
-                : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
-            }`}
-            title="Program Poleceń (Zdobądź Nagrody)"
-          >
-            <Icons.Gift size={16} />
           </button>
 
           {/* Settings gear button */}
