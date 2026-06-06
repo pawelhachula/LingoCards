@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as Icons from "lucide-react";
 
-export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavigate }) {
+export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavigate, onAddXp }) {
   const [quizMode, setQuizMode] = useState(null); // 'choice' | 'spell'
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -118,6 +118,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
     if (isCorrect) {
       setScore(prev => prev + 1);
       playTTS(questions[currentIndex].card.english);
+      onAddXp(15);
     }
   };
 
@@ -133,6 +134,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
     if (isCorrect) {
       setScore(prev => prev + 1);
       playTTS(questions[currentIndex].card.english);
+      onAddXp(15);
     }
   };
 
@@ -348,15 +350,15 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
                     key={idx}
                     onClick={() => handleChoiceSubmit(option)}
                     disabled={isAnswered}
-                    className={`btn text-left p-4 rounded-xl border flex items-center justify-between text-sm transition-all scale-hover ${btnStyle}`}
+                    className={`btn text-center justify-center p-4 rounded-xl border flex items-center gap-2 text-sm transition-all scale-hover ${btnStyle}`}
                   >
-                    <span className="font-semibold">{option}</span>
                     {isAnswered && option === currentQuestion.correctAnswer && (
-                      <Icons.Check size={16} className="text-emerald-400" />
+                      <Icons.Check size={16} className="text-emerald-400 shrink-0" />
                     )}
                     {isAnswered && selectedAnswer === option && option !== currentQuestion.correctAnswer && (
-                      <Icons.X size={16} className="text-rose-400" />
+                      <Icons.X size={16} className="text-rose-400 shrink-0" />
                     )}
+                    <span className="font-semibold text-center">{option}</span>
                   </button>
                 );
               })}

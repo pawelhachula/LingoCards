@@ -8,6 +8,9 @@ import Creator from "./components/Creator";
 import Auth from "./components/Auth";
 import Profile from "./components/Profile";
 import Settings from "./components/Settings";
+import Referrals from "./components/Referrals";
+import Leaderboard from "./components/Leaderboard";
+import { playSound, triggerConfetti, triggerFireworks } from "./utils/effects";
 import * as Icons from "lucide-react";
 
 export default function App() {
@@ -16,6 +19,8 @@ export default function App() {
   const [decks, setDecks] = useState([]);
   const [selectedDeck, setSelectedDeck] = useState(null);
   const [theme, setTheme] = useState("navy"); // default to navy (Deep Navy)
+  const [showLevelUpModal, setShowLevelUpModal] = useState(false);
+  const [levelUpInfo, setLevelUpInfo] = useState({ oldLevel: 1, newLevel: 1 });
   // 'graphite' | 'green' | 'navy' | 'sakura' | 'forest' | 'amber'
   
   const [stats, setStats] = useState({
@@ -26,7 +31,16 @@ export default function App() {
     starredCards: {},
     quizTotal: 0,
     quizCorrect: 0,
-    matchesWon: 0
+    matchesWon: 0,
+    srsData: {},
+    bestStreak: 0,
+    referrals: [],
+    xp: 0,
+    level: 1,
+    studyDates: [],
+    deckMedals: {},
+    audioStyle: "synth",
+    confettiStyle: "standard"
   });
 
   // Check login session & theme on mount
@@ -66,6 +80,13 @@ export default function App() {
     if (savedDecks) {
       try {
         loadedDecks = JSON.parse(savedDecks);
+        // Automatyczne przywracanie brakujących talii domyślnych
+        const loadedIds = new Set(loadedDecks.map(d => d.id));
+        const missingDefaultDecks = defaultDecks.filter(d => !loadedIds.has(d.id));
+        if (missingDefaultDecks.length > 0) {
+          loadedDecks = [...loadedDecks, ...missingDefaultDecks];
+          localStorage.setItem(userDecksKey, JSON.stringify(loadedDecks));
+        }
       } catch (e) {
         console.error("Error parsing user decks", e);
         loadedDecks = defaultDecks;
@@ -90,7 +111,16 @@ export default function App() {
       starredCards: {},
       quizTotal: 0,
       quizCorrect: 0,
-      matchesWon: 0
+      matchesWon: 0,
+      srsData: {},
+      bestStreak: 0,
+      referrals: [],
+      xp: 0,
+      level: 1,
+      studyDates: [],
+      deckMedals: {},
+      audioStyle: "synth",
+      confettiStyle: "standard"
     };
 
     if (savedStats) {
@@ -126,6 +156,10 @@ export default function App() {
       loadedStats.streak = 1;
       loadedStats.lastActiveDate = todayStr;
       loadedStats.dailyCount = 0;
+    }
+
+    if (loadedStats.streak > (loadedStats.bestStreak || 0)) {
+      loadedStats.bestStreak = loadedStats.streak;
     }
 
     setStats(loadedStats);
@@ -223,11 +257,52 @@ export default function App() {
   };
 
   const handleSetStats = (newStats) => {
-    setStats(newStats);
+    let updatedStats = { ...newStats };
+    if (updatedStats.streak > (updatedStats.bestStreak || 0)) {
+      updatedStats.bestStreak = updatedStats.streak;
+    }
+    setStats(updatedStats);
     if (currentUser) {
       const userStatsKey = `lingocards_stats_${currentUser.username.toLowerCase()}`;
-      localStorage.setItem(userStatsKey, JSON.stringify(newStats));
+      localStorage.setItem(userStatsKey, JSON.stringify(updatedStats));
     }
+  };
+
+  const handleAddXp = (amount) => {
+    if (!currentUser) return;
+    setStats(prev => {
+      const currentXp = prev.xp || 0;
+      const currentLevel = prev.level || 1;
+      const newXp = currentXp + amount;
+      const newLevel = Math.floor(newXp / 300) + 1;
+      
+      const todayStr = new Date().toISOString().split("T")[0];
+      const updatedStudyDates = prev.studyDates || [];
+      const newStudyDates = updatedStudyDates.includes(todayStr)
+        ? updatedStudyDates
+        : [...updatedStudyDates, todayStr];
+      
+      const updatedStats = {
+        ...prev,
+        xp: newXp,
+        level: newLevel,
+        studyDates: newStudyDates
+      };
+      
+      if (newLevel > currentLevel) {
+        setTimeout(() => {
+          playSound("levelup", prev.audioStyle || "synth");
+          triggerFireworks();
+          setLevelUpInfo({ oldLevel: currentLevel, newLevel: newLevel });
+          setShowLevelUpModal(true);
+        }, 100);
+      }
+      
+      const userStatsKey = `lingocards_stats_${currentUser.username.toLowerCase()}`;
+      localStorage.setItem(userStatsKey, JSON.stringify(updatedStats));
+      
+      return updatedStats;
+    });
   };
 
   const handleResetData = () => {
@@ -245,7 +320,16 @@ export default function App() {
       quizTotal: 0,
       quizCorrect: 0,
       matchesWon: 0,
-      dailyTarget: 10
+      dailyTarget: 10,
+      srsData: {},
+      bestStreak: 0,
+      referrals: [],
+      xp: 0,
+      level: 1,
+      studyDates: [],
+      deckMedals: {},
+      audioStyle: "synth",
+      confettiStyle: "standard"
     };
     setStats(defaultStatsObj);
     localStorage.setItem(userStatsKey, JSON.stringify(defaultStatsObj));
@@ -330,10 +414,38 @@ export default function App() {
     return <Auth onLogin={handleLogin} />;
   }
 
+  // Compile Dynamic SRS Deck
+  const todayStr = new Date().toISOString().split("T")[0];
+  const realDecksForSrs = decks.filter(d => d.id !== "starred" && d.id !== "srs");
+  const allUniqueCards = [];
+  const cardIdsSet = new Set();
+  realDecksForSrs.flatMap(d => d.cards || []).forEach(c => {
+    if (!cardIdsSet.has(c.id)) {
+      cardIdsSet.add(c.id);
+      allUniqueCards.push(c);
+    }
+  });
+
+  const srsDueCards = allUniqueCards.filter(c => {
+    const srs = stats.srsData?.[c.id];
+    if (!srs) return true;
+    return srs.nextReviewDate <= todayStr;
+  });
+
+  const srsDeck = {
+    id: "srs",
+    title: "Powtórka SRS",
+    polishTitle: "Spaced Repetition Review",
+    description: "Słówka wybrane przez algorytm powtórek do dzisiejszej nauki.",
+    icon: "BrainCircuit",
+    color: "#ec4899",
+    cards: srsDueCards
+  };
+
   // Compile Dynamic Starred Deck
-  const starredCards = decks.flatMap(d => d.cards || []).filter(c => stats.starredCards?.[c.id]);
+  const starredCards = allUniqueCards.filter(c => stats.starredCards?.[c.id]);
   
-  const starredDeck = starredCards.length > 0 ? {
+  const starredDeck = {
     id: "starred",
     title: "Ulubione i trudne",
     polishTitle: "Starred & Difficult",
@@ -341,9 +453,9 @@ export default function App() {
     icon: "Star",
     color: "#f59e0b",
     cards: starredCards
-  } : null;
+  };
 
-  const displayedDecks = starredDeck ? [starredDeck, ...decks] : decks;
+  const displayedDecks = [srsDeck, starredDeck, ...decks];
 
   return (
     <div className="min-h-screen flex flex-col bg-transparent">
@@ -419,6 +531,18 @@ export default function App() {
           >
             Menedżer
           </button>
+
+          <button 
+            onClick={() => setView("referrals")} 
+            className={`px-4 py-2.5 rounded-xl transition-all border flex items-center gap-1.5 ${
+              view === "referrals" 
+                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
+                : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
+            }`}
+          >
+            <Icons.Users size={14} />
+            Polecenia
+          </button>
         </div>
 
         {/* Global Streak / Theme Selector / User Profile */}
@@ -483,9 +607,91 @@ export default function App() {
               }`}
               title="Light Amber (Jasny)"
             />
+            <div className="w-[1px] h-3 bg-white/20 mx-0.5" />
+            {(stats.referrals || []).length >= 1 ? (
+              <button 
+                onClick={() => handleThemeChange("cyberpunk")} 
+                className={`w-4 h-4 rounded-full border-2 transition-all hover:scale-110 ${
+                  theme === "cyberpunk" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
+                }`}
+                style={{ backgroundImage: "linear-gradient(135deg, #db2777, #06b6d4)" }}
+                title="Cyberpunk Neon (Premium Ciemny)"
+              />
+            ) : (
+              <div 
+                className="w-4 h-4 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center cursor-not-allowed opacity-30 relative group"
+                title="Cyberpunk Neon (Zablokowane - Poleć 1 znajomemu)"
+              >
+                <Icons.Lock size={8} className="text-slate-400" />
+              </div>
+            )}
+            
+            {/* Level 5 Cosmic Nebula */}
+            {(stats.level || 1) >= 5 ? (
+              <button 
+                onClick={() => handleThemeChange("nebula")} 
+                className={`w-4 h-4 rounded-full border-2 transition-all hover:scale-110 ${
+                  theme === "nebula" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
+                }`}
+                style={{ backgroundImage: "linear-gradient(135deg, #8b5cf6, #ec4899)" }}
+                title="Cosmic Nebula (Poziom 5+)"
+              />
+            ) : (
+              <div 
+                className="w-4 h-4 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center cursor-not-allowed opacity-30 relative group"
+                title="Cosmic Nebula (Zablokowane - Wymagany Level 5)"
+              >
+                <Icons.Lock size={8} className="text-slate-400" />
+              </div>
+            )}
+
+            {/* Level 10 Royal Gold */}
+            {(stats.level || 1) >= 10 ? (
+              <button 
+                onClick={() => handleThemeChange("gold")} 
+                className={`w-4 h-4 rounded-full border-2 transition-all hover:scale-110 ${
+                  theme === "gold" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
+                }`}
+                style={{ backgroundImage: "linear-gradient(135deg, #eab308, #f97316)" }}
+                title="Royal Gold (Poziom 10+)"
+              />
+            ) : (
+              <div 
+                className="w-4 h-4 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center cursor-not-allowed opacity-30 relative group"
+                title="Royal Gold (Zablokowane - Wymagany Level 10)"
+              >
+                <Icons.Lock size={8} className="text-slate-400" />
+              </div>
+            )}
           </div>
 
           {/* User profile button */}
+          {/* Leaderboard button */}
+          <button 
+            onClick={() => setView("leaderboard")}
+            className={`flex items-center justify-center p-2.5 rounded-xl border scale-hover ${
+              view === "leaderboard" 
+                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
+                : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
+            }`}
+            title="Ranking Rywalizacji"
+          >
+            <Icons.Trophy size={16} />
+          </button>
+
+          {/* Referrals Gift button */}
+          <button 
+            onClick={() => setView("referrals")}
+            className={`flex items-center justify-center p-2.5 rounded-xl border scale-hover ${
+              view === "referrals" 
+                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
+                : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
+            }`}
+            title="Program Poleceń (Zdobądź Nagrody)"
+          >
+            <Icons.Gift size={16} />
+          </button>
+
           {/* Settings gear button */}
           <button 
             onClick={() => setView("settings")}
@@ -593,6 +799,7 @@ export default function App() {
             stats={stats} 
             setStats={handleSetStats} 
             onNavigate={setView} 
+            onAddXp={handleAddXp}
           />
         )}
 
@@ -603,6 +810,7 @@ export default function App() {
             stats={stats} 
             setStats={handleSetStats} 
             onNavigate={setView} 
+            onAddXp={handleAddXp}
           />
         )}
 
@@ -612,6 +820,7 @@ export default function App() {
             stats={stats} 
             setStats={handleSetStats} 
             onNavigate={setView} 
+            onAddXp={handleAddXp}
           />
         )}
 
@@ -644,7 +853,64 @@ export default function App() {
             onResetData={handleResetData}
           />
         )}
+
+        {view === "referrals" && (
+          <Referrals 
+            stats={stats}
+            onUpdateStats={handleSetStats}
+            onNavigate={setView}
+          />
+        )}
+
+        {view === "leaderboard" && (
+          <Leaderboard 
+            stats={stats}
+            onNavigate={setView}
+          />
+        )}
       </main>
+
+      {/* Level Up Modal */}
+      {showLevelUpModal && (
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="glass-card w-full max-w-md p-8 border-yellow-500/30 shadow-[0_0_30px_rgba(234,179,8,0.2)] flex flex-col items-center gap-6 text-center animate-scale-up relative">
+            <div className="absolute -top-12 w-24 h-24 bg-gradient-to-tr from-yellow-500 to-amber-500 rounded-full flex items-center justify-center shadow-xl shadow-yellow-500/20 border-4 border-[var(--bg-main)]">
+              <Icons.Award className="text-white w-10 h-10 animate-bounce" />
+            </div>
+            
+            <div className="mt-8">
+              <span className="text-xs font-black text-yellow-400 uppercase tracking-widest bg-yellow-500/10 px-3 py-1 rounded-full border border-yellow-500/20">AWANS POZIOMU!</span>
+              <h3 className="text-3xl font-black text-white mt-4 tracking-tight">Poziom w górę! 🎉</h3>
+              <p className="text-slate-400 text-xs mt-2 leading-relaxed">Twoja wiedza rośnie! Osiągnąłeś nowy poziom nauki.</p>
+            </div>
+
+            <div className="flex items-center gap-4 bg-black/40 px-6 py-4 rounded-2xl border border-white/5 w-full justify-center">
+              <div className="text-center">
+                <span className="text-[10px] text-slate-500 font-extrabold uppercase block leading-none">Poprzedni</span>
+                <strong className="text-slate-400 text-xl font-black block mt-1">Lvl {levelUpInfo.oldLevel}</strong>
+              </div>
+              <Icons.ArrowRight className="text-yellow-400" size={20} />
+              <div className="text-center">
+                <span className="text-[10px] text-yellow-400 font-extrabold uppercase block leading-none">Nowy</span>
+                <strong className="text-yellow-400 text-2xl font-black block mt-1">Lvl {levelUpInfo.newLevel}</strong>
+              </div>
+            </div>
+
+            <div className="text-xs text-indigo-300 font-bold">
+              Nowy Tytuł: <span className="text-white font-extrabold uppercase tracking-wide">
+                {levelUpInfo.newLevel >= 15 ? "Master 👑" : levelUpInfo.newLevel >= 10 ? "Scholar 🎓" : levelUpInfo.newLevel >= 6 ? "Explorer 🧭" : levelUpInfo.newLevel >= 3 ? "Learner 📚" : "Beginner 🌱"}
+              </span>
+            </div>
+
+            <button 
+              onClick={() => setShowLevelUpModal(false)}
+              className="btn bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-400 hover:to-amber-500 text-white font-bold text-xs py-3.5 w-full rounded-xl shadow-lg shadow-yellow-500/10 hover:scale-105 transition-all mt-2"
+            >
+              Cudownie, uczę się dalej!
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

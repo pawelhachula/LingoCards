@@ -10,6 +10,45 @@ export default function Dashboard({ decks, stats, onSelectDeck, onNavigate }) {
   const dailyProgress = Math.min(stats.dailyCount || 0, dailyTarget);
   const dailyPercent = dailyTarget > 0 ? Math.round((dailyProgress / dailyTarget) * 100) : 0;
 
+  // SRS calculations
+  const srsData = stats.srsData || {};
+  const todayStr = new Date().toISOString().split("T")[0];
+  
+  // Exclude virtual/utility decks to get unique real cards
+  const realDecks = decks.filter(d => d.id !== "starred" && d.id !== "srs");
+  const allCards = realDecks.flatMap(d => d.cards || []);
+  const uniqueCards = [];
+  const cardIds = new Set();
+  allCards.forEach(c => {
+    if (!cardIds.has(c.id)) {
+      cardIds.add(c.id);
+      uniqueCards.push(c);
+    }
+  });
+
+  const totalCardsCount = uniqueCards.length;
+
+  const srsDueCards = uniqueCards.filter(c => {
+    const srs = srsData[c.id];
+    if (!srs) return true;
+    return srs.nextReviewDate <= todayStr;
+  });
+
+  const newCardsCount = uniqueCards.filter(c => !srsData[c.id]).length;
+  const learningCount = uniqueCards.filter(c => srsData[c.id] && srsData[c.id].interval < 7).length;
+  const masteredCount = uniqueCards.filter(c => srsData[c.id] && srsData[c.id].interval >= 7).length;
+
+  // Review calendar helper
+  const addDaysStr = (days) => {
+    const d = new Date();
+    d.setDate(d.getDate() + days);
+    return d.toISOString().split("T")[0];
+  };
+
+  const dueTomorrow = uniqueCards.filter(c => srsData[c.id] && srsData[c.id].nextReviewDate === addDaysStr(1)).length;
+  const due3Days = uniqueCards.filter(c => srsData[c.id] && srsData[c.id].nextReviewDate > todayStr && srsData[c.id].nextReviewDate <= addDaysStr(3)).length;
+  const due7Days = uniqueCards.filter(c => srsData[c.id] && srsData[c.id].nextReviewDate > todayStr && srsData[c.id].nextReviewDate <= addDaysStr(7)).length;
+
   return (
     <div className="flex flex-col gap-8 animate-slide-in">
       {/* Greeting and Global Progress Bar */}
@@ -28,11 +67,45 @@ export default function Dashboard({ decks, stats, onSelectDeck, onNavigate }) {
             <p className="text-slate-400 mt-3 text-sm leading-relaxed max-w-lg">
               Poświęć kilka minut dziennie na powtórkę angielskiego. Systematyczność to najkrótsza droga do płynnego mówienia.
             </p>
+            
+            {/* XP Progress Bar */}
+            <div className="mt-5 max-w-md bg-black/30 border border-white/5 rounded-2xl p-4">
+              <div className="flex justify-between items-center text-xs mb-1.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-400 font-extrabold text-[10px]">POZIOM {stats.level || 1}</span>
+                  <span className="text-slate-300 font-bold">
+                    {(() => {
+                      const lvl = stats.level || 1;
+                      if (lvl >= 15) return "Mistrz 👑";
+                      if (lvl >= 10) return "Uczony 🎓";
+                      if (lvl >= 6) return "Odkrywca 🧭";
+                      if (lvl >= 3) return "Uczeń 📚";
+                      return "Nowicjusz 🌱";
+                    })()}
+                  </span>
+                </div>
+                <span className="text-slate-400 font-black">{(stats.xp || 0) % 300} / 300 XP</span>
+              </div>
+              <div className="bg-white/5 h-2 rounded-full overflow-hidden border border-white/5 relative">
+                <div 
+                  className="bg-gradient-to-r from-indigo-500 to-cyan-500 h-full rounded-full transition-all duration-500"
+                  style={{ width: `${((stats.xp || 0) % 300) / 300 * 100}%` }}
+                />
+              </div>
+              <div className="text-[10px] text-slate-500 font-medium mt-1">
+                Brakuje {300 - ((stats.xp || 0) % 300)} XP do następnego poziomu
+              </div>
+            </div>
           </div>
           
           <button 
             onClick={() => {
-              if (decks.length > 0) onSelectDeck(decks[0]);
+              const realDecksOnly = decks.filter(d => d.id !== "srs" && d.id !== "starred");
+              if (realDecksOnly.length > 0) {
+                onSelectDeck(realDecksOnly[0]);
+              } else if (decks.length > 0) {
+                onSelectDeck(decks[0]);
+              }
               onNavigate("learn");
             }}
             className="btn btn-primary self-start mt-6 hover:scale-105 transition-transform"
@@ -92,16 +165,125 @@ export default function Dashboard({ decks, stats, onSelectDeck, onNavigate }) {
         </div>
       </div>
 
+      {/* SRS Spaced Repetition Panel */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* SRS Active due alert card */}
+        <div className="lg:col-span-2 glass-card p-6 flex flex-col justify-between relative overflow-hidden border-indigo-500/15">
+          <div className="absolute -right-24 -top-24 w-48 h-48 bg-pink-500/5 rounded-full blur-3xl pointer-events-none" />
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="p-2 rounded-xl bg-pink-500/10 text-pink-400 border border-pink-500/20">
+                <Icons.BrainCircuit size={18} />
+              </span>
+              <span className="text-[10px] text-pink-400 font-extrabold uppercase tracking-wider">Spaced Repetition System</span>
+            </div>
+            
+            <h3 className="text-xl font-extrabold text-white mt-4 tracking-tight">
+              {srsDueCards.length > 0 
+                ? `Masz dzisiaj ${srsDueCards.length} powtórek do wykonania!` 
+                : "Świetna robota! Brak oczekujących powtórek na dziś"}
+            </h3>
+            <p className="text-slate-400 text-xs mt-2 leading-relaxed">
+              Algorytm SRS automatycznie wyznacza momenty, w których powinieneś powtórzyć słówka, aby trwale zapisać je w pamięci długotrwałej.
+            </p>
+          </div>
+
+          <div className="mt-6 flex items-center justify-between gap-4">
+            {srsDueCards.length > 0 ? (
+              <button
+                onClick={() => {
+                  const srsDeckObj = decks.find(d => d.id === "srs");
+                  if (srsDeckObj) {
+                    onSelectDeck(srsDeckObj);
+                    onNavigate("learn");
+                  } else {
+                    if (decks.length > 0) onSelectDeck(decks[0]);
+                    onNavigate("learn");
+                  }
+                }}
+                className="btn bg-gradient-to-r from-pink-500 to-indigo-600 hover:from-pink-400 hover:to-indigo-500 text-white font-bold text-xs py-3 px-5 shadow-lg shadow-pink-500/10 hover:scale-105 transition-transform"
+              >
+                Rozpocznij powtórkę SRS ({srsDueCards.length})
+              </button>
+            ) : (
+              <div className="flex items-center gap-2 text-emerald-400 text-xs font-bold bg-emerald-500/10 border border-emerald-500/15 px-3 py-2 rounded-xl">
+                <Icons.CheckCircle size={14} />
+                <span>Twój umysł jest w pełni zsynchronizowany!</span>
+              </div>
+            )}
+
+            <button 
+              onClick={() => onNavigate("referrals")}
+              className="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1 font-bold"
+            >
+              <Icons.Gift size={14} className="text-indigo-400" /> Poleć aplikację
+            </button>
+          </div>
+        </div>
+
+        {/* SRS distribution breakdown and calendar */}
+        <div className="glass-card p-6 flex flex-col justify-between relative overflow-hidden">
+          <div>
+            <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">Podział pamięciowy</h4>
+            
+            {/* Segmented Bar */}
+            <div className="bg-white/5 h-3 rounded-lg overflow-hidden flex w-full border border-white/5">
+              <div 
+                className="bg-slate-600 h-full transition-all" 
+                style={{ width: `${totalCardsCount > 0 ? (newCardsCount / totalCardsCount) * 100 : 100}%` }}
+                title={`Nowe słówka: ${newCardsCount}`}
+              />
+              <div 
+                className="bg-indigo-500 h-full transition-all" 
+                style={{ width: `${totalCardsCount > 0 ? (learningCount / totalCardsCount) * 100 : 0}%` }}
+                title={`W nauce: ${learningCount}`}
+              />
+              <div 
+                className="bg-emerald-500 h-full transition-all" 
+                style={{ width: `${totalCardsCount > 0 ? (masteredCount / totalCardsCount) * 100 : 0}%` }}
+                title={`Opanowane: ${masteredCount}`}
+              />
+            </div>
+
+            {/* Legend */}
+            <div className="grid grid-cols-3 gap-1 text-[9px] font-bold mt-2 text-slate-400">
+              <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-slate-600 block" /> Nowe ({newCardsCount})</span>
+              <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-indigo-500 block" /> W nauce ({learningCount})</span>
+              <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 block" /> Opan. ({masteredCount})</span>
+            </div>
+          </div>
+
+          <div className="mt-5 pt-4 border-t border-white/5">
+            <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2.5">Kalendarz powtórek</h4>
+            <div className="grid grid-cols-3 gap-2 text-center text-xs">
+              <div className="bg-black/30 p-2 rounded-xl border border-white/5">
+                <span className="text-[9px] text-slate-500 font-bold block">JUTRO</span>
+                <strong className="text-white text-sm block mt-0.5">{dueTomorrow}</strong>
+              </div>
+              <div className="bg-black/30 p-2 rounded-xl border border-white/5">
+                <span className="text-[9px] text-slate-500 font-bold block">3 DNI</span>
+                <strong className="text-white text-sm block mt-0.5">{due3Days}</strong>
+              </div>
+              <div className="bg-black/30 p-2 rounded-xl border border-white/5">
+                <span className="text-[9px] text-slate-500 font-bold block">7 DNI</span>
+                <strong className="text-white text-sm block mt-0.5">{due7Days}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Numerical Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Streak */}
         <div className="glass-card p-6 flex items-center gap-4 hover:border-amber-500/30">
           <div className="p-3.5 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
-            <Icons.Flame size={24} className="fill-amber-500/10" />
+            <Icons.Flame size={24} className="fill-amber-500/15" />
           </div>
           <div>
             <span className="text-xs text-slate-500 uppercase font-extrabold tracking-wider">Seria dni (Streak)</span>
             <p className="text-2xl font-black text-white mt-0.5">{stats.streak || 0} dni</p>
+            <span className="text-[9px] text-slate-400 font-bold uppercase">Rekord: {stats.bestStreak || stats.streak || 0} dni</span>
           </div>
         </div>
 
@@ -151,6 +333,87 @@ export default function Dashboard({ decks, stats, onSelectDeck, onNavigate }) {
         </div>
       </div>
 
+      {/* Shrunk activity calendar card */}
+      <div className="glass-card p-6 w-full flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Icons.Flame size={18} className="text-amber-500 fill-amber-500/15" />
+            <div>
+              <h4 className="text-sm font-extrabold text-white">Kalendarz Aktywności (Ostatnie 28 dni)</h4>
+              <p className="text-[11px] text-slate-400">Ucz się codziennie, aby utrzymać streak i zwiększyć moc płomienia!</p>
+            </div>
+          </div>
+          
+          {/* Growing flame effect indicator */}
+          <div className="flex items-center gap-1.5 bg-black/20 px-2.5 py-1 rounded-xl border border-white/5 self-start sm:self-auto text-[10px]">
+            <span className="text-slate-400 font-bold">Moc płomienia:</span>
+            <span className={`font-black uppercase ${
+              stats.streak >= 30 
+                ? "text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 animate-pulse" 
+                : stats.streak >= 7 
+                  ? "text-cyan-400" 
+                  : "text-amber-500"
+            }`}>
+              {stats.streak >= 30 ? "🌈 Tęczowy" : stats.streak >= 7 ? "⚡ Elektryczny" : "🔥 Klasyczny"}
+            </span>
+          </div>
+        </div>
+        
+        {/* Grid of 28 days */}
+        <div className="grid grid-cols-7 sm:grid-cols-14 gap-2 max-w-xl mx-auto w-full pt-1">
+          {(() => {
+            const days = [];
+            const today = new Date();
+            for (let i = 27; i >= 0; i--) {
+              const d = new Date();
+              d.setDate(today.getDate() - i);
+              const dateStr = d.toISOString().split("T")[0];
+              const hasStudied = (stats.studyDates || []).includes(dateStr);
+              
+              days.push({
+                date: dateStr,
+                label: d.getDate(),
+                hasStudied,
+                isToday: dateStr === today.toISOString().split("T")[0]
+              });
+            }
+            return days.map((day, idx) => (
+              <div 
+                key={day.date} 
+                className={`aspect-square flex flex-col items-center justify-center rounded-xl border text-[9px] font-black transition-all relative group cursor-pointer ${
+                  day.hasStudied
+                    ? stats.streak >= 30
+                      ? "bg-gradient-to-br from-pink-500 via-purple-500 to-cyan-500 border-transparent text-white shadow-[0_0_8px_rgba(236,72,153,0.3)]"
+                      : stats.streak >= 7
+                        ? "bg-cyan-500/10 border-cyan-500/40 text-cyan-400 shadow-[0_0_6px_rgba(6,182,212,0.2)]"
+                        : "bg-amber-500/10 border-amber-500/40 text-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.2)]"
+                    : day.isToday
+                      ? "bg-white/5 border-indigo-500/40 text-indigo-400"
+                      : "bg-black/20 border-white/5 text-slate-600 hover:border-white/10"
+                }`}
+              >
+                {day.hasStudied ? (
+                  <Icons.Flame size={12} className={`${
+                    stats.streak >= 30
+                      ? "text-white fill-white/20 animate-pulse"
+                      : stats.streak >= 7
+                        ? "text-cyan-400 fill-cyan-400/20"
+                        : "text-amber-500 fill-amber-500/20"
+                  }`} />
+                ) : (
+                  <span>{day.label}</span>
+                )}
+                
+                {/* Tooltip */}
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 hidden group-hover:block bg-slate-955 border border-white/10 px-2 py-0.5 rounded text-[8px] text-white font-bold whitespace-nowrap z-20 pointer-events-none shadow-xl">
+                  {day.date} {day.hasStudied ? "• Aktywność! 🔥" : "• Brak nauki"}
+                </div>
+              </div>
+            ));
+          })()}
+        </div>
+      </div>
+
       {/* Decks listing */}
       <div>
         <div className="flex items-center justify-between mb-5">
@@ -174,13 +437,28 @@ export default function Dashboard({ decks, stats, onSelectDeck, onNavigate }) {
             const deckCardsCount = deckCardsList.length;
             const deckLearnedCount = deckCardsList.filter(card => stats.learnedCards?.[card.id]).length;
             const deckProgress = deckCardsCount > 0 ? Math.round((deckLearnedCount / deckCardsCount) * 100) : 0;
+            const isCompleted100 = deckProgress === 100;
+
+            const deckDueCount = deck.id !== "starred" && deck.id !== "srs"
+              ? deckCardsList.filter(card => {
+                  const srs = srsData[card.id];
+                  if (!srs) return true;
+                  return srs.nextReviewDate <= todayStr;
+                }).length
+              : 0;
 
             return (
               <div 
                 key={deck.id} 
-                className="glass-card p-6 flex flex-col justify-between hover:-translate-y-1 scale-hover border-t-4"
+                className={`glass-card p-6 flex flex-col justify-between hover:-translate-y-1 scale-hover border-t-4 transition-all duration-300 ${
+                  isCompleted100 
+                    ? "gold-deck-outline" 
+                    : stats.deckMedals?.[deck.id] === 'gold' 
+                      ? "border-yellow-500/30 shadow-[0_0_20px_rgba(234,179,8,0.12)] ring-1 ring-yellow-500/20" 
+                      : ""
+                }`}
                 style={{
-                  borderTopColor: deck.color || '#6366f1'
+                  borderTopColor: isCompleted100 ? '#eab308' : stats.deckMedals?.[deck.id] === 'gold' ? '#eab308' : (deck.color || '#6366f1')
                 }}
               >
                 <div>
@@ -195,9 +473,27 @@ export default function Dashboard({ decks, stats, onSelectDeck, onNavigate }) {
                     >
                       <IconComponent size={22} />
                     </div>
-                    <span className="text-[10px] bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full font-bold text-slate-400 uppercase tracking-wider">
-                      {deckCardsCount} fiszek
-                    </span>
+                    <div className="flex flex-col items-end gap-1">
+                      <span className="text-[10px] bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full font-bold text-slate-400 uppercase tracking-wider">
+                        {deckCardsCount} fiszek
+                      </span>
+                      {deckDueCount > 0 && (
+                        <span className="text-[9px] bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 rounded-full font-black text-pink-400 uppercase tracking-wider animate-pulse">
+                          Powtórka: {deckDueCount}
+                        </span>
+                      )}
+                      {stats.deckMedals?.[deck.id] && (
+                        <span className={`text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 border ${
+                          stats.deckMedals[deck.id] === 'gold' 
+                            ? "bg-yellow-500/15 border-yellow-500/30 text-yellow-400 shadow-[0_0_8px_rgba(234,179,8,0.2)]" 
+                            : stats.deckMedals[deck.id] === 'silver'
+                              ? "bg-slate-300/15 border-slate-300/30 text-slate-300"
+                              : "bg-amber-600/15 border-amber-600/30 text-amber-500"
+                        }`}>
+                          {stats.deckMedals[deck.id] === 'gold' ? "🥇 Złoto" : stats.deckMedals[deck.id] === 'silver' ? "🥈 Srebro" : "🥉 Brąz"}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   <h4 className="text-lg font-bold text-white mt-4 tracking-tight">{deck.title}</h4>

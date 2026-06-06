@@ -16,7 +16,9 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
-  const avatarsList = ["👑", "🦄", "🐉", "🐙", "🦊", "🦁", "🐼", "🦉", "🚀", "🛸", "👾", "🦖", "🦥", "🦩", "🍕", "🐱", "🐯", "👻", "👽", "🐨"];
+  const baseAvatars = ["👑", "🦄", "🐉", "🐙", "🦊", "🦁", "🐼", "🦉", "🚀", "🦖", "🦥", "🦩", "🍕", "🐱", "🐯", "👻", "🐨"];
+  const premiumAvatars = ["👽", "🛸", "👾"];
+  const avatarsList = (stats.referrals || []).length >= 3 ? [...baseAvatars, ...premiumAvatars] : baseAvatars;
 
   // Calculate dynamic stats
   const totalCards = decks.reduce((sum, deck) => sum + (deck.cards || []).length, 0);
@@ -54,7 +56,7 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
       title: "Systematyczność",
       desc: "Utrzymano streak nauki przez min. 3 dni",
       icon: "Flame",
-      unlocked: stats.streak >= 3,
+      unlocked: stats.streak >= 3 || (stats.bestStreak || 0) >= 3,
       color: "text-amber-500 bg-amber-500/10 border-amber-500/20"
     },
     {
@@ -62,8 +64,16 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
       title: "Tydzień w transie",
       desc: "Utrzymano streak nauki przez min. 7 dni",
       icon: "Flame",
-      unlocked: stats.streak >= 7,
+      unlocked: stats.streak >= 7 || (stats.bestStreak || 0) >= 7,
       color: "text-orange-500 bg-orange-500/10 border-orange-500/20"
+    },
+    {
+      id: "streak_15",
+      title: "Wielki Mistrz",
+      desc: "Utrzymano streak nauki przez min. 15 dni",
+      icon: "Award",
+      unlocked: stats.streak >= 15 || (stats.bestStreak || 0) >= 15,
+      color: "text-rose-500 bg-rose-500/10 border-rose-500/20"
     },
     {
       id: "quiz_complete",
@@ -74,20 +84,12 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
       color: "text-indigo-400 bg-indigo-500/10 border-indigo-500/20"
     },
     {
-      id: "quiz_10",
-      title: "Mól Książkowy",
-      desc: "Rozwiązano co najmniej 10 testów słówek",
-      icon: "BookOpen",
-      unlocked: stats.quizTotal >= 10,
-      color: "text-blue-400 bg-blue-500/10 border-blue-500/20"
-    },
-    {
-      id: "quiz_correct_20",
-      title: "Szybki Uczeń",
-      desc: "Udzielono 20 poprawnych odpowiedzi w testach",
-      icon: "CheckSquare",
-      unlocked: stats.quizCorrect >= 20,
-      color: "text-purple-400 bg-purple-500/10 border-purple-500/20"
+      id: "perfect_score",
+      title: "Perfekcjonista",
+      desc: "Uzyskano skuteczność w testach powyżej 80%",
+      icon: "Trophy",
+      unlocked: stats.quizTotal > 0 && (stats.quizCorrect / stats.quizTotal) >= 0.8,
+      color: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20"
     },
     {
       id: "match_win",
@@ -98,20 +100,28 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
       color: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20"
     },
     {
-      id: "match_5",
-      title: "Władca Czasu",
-      desc: "Wygrano co najmniej 5 gier w dopasowywanie",
-      icon: "Trophy",
-      unlocked: stats.matchesWon >= 5,
-      color: "text-teal-400 bg-teal-500/10 border-teal-500/20"
+      id: "srs_first",
+      title: "Złoty podział",
+      desc: "Rozpocznij naukę w trybie SRS (oceniono 1 słówko)",
+      icon: "BrainCircuit",
+      unlocked: Object.keys(stats.srsData || {}).length >= 1,
+      color: "text-pink-400 bg-pink-500/10 border-pink-500/20"
     },
     {
-      id: "perfect_score",
-      title: "Perfekcjonista",
-      desc: "Uzyskano skuteczność w testach powyżej 80%",
-      icon: "Trophy",
-      unlocked: stats.quizTotal > 0 && (stats.quizCorrect / stats.quizTotal) >= 0.8,
-      color: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20"
+      id: "srs_master",
+      title: "Pamięć absolutna",
+      desc: "Osiągnij interwał powtórek >= 10 dni dla min. 5 słówek",
+      icon: "Sparkles",
+      unlocked: Object.values(stats.srsData || {}).filter(s => s.interval >= 10).length >= 5,
+      color: "text-purple-400 bg-purple-500/10 border-purple-500/20"
+    },
+    {
+      id: "referral_first",
+      title: "Ambasador Wiedzy",
+      desc: "Polecono aplikację przynajmniej jednemu znajomemu",
+      icon: "Users",
+      unlocked: (stats.referrals || []).length >= 1,
+      color: "text-teal-400 bg-teal-500/10 border-teal-500/20"
     },
     {
       id: "custom_words",
@@ -128,14 +138,6 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
       icon: "Award",
       unlocked: learnedCount >= 30,
       color: "text-rose-400 bg-rose-500/10 border-rose-500/20"
-    },
-    {
-      id: "learned_all",
-      title: "Językowy Omnibus",
-      desc: "Opanowano co najmniej 75 słówek angielskich",
-      icon: "GraduationCap",
-      unlocked: learnedCount >= 75,
-      color: "text-violet-400 bg-violet-500/10 border-violet-500/20"
     }
   ];
 
@@ -266,7 +268,11 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
         
         {/* User Large Avatar Display */}
         <div className="relative group mb-4">
-          <div className="relative w-24 h-24 rounded-full overflow-hidden flex items-center justify-center shadow-xl shadow-indigo-500/10 border-2 border-white/10 scale-hover bg-gradient-to-tr from-indigo-500 to-cyan-500">
+          <div className={`relative w-24 h-24 rounded-full overflow-hidden flex items-center justify-center shadow-xl scale-hover bg-gradient-to-tr from-indigo-500 to-cyan-500 border-2 ${
+            (stats.referrals || []).length >= 5 
+              ? "border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.6)]" 
+              : "border-white/10 shadow-indigo-500/10"
+          }`}>
             {selectedAvatar && selectedAvatar.startsWith("data:") ? (
               <img src={selectedAvatar} alt="Avatar" className="w-full h-full object-cover" />
             ) : (
@@ -304,9 +310,40 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
             />
           </div>
 
+          {/* Poziom & XP Progress Bar */}
+          <div className="bg-black/30 border border-white/5 rounded-2xl p-3 text-left">
+            <div className="flex justify-between items-center text-xs mb-1.5">
+              <div className="flex items-center gap-1">
+                <span className="px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-400 font-extrabold text-[9px]">Lvl {stats.level || 1}</span>
+                <span className="text-slate-300 font-bold text-[10px]">
+                  {(() => {
+                    const lvl = stats.level || 1;
+                    if (lvl >= 15) return "Mistrz 👑";
+                    if (lvl >= 10) return "Uczony 🎓";
+                    if (lvl >= 6) return "Odkrywca 🧭";
+                    if (lvl >= 3) return "Uczeń 📚";
+                    return "Nowicjusz 🌱";
+                  })()}
+                </span>
+              </div>
+              <span className="text-slate-400 font-black text-[10px]">{(stats.xp || 0) % 300} / 300 XP</span>
+            </div>
+            <div className="bg-white/5 h-1.5 rounded-full overflow-hidden border border-white/5 relative">
+              <div 
+                className="bg-gradient-to-r from-indigo-500 to-cyan-500 h-full rounded-full transition-all duration-500"
+                style={{ width: `${((stats.xp || 0) % 300) / 300 * 100}%` }}
+              />
+            </div>
+          </div>
+
           <span className={`text-xs font-bold uppercase tracking-wider block ${rankColor}`}>
             {rank}
           </span>
+          {(stats.referrals || []).length >= 5 && (
+            <span className="text-[10px] text-yellow-400 font-extrabold uppercase tracking-widest bg-yellow-400/10 border border-yellow-400/20 px-2 py-0.5 rounded-full w-max mx-auto flex items-center gap-1.5 animate-pulse mt-0.5">
+              <Icons.ShieldAlert size={10} /> Ambasador VIP
+            </span>
+          )}
           
           <p className="text-slate-500 text-[9px] font-bold uppercase tracking-wider">
             Konto: {user.isGoogle ? "Zalogowano przez Google" : `Utworzono: ${user.registeredAt ? new Date(user.registeredAt).toLocaleDateString("pl-PL") : "Dzisiaj"}`}
@@ -314,8 +351,11 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
 
           {/* Change Avatar Picker */}
           <div className="w-full mt-2 pt-4 border-t border-white/5" data-lpignore="true" data-1p-ignore>
-            <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2.5 text-left">
-              Wybierz awatar
+            <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2.5 text-left flex justify-between items-center">
+              <span>Wybierz awatar</span>
+              {(stats.referrals || []).length < 3 && (
+                <span className="text-[8px] text-slate-400 font-bold lowercase">Poleć 3 znajomych, aby odblokować kosmiczne awatary! 👽🛸👾</span>
+              )}
             </label>
             <div className="grid grid-cols-5 gap-1.5 bg-black/20 p-2 rounded-xl border border-white/5 max-h-[120px] overflow-y-auto">
               {avatarsList.map((av) => (
@@ -450,6 +490,49 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
 
           </div>
         </div>
+
+        {/* Gablota z Medalami */}
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="text-base font-bold text-white flex items-center gap-2">
+              <Icons.Trophy className="text-yellow-400" size={18} />
+              Gablota Medalowa Zestawów
+            </h4>
+            <span className="text-xs font-bold text-slate-400 bg-white/5 border border-white/5 px-2.5 py-1 rounded-xl">
+              Zdobyte medale: {Object.keys(stats.deckMedals || {}).length}
+            </span>
+          </div>
+
+          {Object.keys(stats.deckMedals || {}).length === 0 ? (
+            <div className="text-center py-8 border border-dashed border-white/10 rounded-2xl bg-black/10">
+              <Icons.Trophy className="text-slate-600 mx-auto mb-2" size={32} />
+              <p className="text-xs text-slate-500 font-bold">Brak zdobytych medali</p>
+              <p className="text-[10px] text-slate-600 mt-1 max-w-[220px] mx-auto">Ukończ sesję nauki z wysoką poprawnością, aby otrzymać medal!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {decks.map(deck => {
+                const medal = stats.deckMedals?.[deck.id];
+                if (!medal) return null;
+                return (
+                  <div key={deck.id} className="bg-black/30 border border-white/5 p-3.5 rounded-2xl flex flex-col items-center gap-1.5 text-center">
+                    <span className="text-3xl">
+                      {medal === 'gold' ? "🥇" : medal === 'silver' ? "🥈" : "🥉"}
+                    </span>
+                    <div className="min-w-0 w-full">
+                      <span className="text-[10px] font-bold text-slate-200 block truncate">{deck.title}</span>
+                      <span className={`text-[8px] font-black uppercase tracking-wider block mt-0.5 ${
+                        medal === 'gold' ? "text-yellow-400" : medal === 'silver' ? "text-slate-400" : "text-amber-500"
+                      }`}>
+                        {medal === 'gold' ? "Złoty" : medal === 'silver' ? "Srebrny" : "Brązowy"}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* CROP MODAL POPUP */}
@@ -478,6 +561,9 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
                 alt="Original" 
                 draggable="false"
                 style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
                   transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom}) rotate(${rotation}deg)`,
                   transformOrigin: "center center",
                   width: "100%",

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as Icons from "lucide-react";
+import { playSound, triggerConfetti } from "../utils/effects";
 
-export default function Matcher({ selectedDeck, stats, setStats, onNavigate }) {
+export default function Matcher({ selectedDeck, stats, setStats, onNavigate, onAddXp }) {
   const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [matchedIds, setMatchedIds] = useState(new Set());
@@ -104,6 +105,12 @@ export default function Matcher({ selectedDeck, stats, setStats, onNavigate }) {
             ...stats,
             matchesWon: (stats.matchesWon || 0) + 1
           });
+          onAddXp(50);
+          
+          setTimeout(() => {
+            playSound("achievement", stats.audioStyle || "synth");
+            triggerConfetti(stats.confettiStyle || "standard");
+          }, 100);
         }
       } else {
         setFailedIds([selectedItem.id, item.id]);

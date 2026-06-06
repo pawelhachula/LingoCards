@@ -6,6 +6,8 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
   const [speechSpeed, setSpeechSpeed] = useState(localStorage.getItem("lingocards_speech_speed") || "1.0");
   const [autoplayAudio, setAutoplayAudio] = useState(localStorage.getItem("lingocards_autoplay") === "true");
   const [muteInterface, setMuteInterface] = useState(localStorage.getItem("lingocards_mute") === "true");
+  const [audioStyle, setAudioStyle] = useState(stats.audioStyle || "synth");
+  const [confettiStyle, setConfettiStyle] = useState(stats.confettiStyle || "standard");
   const [showConfirmReset, setShowConfirmReset] = useState(false);
   const [resetConfirmText, setResetConfirmText] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
@@ -14,8 +16,13 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
     e.preventDefault();
     setSuccessMsg("");
 
-    // Save daily goal to stats
-    const updatedStats = { ...stats, dailyTarget: parseInt(dailyGoal) };
+    // Save settings to stats
+    const updatedStats = { 
+      ...stats, 
+      dailyTarget: parseInt(dailyGoal),
+      audioStyle,
+      confettiStyle
+    };
     onUpdateStats(updatedStats);
 
     // Save speech speed, autoplay, and mute to localStorage
@@ -133,6 +140,45 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
               />
               <div className="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500 peer-checked:after:bg-white"></div>
             </label>
+          </div>
+
+          {/* Audio Synth Style Selector */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/5">
+            <div>
+              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                <Icons.Sparkles size={16} className="text-indigo-400" />
+                Styl dźwięków sukcesu (Synth)
+              </h4>
+              <p className="text-[11px] text-slate-500 mt-0.5">Styl retro arpeggio generowany w locie syntezatorem</p>
+            </div>
+            <select
+              value={audioStyle}
+              onChange={(e) => setAudioStyle(e.target.value)}
+              className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500/60 w-36"
+            >
+              <option value="synth">Retro Synth 🎹</option>
+              <option value="off">Wyciszone 🔇</option>
+            </select>
+          </div>
+
+          {/* Confetti Style Selector */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/5">
+            <div>
+              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                <Icons.Layers size={16} className="text-cyan-400" />
+                Styl efektów wizualnych (Konfetti)
+              </h4>
+              <p className="text-[11px] text-slate-500 mt-0.5">Styl cząsteczek przy ukończeniu talii lub osiągnięciu</p>
+            </div>
+            <select
+              value={confettiStyle}
+              onChange={(e) => setConfettiStyle(e.target.value)}
+              className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500/60 w-36"
+            >
+              <option value="standard">Standard 🎉</option>
+              <option value="stars">Gwiazdki ⭐</option>
+              <option value="off">Wyłączone ❌</option>
+            </select>
           </div>
 
           {/* Quick Theme Picker */}
