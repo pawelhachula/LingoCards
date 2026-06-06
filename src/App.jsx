@@ -11,6 +11,7 @@ import Settings from "./components/Settings";
 import Referrals from "./components/Referrals";
 import Leaderboard from "./components/Leaderboard";
 import StatsView from "./components/StatsView";
+import SearchModal from "./components/SearchModal";
 import { playSound, triggerConfetti, triggerFireworks } from "./utils/effects";
 import * as Icons from "lucide-react";
 
@@ -22,6 +23,7 @@ export default function App() {
   const [theme, setTheme] = useState("navy"); // default to navy (Deep Navy)
   const [showLevelUpModal, setShowLevelUpModal] = useState(false);
   const [levelUpInfo, setLevelUpInfo] = useState({ oldLevel: 1, newLevel: 1 });
+  const [showSearch, setShowSearch] = useState(false);
   // 'graphite' | 'green' | 'navy' | 'sakura' | 'forest' | 'amber'
   
   const [stats, setStats] = useState({
@@ -65,6 +67,18 @@ export default function App() {
         console.error("Error loading session", e);
       }
     }
+  }, []);
+
+  // Ctrl+K / Cmd+K to open search
+  useEffect(() => {
+    const handler = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        setShowSearch(prev => !prev);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
   }, []);
 
   // Update HTML data-theme attribute whenever theme changes
@@ -706,6 +720,19 @@ export default function App() {
             )}
           </div>
 
+          {/* Search button */}
+          <button
+            onClick={() => setShowSearch(true)}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl border bg-white/5 border-white/10 text-slate-300 hover:text-white hover:bg-white/10 hover:border-white/15 transition-all scale-hover"
+            title="Wyszukaj słówko (Ctrl+K)"
+          >
+            <Icons.Search size={15} />
+            <span className="hidden lg:flex items-center gap-1.5 text-[10px] font-bold text-slate-500">
+              Szukaj
+              <kbd className="border border-white/10 rounded px-1.5 py-0.5 font-mono text-[9px]">Ctrl K</kbd>
+            </span>
+          </button>
+
           {/* Leaderboard button */}
           <button 
             onClick={() => setView("leaderboard")}
@@ -947,6 +974,18 @@ export default function App() {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Search Modal (Ctrl+K) */}
+      {showSearch && currentUser && (
+        <SearchModal
+          decks={displayedDecks}
+          stats={stats}
+          setStats={handleSetStats}
+          onNavigate={setView}
+          onSelectDeck={setSelectedDeck}
+          onClose={() => setShowSearch(false)}
+        />
       )}
     </div>
   );
