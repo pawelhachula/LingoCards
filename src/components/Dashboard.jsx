@@ -1,7 +1,7 @@
 import React from "react";
 import * as Icons from "lucide-react";
 
-export default function Dashboard({ decks, stats, onSelectDeck, onNavigate }) {
+export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavigate }) {
   const totalCards = decks.reduce((sum, deck) => sum + deck.cards.length, 0);
   const learnedCount = Object.keys(stats.learnedCards || {}).length;
   const progressPercent = totalCards > 0 ? Math.round((learnedCount / totalCards) * 100) : 0;
@@ -48,6 +48,57 @@ export default function Dashboard({ decks, stats, onSelectDeck, onNavigate }) {
   const dueTomorrow = uniqueCards.filter(c => srsData[c.id] && srsData[c.id].nextReviewDate === addDaysStr(1)).length;
   const due3Days = uniqueCards.filter(c => srsData[c.id] && srsData[c.id].nextReviewDate > todayStr && srsData[c.id].nextReviewDate <= addDaysStr(3)).length;
   const due7Days = uniqueCards.filter(c => srsData[c.id] && srsData[c.id].nextReviewDate > todayStr && srsData[c.id].nextReviewDate <= addDaysStr(7)).length;
+
+  // Słówko dnia generator
+  const getWordOfTheDay = () => {
+    const today = new Date().toISOString().split("T")[0];
+    const savedDate = localStorage.getItem("lingocards_wod_date");
+    const savedWordJson = localStorage.getItem("lingocards_wod_word");
+    
+    if (savedDate === today && savedWordJson) {
+      try {
+        return JSON.parse(savedWordJson);
+      } catch (e) {
+        console.error("Error parsing saved word of the day", e);
+      }
+    }
+    
+    // Pick a new random word from real decks
+    const realDecks = decks.filter(d => d.id !== "srs" && d.id !== "starred");
+    const allCards = realDecks.flatMap(d => d.cards || []);
+    if (allCards.length === 0) return null;
+    
+    const randomCard = allCards[Math.floor(Math.random() * allCards.length)];
+    localStorage.setItem("lingocards_wod_date", today);
+    localStorage.setItem("lingocards_wod_word", JSON.stringify(randomCard));
+    return randomCard;
+  };
+
+  const wordOfTheDay = getWordOfTheDay();
+
+  // TTS Voice player
+  const playTTS = (text) => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  // Level badge getter
+  const getCardLevel = (card) => {
+    if (card.level) return card.level;
+    const id = card.id || "";
+    if (id.startsWith("everyday")) return "A2";
+    if (id.startsWith("travel")) return "A2";
+    if (id.startsWith("restaurant")) return "B1";
+    if (id.startsWith("business")) return "B2";
+    if (id.startsWith("tech")) return "B2";
+    if (id.startsWith("advanced")) return "C1";
+    if (id.startsWith("idioms")) return "C2";
+    return "B1";
+  };
 
   return (
     <div className="flex flex-col gap-8 animate-slide-in">
@@ -164,6 +215,67 @@ export default function Dashboard({ decks, stats, onSelectDeck, onNavigate }) {
           </div>
         </div>
       </div>
+
+      {/* Słówko Dnia Widget */}
+      {wordOfTheDay && (
+        <div className="glass-card p-6 relative overflow-hidden border-indigo-500/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          {/* subtle decoration glow */}
+          <div className="absolute -right-20 -bottom-20 w-48 h-48 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="flex items-start gap-4">
+            <div className="p-3.5 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20 shrink-0">
+              <Icons.Lightbulb size={24} className="animate-pulse" />
+            </div>
+            <div>
+              <span className="text-[10px] text-amber-500 font-extrabold uppercase tracking-widest block">Słówko Dnia (Nauka w pigułce)</span>
+              <div className="flex items-center gap-2 mt-1 flex-wrap">
+                <h3 className="text-xl font-extrabold text-white tracking-tight">{wordOfTheDay.english}</h3>
+                <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-white/5 text-slate-400 border border-white/10 uppercase tracking-wider font-mono">
+                  {getCardLevel(wordOfTheDay)}
+                </span>
+                <span className="text-xs text-slate-500 font-semibold italic">{wordOfTheDay.pronunciation}</span>
+                <button 
+                  onClick={() => playTTS(wordOfTheDay.english)}
+                  className="p-1 rounded bg-white/5 hover:bg-amber-500/10 text-slate-400 hover:text-amber-500 border border-white/5 hover:border-amber-500/20 transition-all ml-1"
+                  title="Odsłuchaj wymowę"
+                >
+                  <Icons.Volume2 size={12} />
+                </button>
+              </div>
+              <p className="text-slate-400 text-sm font-bold mt-1">
+                {wordOfTheDay.polish} <span className="text-[10px] text-slate-500 font-bold font-mono">({wordOfTheDay.partOfSpeech})</span>
+              </p>
+              <p className="text-xs text-slate-500 mt-2 italic leading-relaxed">
+                Przykład: "{wordOfTheDay.exampleEnglish}" – {wordOfTheDay.examplePolish}
+              </p>
+            </div>
+          </div>
+
+          {/* Quick Add to Favorites Button */}
+          <button 
+            onClick={() => {
+              setStats(prev => {
+                const updatedStarred = { ...(prev.starredCards || {}) };
+                const isStarred = updatedStarred[wordOfTheDay.id];
+                if (isStarred) {
+                  delete updatedStarred[wordOfTheDay.id];
+                } else {
+                  updatedStarred[wordOfTheDay.id] = true;
+                }
+                return { starredCards: updatedStarred };
+              });
+            }}
+            className={`btn text-xs py-2.5 px-4 flex items-center gap-1.5 font-bold hover:scale-105 transition-transform shrink-0 self-start md:self-auto ${
+              stats.starredCards?.[wordOfTheDay.id] 
+                ? "bg-amber-500/10 border-amber-500/20 text-amber-500" 
+                : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
+            }`}
+          >
+            <Icons.Star size={14} className={stats.starredCards?.[wordOfTheDay.id] ? "fill-amber-500" : ""} />
+            {stats.starredCards?.[wordOfTheDay.id] ? "Ulubione!" : "Dodaj do ulubionych"}
+          </button>
+        </div>
+      )}
 
       {/* SRS Spaced Repetition Panel */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

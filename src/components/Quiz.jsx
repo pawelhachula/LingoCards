@@ -11,6 +11,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
   const [showHint, setShowHint] = useState(false);
   const [score, setScore] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
+  const [incorrectCardIds, setIncorrectCardIds] = useState([]);
 
   // High quality premium distractors for fallback
   const premiumFallbacks = [
@@ -119,6 +120,8 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
       setScore(prev => prev + 1);
       playTTS(questions[currentIndex].card.english);
       onAddXp(15);
+    } else {
+      setIncorrectCardIds(prev => [...prev, questions[currentIndex].card.id]);
     }
   };
 
@@ -135,6 +138,8 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
       setScore(prev => prev + 1);
       playTTS(questions[currentIndex].card.english);
       onAddXp(15);
+    } else {
+      setIncorrectCardIds(prev => [...prev, questions[currentIndex].card.id]);
     }
   };
 
@@ -150,13 +155,18 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
       setQuizFinished(true);
       
       const finalScore = score;
-      const newTotal = (stats.quizTotal || 0) + questions.length;
-      const newCorrect = (stats.quizCorrect || 0) + finalScore;
-      
-      setStats({
-        ...stats,
-        quizTotal: newTotal,
-        quizCorrect: newCorrect
+      setStats(prev => {
+        const newTotal = (prev.quizTotal || 0) + questions.length;
+        const newCorrect = (prev.quizCorrect || 0) + finalScore;
+        const updatedCardMistakes = { ...(prev.cardMistakes || {}) };
+        incorrectCardIds.forEach(id => {
+          updatedCardMistakes[id] = (updatedCardMistakes[id] || 0) + 1;
+        });
+        return {
+          quizTotal: newTotal,
+          quizCorrect: newCorrect,
+          cardMistakes: updatedCardMistakes
+        };
       });
     }
   };
@@ -172,6 +182,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
   const handleRestart = () => {
     setQuizMode(null);
     setQuizFinished(false);
+    setIncorrectCardIds([]);
   };
 
   if (!quizMode) {

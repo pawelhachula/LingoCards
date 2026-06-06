@@ -10,6 +10,7 @@ import Profile from "./components/Profile";
 import Settings from "./components/Settings";
 import Referrals from "./components/Referrals";
 import Leaderboard from "./components/Leaderboard";
+import StatsView from "./components/StatsView";
 import { playSound, triggerConfetti, triggerFireworks } from "./utils/effects";
 import * as Icons from "lucide-react";
 
@@ -40,7 +41,11 @@ export default function App() {
     studyDates: [],
     deckMedals: {},
     audioStyle: "synth",
-    confettiStyle: "standard"
+    confettiStyle: "standard",
+    reviewsCount: 0,
+    cardMistakes: {},
+    dailyHistory: {},
+    studyTime: 0
   });
 
   // Check login session & theme on mount
@@ -66,6 +71,23 @@ export default function App() {
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
+  
+  // Active study time timer (ticks every 10 seconds if logged in)
+  useEffect(() => {
+    if (!currentUser) return;
+    const interval = setInterval(() => {
+      setStats(prev => {
+        const updated = {
+          ...prev,
+          studyTime: (prev.studyTime || 0) + 10
+        };
+        const userStatsKey = `lingocards_stats_${currentUser.username.toLowerCase()}`;
+        localStorage.setItem(userStatsKey, JSON.stringify(updated));
+        return updated;
+      });
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [currentUser]);
 
   const handleThemeChange = (newTheme) => {
     setTheme(newTheme);
@@ -120,7 +142,11 @@ export default function App() {
       studyDates: [],
       deckMedals: {},
       audioStyle: "synth",
-      confettiStyle: "standard"
+      confettiStyle: "standard",
+      reviewsCount: 0,
+      cardMistakes: {},
+      dailyHistory: {},
+      studyTime: 0
     };
 
     if (savedStats) {
@@ -256,16 +282,19 @@ export default function App() {
     return { success: true, message: "Profil został zaktualizowany!" };
   };
 
-  const handleSetStats = (newStats) => {
-    let updatedStats = { ...newStats };
-    if (updatedStats.streak > (updatedStats.bestStreak || 0)) {
-      updatedStats.bestStreak = updatedStats.streak;
-    }
-    setStats(updatedStats);
-    if (currentUser) {
-      const userStatsKey = `lingocards_stats_${currentUser.username.toLowerCase()}`;
-      localStorage.setItem(userStatsKey, JSON.stringify(updatedStats));
-    }
+  const handleSetStats = (newStatsOrFunc) => {
+    setStats(prev => {
+      const resolvedStats = typeof newStatsOrFunc === 'function' ? newStatsOrFunc(prev) : newStatsOrFunc;
+      let updatedStats = { ...prev, ...resolvedStats };
+      if (updatedStats.streak > (updatedStats.bestStreak || 0)) {
+        updatedStats.bestStreak = updatedStats.streak;
+      }
+      if (currentUser) {
+        const userStatsKey = `lingocards_stats_${currentUser.username.toLowerCase()}`;
+        localStorage.setItem(userStatsKey, JSON.stringify(updatedStats));
+      }
+      return updatedStats;
+    });
   };
 
   const handleAddXp = (amount) => {
@@ -533,6 +562,18 @@ export default function App() {
           </button>
 
           <button 
+            onClick={() => setView("stats")} 
+            className={`px-4 py-2.5 rounded-xl transition-all border flex items-center gap-1.5 ${
+              view === "stats" 
+                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
+                : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
+            }`}
+          >
+            <Icons.BarChart2 size={14} />
+            Statystyki
+          </button>
+
+          <button 
             onClick={() => setView("referrals")} 
             className={`px-4 py-2.5 rounded-xl transition-all border flex items-center gap-1.5 ${
               view === "referrals" 
@@ -666,6 +707,19 @@ export default function App() {
           </div>
 
           {/* User profile button */}
+          {/* Stats icon button */}
+          <button 
+            onClick={() => setView("stats")}
+            className={`flex items-center justify-center p-2.5 rounded-xl border scale-hover ${
+              view === "stats" 
+                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
+                : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
+            }`}
+            title="Analityka i Statystyki"
+          >
+            <Icons.BarChart2 size={16} />
+          </button>
+
           {/* Leaderboard button */}
           <button 
             onClick={() => setView("leaderboard")}
@@ -788,6 +842,7 @@ export default function App() {
           <Dashboard 
             decks={displayedDecks} 
             stats={stats} 
+            setStats={handleSetStats}
             onSelectDeck={setSelectedDeck} 
             onNavigate={setView} 
           />
@@ -851,6 +906,15 @@ export default function App() {
             theme={theme}
             onThemeChange={handleThemeChange}
             onResetData={handleResetData}
+          />
+        )}
+
+        {view === "stats" && (
+          <StatsView 
+            stats={stats}
+            decks={displayedDecks}
+            onNavigate={setView}
+            setStats={handleSetStats}
           />
         )}
 

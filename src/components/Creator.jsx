@@ -14,6 +14,7 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
   const [examplePolish, setExamplePolish] = useState("");
   const [errorCard, setErrorCard] = useState("");
   const [successCard, setSuccessCard] = useState(false);
+  const [level, setLevel] = useState("B1");
 
   // Deck Form
   const [deckTitle, setDeckTitle] = useState("");
@@ -47,6 +48,7 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
       polish: polish.trim(),
       pronunciation: pronunciation.trim() ? pronunciation.trim() : undefined,
       partOfSpeech: partOfSpeech,
+      level: level,
       exampleEnglish: exampleEnglish.trim() ? exampleEnglish.trim() : undefined,
       examplePolish: examplePolish.trim() ? examplePolish.trim() : undefined
     };
@@ -56,6 +58,7 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
     setEnglish("");
     setPolish("");
     setPronunciation("");
+    setLevel("B1");
     setExampleEnglish("");
     setExamplePolish("");
     setSuccessCard(true);
@@ -203,8 +206,8 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
                 </div>
               </div>
 
-              {/* Phonetics & Category */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Phonetics, Category & CEFR Level */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
                     Zapis fonetyczny (opcjonalnie)
@@ -233,6 +236,23 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
                     <option value="idiom">Idiom (Idiom)</option>
                     <option value="phrase">Zwrot (Phrase)</option>
                     <option value="phrasal verb">Czasownik frazowy</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                    Poziom trudności (CEFR)
+                  </label>
+                  <select
+                    value={level}
+                    onChange={(e) => setLevel(e.target.value)}
+                    className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold"
+                  >
+                    <option value="A1">A1 (Początkujący)</option>
+                    <option value="A2">A2 (Podstawowy)</option>
+                    <option value="B1">B1 (Średnio zaawansowany)</option>
+                    <option value="B2">B2 (Wyższy średni)</option>
+                    <option value="C1">C1 (Zaawansowany)</option>
+                    <option value="C2">C2 (Biegły)</option>
                   </select>
                 </div>
               </div>

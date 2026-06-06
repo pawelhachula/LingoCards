@@ -2,6 +2,19 @@ import React, { useState, useEffect } from "react";
 import * as Icons from "lucide-react";
 import { playSound, triggerConfetti, triggerFireworks } from "../utils/effects";
 
+const getCardLevel = (card) => {
+  if (card.level) return card.level;
+  const id = card.id || "";
+  if (id.startsWith("everyday")) return "A2";
+  if (id.startsWith("travel")) return "A2";
+  if (id.startsWith("restaurant")) return "B1";
+  if (id.startsWith("business")) return "B2";
+  if (id.startsWith("tech")) return "B2";
+  if (id.startsWith("advanced")) return "C1";
+  if (id.startsWith("idioms")) return "C2";
+  return "B1";
+};
+
 export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, onAddXp }) {
   const [cards, setCards] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -106,15 +119,14 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
   const toggleStar = (e) => {
     e.stopPropagation();
     const cardId = currentCard.id;
-    const updatedStarred = { ...(stats.starredCards || {}) };
-    if (updatedStarred[cardId]) {
-      delete updatedStarred[cardId];
-    } else {
-      updatedStarred[cardId] = true;
-    }
-    setStats({
-      ...stats,
-      starredCards: updatedStarred
+    setStats(prev => {
+      const updatedStarred = { ...(prev.starredCards || {}) };
+      if (updatedStarred[cardId]) {
+        delete updatedStarred[cardId];
+      } else {
+        updatedStarred[cardId] = true;
+      }
+      return { starredCards: updatedStarred };
     });
   };
 
@@ -167,54 +179,76 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
 
   const handleSrsRate = (rating) => {
     const cardId = currentCard.id;
-    const srs = stats.srsData?.[cardId] || { interval: 0, repetitions: 0, ease: 2.5, nextReviewDate: "" };
-    
-    let interval = 0;
-    let repetitions = 0;
-    let ease = srs.ease || 2.5;
-
-    if (rating === "again") {
-      repetitions = 0;
-      interval = 0;
-      ease = Math.max(1.3, ease - 0.2);
-    } else if (rating === "hard") {
-      repetitions = srs.repetitions + 1;
-      interval = repetitions === 1 ? 1 : repetitions === 2 ? 2 : Math.ceil(srs.interval * 1.2);
-      ease = Math.max(1.3, ease - 0.15);
-    } else if (rating === "good") {
-      repetitions = srs.repetitions + 1;
-      interval = repetitions === 1 ? 1 : repetitions === 2 ? 4 : Math.ceil(srs.interval * ease);
-      ease = ease;
-    } else if (rating === "easy") {
-      repetitions = srs.repetitions + 1;
-      interval = repetitions === 1 ? 3 : repetitions === 2 ? 6 : Math.ceil(srs.interval * ease * 1.3);
-      ease = ease + 0.15;
-    }
-
     const todayStr = new Date().toISOString().split("T")[0];
     const addDays = (dateStr, days) => {
       const date = new Date(dateStr);
       date.setDate(date.getDate() + days);
       return date.toISOString().split("T")[0];
     };
-    
-    const nextReviewDate = addDays(todayStr, interval);
 
-    // Save to stats
-    const updatedSrsData = {
-      ...(stats.srsData || {}),
-      [cardId]: { interval, repetitions, ease, nextReviewDate }
-    };
+    setStats(prev => {
+      const srs = prev.srsData?.[cardId] || { interval: 0, repetitions: 0, ease: 2.5, nextReviewDate: "" };
+      let interval = 0;
+      let repetitions = 0;
+      let ease = srs.ease || 2.5;
 
-    // Keep learnedCards in sync: if rated good/easy/hard, mark as learned. If again, keep or remove.
-    const updatedLearnedCards = { ...(stats.learnedCards || {}) };
-    if (rating !== "again") {
-      updatedLearnedCards[cardId] = true;
-    }
+      if (rating === "again") {
+        repetitions = 0;
+        interval = 0;
+        ease = Math.max(1.3, ease - 0.2);
+      } else if (rating === "hard") {
+        repetitions = srs.repetitions + 1;
+        interval = repetitions === 1 ? 1 : repetitions === 2 ? 2 : Math.ceil(srs.interval * 1.2);
+        ease = Math.max(1.3, ease - 0.15);
+      } else if (rating === "good") {
+        repetitions = srs.repetitions + 1;
+        interval = repetitions === 1 ? 1 : repetitions === 2 ? 4 : Math.ceil(srs.interval * ease);
+        ease = ease;
+      } else if (rating === "easy") {
+        repetitions = srs.repetitions + 1;
+        interval = repetitions === 1 ? 3 : repetitions === 2 ? 6 : Math.ceil(srs.interval * ease * 1.3);
+        ease = ease + 0.15;
+      }
 
-    // Daily count tracking
-    const isAlreadyLearned = stats.learnedCards?.[cardId];
-    const newDailyCount = (stats.dailyCount || 0) + (rating !== "again" && !isAlreadyLearned ? 1 : 0);
+      const nextReviewDate = addDays(todayStr, interval);
+      const updatedSrsData = {
+        ...(prev.srsData || {}),
+        [cardId]: { interval, repetitions, ease, nextReviewDate }
+      };
+
+      const updatedLearnedCards = { ...(prev.learnedCards || {}) };
+      if (rating !== "again") {
+        updatedLearnedCards[cardId] = true;
+      }
+
+      const isAlreadyLearned = prev.learnedCards?.[cardId];
+      const newDailyCount = (prev.dailyCount || 0) + (rating !== "again" && !isAlreadyLearned ? 1 : 0);
+
+      const updatedCardMistakes = { ...(prev.cardMistakes || {}) };
+      if (rating === "again" || rating === "hard") {
+        updatedCardMistakes[cardId] = (updatedCardMistakes[cardId] || 0) + 1;
+      }
+
+      const newReviewsCount = (prev.reviewsCount || 0) + 1;
+
+      const updatedDailyHistory = { ...(prev.dailyHistory || {}) };
+      if (!updatedDailyHistory[todayStr]) {
+        updatedDailyHistory[todayStr] = { learned: 0, reviews: 0 };
+      }
+      updatedDailyHistory[todayStr].reviews = (updatedDailyHistory[todayStr].reviews || 0) + 1;
+      if (rating !== "again" && !isAlreadyLearned) {
+        updatedDailyHistory[todayStr].learned = (updatedDailyHistory[todayStr].learned || 0) + 1;
+      }
+
+      return {
+        srsData: updatedSrsData,
+        learnedCards: updatedLearnedCards,
+        dailyCount: newDailyCount,
+        reviewsCount: newReviewsCount,
+        cardMistakes: updatedCardMistakes,
+        dailyHistory: updatedDailyHistory
+      };
+    });
 
     // Track first try statistics in this session
     const wasAlreadyRated = firstTryStats.hasOwnProperty(cardId);
@@ -239,13 +273,6 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
 
     // Award +10 XP for rating a card
     onAddXp(10);
-
-    setStats({
-      ...stats,
-      srsData: updatedSrsData,
-      learnedCards: updatedLearnedCards,
-      dailyCount: newDailyCount
-    });
 
     // Record session results
     setSessionResults(prev => ({
@@ -284,23 +311,22 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
         if (medal) {
           setAwardedMedal(medal);
           
-          const currentMedals = stats.deckMedals || {};
-          const oldMedal = currentMedals[selectedDeck.id];
           const medalWeights = { gold: 3, silver: 2, bronze: 1, null: 0 };
           
-          if (!oldMedal || medalWeights[medal] > medalWeights[oldMedal]) {
-            const newMedals = {
-              ...currentMedals,
-              [selectedDeck.id]: medal
-            };
-            setStats({
-              ...stats,
-              srsData: updatedSrsData,
-              learnedCards: updatedLearnedCards,
-              dailyCount: newDailyCount,
-              deckMedals: newMedals
-            });
-          }
+          setStats(prev => {
+            const currentMedals = prev.deckMedals || {};
+            const oldMedal = currentMedals[selectedDeck.id];
+            if (!oldMedal || medalWeights[medal] > medalWeights[oldMedal]) {
+              const newMedals = {
+                ...currentMedals,
+                [selectedDeck.id]: medal
+              };
+              return {
+                deckMedals: newMedals
+              };
+            }
+            return {};
+          });
         }
         
         // Award deck completion bonus: +100 XP
@@ -498,6 +524,11 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                       {currentCard.partOfSpeech || "word"}
                     </span>
 
+                    {/* CEFR level badge */}
+                    <span className="text-[10px] font-extrabold tracking-wider text-slate-400 bg-white/5 border border-white/10 px-3 py-1 rounded-full uppercase font-mono">
+                      {getCardLevel(currentCard)}
+                    </span>
+
                     {/* SRS Status Plaque */}
                     {(() => {
                       const srs = stats.srsData?.[currentCard.id];
@@ -614,6 +645,11 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                   <div className="flex gap-2 items-center">
                     <span className="text-[10px] font-extrabold tracking-wider text-[var(--secondary)] bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 rounded-full uppercase">
                       Polskie znaczenie
+                    </span>
+
+                    {/* CEFR level badge */}
+                    <span className="text-[10px] font-extrabold tracking-wider text-slate-400 bg-white/5 border border-white/10 px-3 py-1 rounded-full uppercase font-mono">
+                      {getCardLevel(currentCard)}
                     </span>
                     <button 
                       onClick={toggleStar}

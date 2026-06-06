@@ -101,10 +101,10 @@ export default function Matcher({ selectedDeck, stats, setStats, onNavigate, onA
           setIsRunning(false);
           setGameFinished(true);
           
-          setStats({
-            ...stats,
-            matchesWon: (stats.matchesWon || 0) + 1
-          });
+          setStats(prev => ({
+            ...prev,
+            matchesWon: (prev.matchesWon || 0) + 1
+          }));
           onAddXp(50);
           
           setTimeout(() => {
