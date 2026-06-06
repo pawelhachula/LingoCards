@@ -260,7 +260,7 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-5xl mx-auto w-full animate-slide-in">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto w-full animate-slide-in">
       
       {/* Profile Info & Avatar Card */}
       <div className="glass-card p-6 flex flex-col items-center text-center relative overflow-hidden h-fit" data-lpignore="true" data-1p-ignore>

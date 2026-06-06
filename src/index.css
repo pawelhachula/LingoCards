@@ -686,6 +686,22 @@ input:focus, textarea:focus, select:focus {
   border-color: rgba(0, 0, 0, 0.16) !important;
 }
 
+/* Secondary button overrides in light themes */
+[data-theme="sakura"] .btn-secondary,
+[data-theme="forest"] .btn-secondary,
+[data-theme="amber"] .btn-secondary {
+  background: rgba(0, 0, 0, 0.03) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+[data-theme="sakura"] .btn-secondary:hover,
+[data-theme="forest"] .btn-secondary:hover,
+[data-theme="amber"] .btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+  color: var(--text-primary) !important;
+  border-color: rgba(0, 0, 0, 0.22) !important;
+}
+
 .flashcard-example-block {
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.05);
