@@ -135,7 +135,7 @@ export default function Auth({ onLogin }) {
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-cyan-500 flex items-center justify-center mx-auto shadow-lg shadow-indigo-500/20 mb-3">
             <Icons.BookOpen className="text-white w-6 h-6" />
           </div>
-          <h2 className="text-2xl font-black text-white tracking-tight">LingoCards PRO</h2>
+          <h2 className="text-2xl font-black text-white tracking-tight">LingoCards</h2>
           <p className="text-slate-400 text-xs mt-1">Naucz się angielskiego z fiszkami</p>
         </div>
 

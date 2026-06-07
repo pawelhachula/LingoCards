@@ -296,7 +296,7 @@ export default function Library({ decks, activeDeckIds, onToggleActiveDeck, onSe
             </div>
 
             <div>
-              <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest bg-amber-500/10 px-3.5 py-1 rounded-full border border-amber-500/20">LingoCards PRO</span>
+              <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest bg-amber-500/10 px-3.5 py-1 rounded-full border border-amber-500/20">✦ Plan PRO</span>
               <h3 className="text-2xl font-black text-white mt-3 tracking-tight">Odblokuj zaawansowane lekcje</h3>
               <p className="text-slate-400 text-xs mt-2 leading-relaxed">
                 Talia <strong className="text-white">"{premiumTriggerDeck?.title}"</strong> zawiera zaawansowane słownictwo na poziomie <strong className="text-indigo-400">{premiumTriggerDeck?.level}</strong> i wymaga konta premium.
