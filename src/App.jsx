@@ -180,11 +180,17 @@ export default function App() {
     localStorage.setItem("lingocards_theme", newTheme);
   };
 
+  const getFirestoreUidKey = (uid = currentUser?.uid || currentUser?.username) => {
+    if (!uid) return null;
+    const isFirebaseUser = auth && auth.currentUser && auth.currentUser.uid === uid;
+    return isFirebaseUser ? uid : uid.toLowerCase();
+  };
+
   // Helper to load user specific data — uid = Firebase UID lub username dla kont lokalnych
   const loadUserData = async (uid, username) => {
     // Jeśli nie podano username, użyj uid jako username (dla kont lokalnych)
     const uname = username || uid;
-    const uidKey = uid.toLowerCase();
+    const uidKey = getFirestoreUidKey(uid);
 
     // --- Załaduj talie ---
     let loadedDecks = [];
@@ -447,8 +453,8 @@ export default function App() {
       }
       if (currentUser) {
         // Zapisz do Firestore (z localStorage fallback)
-        const uid = currentUser.uid || currentUser.username;
-        saveStats(uid, updatedStats);
+        const uidKey = getFirestoreUidKey();
+        if (uidKey) saveStats(uidKey, updatedStats);
       }
       return updatedStats;
     });
@@ -496,8 +502,8 @@ export default function App() {
         }, 100);
       }
       
-      const uid = currentUser.uid || currentUser.username;
-      saveStats(uid.toLowerCase(), updatedStats);
+      const uidKey = getFirestoreUidKey();
+      if (uidKey) saveStats(uidKey, updatedStats);
       
       return updatedStats;
     });
@@ -568,6 +574,8 @@ export default function App() {
     if (currentUser) {
       const userDecksKey = `lingocards_decks_${currentUser.username.toLowerCase()}`;
       localStorage.setItem(userDecksKey, JSON.stringify(updated));
+      const uidKey = getFirestoreUidKey();
+      if (uidKey) saveDecks(uidKey, updated);
     }
   };
 
@@ -583,6 +591,8 @@ export default function App() {
     if (currentUser) {
       const userDecksKey = `lingocards_decks_${currentUser.username.toLowerCase()}`;
       localStorage.setItem(userDecksKey, JSON.stringify(updated));
+      const uidKey = getFirestoreUidKey();
+      if (uidKey) saveDecks(uidKey, updated);
     }
     if (selectedDeck && selectedDeck.id === deckId) {
       setSelectedDeck(updated.find(d => d.id === deckId));
@@ -609,6 +619,8 @@ export default function App() {
     if (currentUser) {
       const userDecksKey = `lingocards_decks_${currentUser.username.toLowerCase()}`;
       localStorage.setItem(userDecksKey, JSON.stringify(updated));
+      const uidKey = getFirestoreUidKey();
+      if (uidKey) saveDecks(uidKey, updated);
     }
     if (selectedDeck && selectedDeck.id === deckId) {
       setSelectedDeck(updated.find(d => d.id === deckId));
@@ -630,6 +642,8 @@ export default function App() {
     if (currentUser) {
       const userDecksKey = `lingocards_decks_${currentUser.username.toLowerCase()}`;
       localStorage.setItem(userDecksKey, JSON.stringify(updated));
+      const uidKey = getFirestoreUidKey();
+      if (uidKey) saveDecks(uidKey, updated);
     }
     
     if (selectedDeck && selectedDeck.id === deckId) {
@@ -652,6 +666,8 @@ export default function App() {
     if (currentUser) {
       const userDecksKey = `lingocards_decks_${currentUser.username.toLowerCase()}`;
       localStorage.setItem(userDecksKey, JSON.stringify(updated));
+      const uidKey = getFirestoreUidKey();
+      if (uidKey) saveDecks(uidKey, updated);
     }
 
     if (selectedDeck && selectedDeck.id === deckId) {
@@ -680,8 +696,10 @@ export default function App() {
     const updated = decks.map(d => d.id === deckId ? { ...d, ...updatedDeck } : d);
     setDecks(updated);
     if (currentUser) {
-      const uid = currentUser.uid || currentUser.username;
-      saveDecks(uid.toLowerCase(), updated);
+      const userDecksKey = `lingocards_decks_${currentUser.username.toLowerCase()}`;
+      localStorage.setItem(userDecksKey, JSON.stringify(updated));
+      const uidKey = getFirestoreUidKey();
+      if (uidKey) saveDecks(uidKey, updated);
     }
     if (selectedDeck && selectedDeck.id === deckId) {
       setSelectedDeck(updated.find(d => d.id === deckId));
@@ -695,8 +713,10 @@ export default function App() {
     setActiveDeckIds(prev => prev.filter(id => id !== deckId));
     if (selectedDeck?.id === deckId) setSelectedDeck(null);
     if (currentUser) {
-      const uid = currentUser.uid || currentUser.username;
-      saveDecks(uid.toLowerCase(), updated);
+      const userDecksKey = `lingocards_decks_${currentUser.username.toLowerCase()}`;
+      localStorage.setItem(userDecksKey, JSON.stringify(updated));
+      const uidKey = getFirestoreUidKey();
+      if (uidKey) saveDecks(uidKey, updated);
     }
 
     // Usuń medal i status ukończenia dla tej talii ze statystyk (Firestore)
