@@ -332,6 +332,100 @@ export default function App() {
         return updated;
       });
     }
+
+    // Synchronizuj aktywne talie z wczytanych statystyk (Firestore/localStorage)
+    if (loadedStats.activeDeckIds && loadedStats.activeDeckIds.length > 0) {
+      setActiveDeckIds(loadedStats.activeDeckIds);
+      const activeDecksKey = `lingocards_active_decks_${uname.toLowerCase()}`;
+      localStorage.setItem(activeDecksKey, JSON.stringify(loadedStats.activeDeckIds));
+      
+      const activeDecks = loadedDecks.filter(d => loadedStats.activeDeckIds.includes(d.id) || !systemDeckIds.has(d.id));
+      if (activeDecks.length > 0) setSelectedDeck(activeDecks[0]);
+    }
+
+    // Synchronizuj motyw graficzny z wczytanych statystyk
+    if (loadedStats.theme) {
+      setTheme(loadedStats.theme);
+      localStorage.setItem("lingocards_theme", loadedStats.theme);
+    }
+
+    // --- Automatyczna migracja starego lokalnego postępu komputera ---
+    // Jeśli wczytany profil z chmury jest nowy/czysty (XP = 0), a w przeglądarce
+    // leżą stare dane lokalne z dużym postępem, zmigrujmy je automatycznie do chmury!
+    if ((loadedStats.xp || 0) === 0) {
+      try {
+        const localStatsKeys = Object.keys(localStorage).filter(k => 
+          k.startsWith("lingocards_stats_") && 
+          !k.toLowerCase().includes(uid.toLowerCase()) && 
+          !k.toLowerCase().includes(uname.toLowerCase())
+        );
+        
+        let bestLocalStats = null;
+        let bestLocalKey = null;
+        let maxXp = 0;
+        
+        for (const key of localStatsKeys) {
+          const dataStr = localStorage.getItem(key);
+          if (dataStr) {
+            try {
+              const parsed = JSON.parse(dataStr);
+              if (parsed && (parsed.xp || 0) > maxXp) {
+                maxXp = parsed.xp;
+                bestLocalStats = parsed;
+                bestLocalKey = key;
+              }
+            } catch (err) { /* ignore */ }
+          }
+        }
+        
+        if (bestLocalStats && maxXp > 0) {
+          console.log(`[Migration] Migrating local progress from ${bestLocalKey} (${maxXp} XP)`);
+          
+          const migratedStats = {
+            ...loadedStats,
+            ...bestLocalStats,
+            avatarData: loadedStats.avatarData || bestLocalStats.avatarData,
+            customUsername: loadedStats.customUsername || bestLocalStats.customUsername
+          };
+          
+          setStats(migratedStats);
+          saveStats(uidKey, migratedStats);
+
+          // Synchronizuj aktywne talie z zmigrowanych statystyk
+          if (migratedStats.activeDeckIds && migratedStats.activeDeckIds.length > 0) {
+            setActiveDeckIds(migratedStats.activeDeckIds);
+            const activeDecksKey = `lingocards_active_decks_${uname.toLowerCase()}`;
+            localStorage.setItem(activeDecksKey, JSON.stringify(migratedStats.activeDeckIds));
+          }
+          if (migratedStats.theme) {
+            setTheme(migratedStats.theme);
+            localStorage.setItem("lingocards_theme", migratedStats.theme);
+          }
+          
+          // Migrujemy też własne talie z tamtego profilu
+          const usernamePart = bestLocalKey.replace("lingocards_stats_", "");
+          const localDecksKey = `lingocards_decks_${usernamePart}`;
+          const localDecksStr = localStorage.getItem(localDecksKey);
+          if (localDecksStr) {
+            try {
+              const parsedDecks = JSON.parse(localDecksStr);
+              if (parsedDecks && parsedDecks.length > 0) {
+                const mergedDecks = [...loadedDecks];
+                parsedDecks.forEach(d => {
+                  if (!mergedDecks.some(md => md.id === d.id)) {
+                    mergedDecks.push(d);
+                  }
+                });
+                setDecks(mergedDecks);
+                saveDecks(uidKey, mergedDecks);
+              }
+            } catch (err) { /* ignore */ }
+          }
+        }
+      } catch (e) {
+        console.error("Failed to migrate local stats", e);
+      }
+    }
   };
 
   const handleLogin = (user) => {
@@ -533,7 +627,9 @@ export default function App() {
       studyDates: [],
       deckMedals: {},
       audioStyle: "synth",
-      confettiStyle: "standard"
+      confettiStyle: "standard",
+      activeDeckIds: ["everyday", "travel"],
+      theme: "navy"
     };
     setStats(defaultStatsObj);
     localStorage.setItem(userStatsKey, JSON.stringify(defaultStatsObj));
@@ -549,23 +645,37 @@ export default function App() {
     setActiveDeckIds(defaultActiveDecks);
     localStorage.setItem(activeDecksKey, JSON.stringify(defaultActiveDecks));
 
+    // Reset theme local state
+    setTheme("navy");
+    localStorage.setItem("lingocards_theme", "navy");
+
+    // Sync resets to Firestore
+    const uidKey = getFirestoreUidKey();
+    if (uidKey) {
+      saveStats(uidKey, defaultStatsObj);
+      saveDecks(uidKey, defaultDecks);
+    }
+
     const activeDecks = defaultDecks.filter(d => defaultActiveDecks.includes(d.id));
     setSelectedDeck(activeDecks[0] || defaultDecks[0]);
   };
 
   const handleToggleActiveDeck = (deckId) => {
     if (!currentUser) return;
-    setActiveDeckIds(prev => {
-      let updated;
-      if (prev.includes(deckId)) {
-        updated = prev.filter(id => id !== deckId);
-      } else {
-        updated = [...prev, deckId];
-      }
-      const activeDecksKey = `lingocards_active_decks_${currentUser.username.toLowerCase()}`;
-      localStorage.setItem(activeDecksKey, JSON.stringify(updated));
-      return updated;
-    });
+    
+    let updated;
+    if (activeDeckIds.includes(deckId)) {
+      updated = activeDeckIds.filter(id => id !== deckId);
+    } else {
+      updated = [...activeDeckIds, deckId];
+    }
+    
+    setActiveDeckIds(updated);
+    const activeDecksKey = `lingocards_active_decks_${currentUser.username.toLowerCase()}`;
+    localStorage.setItem(activeDecksKey, JSON.stringify(updated));
+    
+    // Zapisz do statystyk (Firestore)
+    handleSetStats({ activeDeckIds: updated });
   };
 
   const handleCreateDeck = (newDeck) => {
@@ -710,7 +820,12 @@ export default function App() {
     if (systemDeckIds.has(deckId)) return;
     const updated = decks.filter(d => d.id !== deckId);
     setDecks(updated);
-    setActiveDeckIds(prev => prev.filter(id => id !== deckId));
+    
+    const updatedActiveDeckIds = activeDeckIds.filter(id => id !== deckId);
+    setActiveDeckIds(updatedActiveDeckIds);
+    const activeDecksKey = `lingocards_active_decks_${currentUser.username.toLowerCase()}`;
+    localStorage.setItem(activeDecksKey, JSON.stringify(updatedActiveDeckIds));
+    
     if (selectedDeck?.id === deckId) setSelectedDeck(null);
     if (currentUser) {
       const userDecksKey = `lingocards_decks_${currentUser.username.toLowerCase()}`;
@@ -728,7 +843,8 @@ export default function App() {
       return {
         ...prev,
         deckMedals: updatedMedals,
-        completedDecks: updatedCompleted
+        completedDecks: updatedCompleted,
+        activeDeckIds: updatedActiveDeckIds
       };
     });
   };
