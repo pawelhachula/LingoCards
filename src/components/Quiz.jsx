@@ -1,8 +1,22 @@
 import React, { useState, useEffect } from "react";
 import * as Icons from "lucide-react";
 
+const cleanWord = (str) => {
+  if (!str) return "";
+  let cleaned = str.toLowerCase();
+  cleaned = cleaned.replace(/\(.*\)/g, ""); // remove anything in parentheses
+  cleaned = cleaned.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, ""); // remove punctuation
+  cleaned = cleaned.replace(/\s+/g, " "); // normalize spaces
+  cleaned = cleaned.trim();
+  if (cleaned.startsWith("to ")) {
+    cleaned = cleaned.substring(3).trim();
+  }
+  return cleaned;
+};
+
 export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavigate, onAddXp }) {
   const [quizMode, setQuizMode] = useState(null); // 'choice' | 'spell'
+  const [quizTimer, setQuizTimer] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -36,6 +50,12 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
     "Ulotna chwila",
     "Czekać z niecierpliwością"
   ];
+
+  useEffect(() => {
+    return () => {
+      if (quizTimer) clearTimeout(quizTimer);
+    };
+  }, [quizTimer]);
 
   useEffect(() => {
     if (selectedDeck && selectedDeck.cards && quizMode) {
@@ -120,6 +140,11 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
       setScore(prev => prev + 1);
       playTTS(questions[currentIndex].card.english);
       onAddXp(15);
+      
+      const timer = setTimeout(() => {
+        handleNextQuestion();
+      }, 2000);
+      setQuizTimer(timer);
     } else {
       setIncorrectCardIds(prev => [...prev, questions[currentIndex].card.id]);
     }
@@ -127,23 +152,35 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
 
   const handleSpellSubmit = (e) => {
     if (e) e.preventDefault();
-    if (isAnswered) return;
+    if (isAnswered) {
+      handleNextQuestion();
+      return;
+    }
     
     setIsAnswered(true);
-    const answerClean = spellingInput.trim().toLowerCase();
-    const correctClean = questions[currentIndex].card.english.trim().toLowerCase();
+    const answerClean = cleanWord(spellingInput);
+    const correctClean = cleanWord(questions[currentIndex].card.english);
     
     const isCorrect = answerClean === correctClean;
     if (isCorrect) {
       setScore(prev => prev + 1);
       playTTS(questions[currentIndex].card.english);
       onAddXp(15);
+      
+      const timer = setTimeout(() => {
+        handleNextQuestion();
+      }, 2000);
+      setQuizTimer(timer);
     } else {
       setIncorrectCardIds(prev => [...prev, questions[currentIndex].card.id]);
     }
   };
 
   const handleNextQuestion = () => {
+    if (quizTimer) {
+      clearTimeout(quizTimer);
+      setQuizTimer(null);
+    }
     setSelectedAnswer(null);
     setIsAnswered(false);
     setSpellingInput("");
@@ -163,6 +200,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
           updatedCardMistakes[id] = (updatedCardMistakes[id] || 0) + 1;
         });
         return {
+          ...prev,
           quizTotal: newTotal,
           quizCorrect: newCorrect,
           cardMistakes: updatedCardMistakes
@@ -175,7 +213,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
     if (quizMode === 'choice') {
       return selectedAnswer === questions[currentIndex].correctAnswer;
     } else {
-      return spellingInput.trim().toLowerCase() === questions[currentIndex].card.english.trim().toLowerCase();
+      return cleanWord(spellingInput) === cleanWord(questions[currentIndex].card.english);
     }
   };
 
@@ -389,16 +427,15 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
                   type="text"
                   value={spellingInput}
                   onChange={(e) => setSpellingInput(e.target.value)}
-                  disabled={isAnswered}
-                  placeholder="Wpisz słówko po angielsku..."
+                  readOnly={isAnswered}
+                  placeholder={isAnswered ? "Naciśnij Enter, aby przejść dalej..." : "Wpisz słówko po angielsku..."}
                   className="flex-grow bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-cyan-500/60 font-semibold placeholder-slate-700"
+                  autoFocus
                 />
                 
-                {!isAnswered ? (
-                  <button type="submit" className="btn btn-primary bg-cyan-600 hover:bg-cyan-500 shadow-cyan-600/10">
-                    Sprawdź
-                  </button>
-                ) : null}
+                <button type="submit" className="btn btn-primary bg-cyan-600 hover:bg-cyan-500 shadow-cyan-600/10">
+                  {isAnswered ? "Dalej" : "Sprawdź"}
+                </button>
               </div>
 
               {/* Reveal hint trigger */}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import * as Icons from "lucide-react";
 import { playSound, triggerConfetti, triggerFireworks } from "../utils/effects";
 
@@ -34,6 +34,24 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
   const [pronunciationScore, setPronunciationScore] = useState(null); // 'correct' | 'incorrect' | null
   const [heardText, setHeardText] = useState("");
 
+  // Session Timer
+  const [sessionStartTime, setSessionStartTime] = useState(null);
+  const [sessionElapsed, setSessionElapsed] = useState(0);
+
+  // Reversed mode (PL → EN)
+  const [reversedMode, setReversedMode] = useState(false);
+
+  // Missed cards tracking
+  const [missedCards, setMissedCards] = useState([]);
+  const [bestStreak, setBestStreak] = useState(0);
+
+  // Ambient sound
+  const [ambientSound, setAmbientSound] = useState(null);
+  const [showAmbientMenu, setShowAmbientMenu] = useState(false);
+  const ambientCtxRef = useRef(null);
+  const ambientNodesRef = useRef([]);
+  const [canRate, setCanRate] = useState(false);
+
   // SRS States
   const [srsOnly, setSrsOnly] = useState(selectedDeck?.id === "srs");
 
@@ -59,6 +77,10 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
       setCompleted(false);
       setSpeakingType(null);
       resetSpeechState();
+      setSessionStartTime(Date.now());
+      setSessionElapsed(0);
+      setMissedCards([]);
+      setBestStreak(0);
     }
   }, [selectedDeck, srsOnly]);
 
@@ -69,6 +91,34 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
       }
     };
   }, []);
+
+  // Session timer interval
+  useEffect(() => {
+    if (!sessionStartTime || completed) return;
+    const timer = setInterval(() => {
+      setSessionElapsed(Math.floor((Date.now() - sessionStartTime) / 1000));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [sessionStartTime, completed]);
+
+  // Cleanup ambient sound on unmount
+  useEffect(() => {
+    return () => {
+      stopAmbientSound();
+    };
+  }, []);
+
+  // Cooldown on card rating after flip
+  useEffect(() => {
+    if (isFlipped) {
+      const timer = setTimeout(() => {
+        setCanRate(true);
+      }, 300);
+      return () => clearTimeout(timer);
+    } else {
+      setCanRate(false);
+    }
+  }, [isFlipped]);
 
   if (!selectedDeck) {
     return (
@@ -94,6 +144,142 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     setPronunciationScore(null);
     setHeardText("");
   };
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}m ${s < 10 ? '0' : ''}${s}s`;
+  };
+
+  const stopAmbientSound = useCallback(() => {
+    try {
+      ambientNodesRef.current.forEach(node => {
+        try { node.disconnect(); } catch(e) {}
+      });
+      ambientNodesRef.current = [];
+      if (ambientCtxRef.current) {
+        ambientCtxRef.current.close().catch(() => {});
+        ambientCtxRef.current = null;
+      }
+    } catch(e) {}
+  }, []);
+
+  const startAmbientSound = useCallback((type) => {
+    stopAmbientSound();
+    if (!type) {
+      setAmbientSound(null);
+      return;
+    }
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      ambientCtxRef.current = ctx;
+      const nodes = [];
+      const gainNode = ctx.createGain();
+      gainNode.gain.value = 0.15;
+      gainNode.connect(ctx.destination);
+      nodes.push(gainNode);
+
+      if (type === 'rain') {
+        const bufferSize = 2 * ctx.sampleRate;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+        noise.loop = true;
+        const lp = ctx.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.value = 1200;
+        noise.connect(lp);
+        lp.connect(gainNode);
+        noise.start();
+        nodes.push(noise, lp);
+      } else if (type === 'forest') {
+        const bufferSize = 2 * ctx.sampleRate;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        let last = 0;
+        for (let i = 0; i < bufferSize; i++) {
+          last = (last + (Math.random() * 2 - 1) * 0.06) * 0.994;
+          data[i] = last;
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+        noise.loop = true;
+        const bp = ctx.createBiquadFilter();
+        bp.type = 'bandpass';
+        bp.frequency.value = 400;
+        bp.Q.value = 0.5;
+        noise.connect(bp);
+        bp.connect(gainNode);
+        noise.start();
+        nodes.push(noise, bp);
+        // Bird-like chirps
+        const chirpOsc = ctx.createOscillator();
+        chirpOsc.type = 'sine';
+        chirpOsc.frequency.value = 2200;
+        const chirpGain = ctx.createGain();
+        chirpGain.gain.value = 0;
+        const lfo = ctx.createOscillator();
+        lfo.frequency.value = 3;
+        const lfoGain = ctx.createGain();
+        lfoGain.gain.value = 0.015;
+        lfo.connect(lfoGain);
+        lfoGain.connect(chirpGain.gain);
+        chirpOsc.connect(chirpGain);
+        chirpGain.connect(gainNode);
+        chirpOsc.start();
+        lfo.start();
+        nodes.push(chirpOsc, chirpGain, lfo, lfoGain);
+      } else if (type === 'lofi') {
+        // C major chord: C4, E4, G4
+        [261.63, 329.63, 392.00].forEach(freq => {
+          const osc = ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          const oscGain = ctx.createGain();
+          oscGain.gain.value = 0.4;
+          // Tremolo
+          const trem = ctx.createOscillator();
+          trem.frequency.value = 0.3 + Math.random() * 0.2;
+          const tremGain = ctx.createGain();
+          tremGain.gain.value = 0.08;
+          trem.connect(tremGain);
+          tremGain.connect(oscGain.gain);
+          osc.connect(oscGain);
+          oscGain.connect(gainNode);
+          osc.start();
+          trem.start();
+          nodes.push(osc, oscGain, trem, tremGain);
+        });
+      } else if (type === 'cafe') {
+        const bufferSize = 2 * ctx.sampleRate;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        let last = 0;
+        for (let i = 0; i < bufferSize; i++) {
+          last = (last + (Math.random() * 2 - 1) * 0.04) * 0.998;
+          data[i] = last;
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+        noise.loop = true;
+        const bp = ctx.createBiquadFilter();
+        bp.type = 'bandpass';
+        bp.frequency.value = 800;
+        bp.Q.value = 0.8;
+        noise.connect(bp);
+        bp.connect(gainNode);
+        noise.start();
+        nodes.push(noise, bp);
+      }
+
+      ambientNodesRef.current = nodes;
+      setAmbientSound(type);
+    } catch(e) {
+      console.error('Ambient sound error:', e);
+    }
+  }, [stopAmbientSound]);
 
   const playTTS = (text, type, e) => {
     if (e) e.stopPropagation();
@@ -257,11 +443,20 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
       : { ...firstTryStats, [cardId]: rating === "again" ? "unknown" : "known" };
     setFirstTryStats(updatedFirstTryStats);
 
+    // Track missed cards
+    if (rating === "again") {
+      setMissedCards(prev => {
+        if (prev.find(c => c.id === currentCard.id)) return prev;
+        return [...prev, currentCard];
+      });
+    }
+
     // Track momentum streak
     let nextStreak = momentumStreak;
     if (rating !== "again") {
       nextStreak += 1;
       setMomentumStreak(nextStreak);
+      setBestStreak(prev => Math.max(prev, nextStreak));
       if (nextStreak === 3 || nextStreak === 5 || nextStreak === 10) {
         setMomentumToast(`SERIA: ${nextStreak} POPRAWNYCH! 🔥`);
         playSound("success", stats.audioStyle || "synth");
@@ -293,6 +488,8 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
       } else {
         // Ukończenie talii!
         setCompleted(true);
+        stopAmbientSound();
+        setAmbientSound(null);
         
         // Calculate completion medal
         const total = cards.length;
@@ -382,6 +579,11 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     setMomentumToast("");
     setFirstTryStats({});
     setAwardedMedal(null);
+    setSessionStartTime(Date.now());
+    setSessionElapsed(0);
+    setReversedMode(false);
+    setMissedCards([]);
+    setBestStreak(0);
   };
 
   if (cards.length === 0) {
@@ -438,7 +640,80 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
             Talia: <span className="text-indigo-400 font-extrabold">{selectedDeck.title}</span>
           </h2>
         </div>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
+          {/* Session Timer */}
+          <div className="bg-white/5 border border-white/8 rounded-xl px-3 py-1.5 text-xs font-mono text-slate-400 flex items-center gap-1.5">
+            <Icons.Clock size={13} />
+            <span>{formatTime(sessionElapsed)}</span>
+          </div>
+          {/* Reversed mode toggle */}
+          <button
+            onClick={() => setReversedMode(prev => !prev)}
+            className={`p-3 rounded-2xl transition-all scale-hover ${
+              reversedMode
+                ? "bg-purple-500/10 text-purple-400 border border-purple-500/20"
+                : "bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white"
+            }`}
+            title={reversedMode ? "Tryb PL → EN (aktywny)" : "Przełącz na tryb PL → EN"}
+          >
+            <Icons.ArrowLeftRight size={18} />
+          </button>
+          {/* Ambient sound button */}
+          <div className="relative">
+            <button
+              onClick={() => setShowAmbientMenu(prev => !prev)}
+              className={`p-3 rounded-2xl transition-all scale-hover ${
+                ambientSound
+                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                  : "bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white"
+              }`}
+              title="Dźwięki otoczenia"
+            >
+              <Icons.Headphones size={18} />
+            </button>
+            {showAmbientMenu && (
+              <div className="absolute right-0 top-full mt-2 z-50 glass-card p-2 rounded-xl min-w-[170px] border border-white/10 shadow-xl">
+                {[
+                  { id: 'rain', label: '🌧️ Deszcz' },
+                  { id: 'forest', label: '🌲 Las' },
+                  { id: 'lofi', label: '🎵 Lofi' },
+                  { id: 'cafe', label: '☕ Kawiarnia' },
+                ].map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      if (ambientSound === item.id) {
+                        stopAmbientSound();
+                        setAmbientSound(null);
+                      } else {
+                        startAmbientSound(item.id);
+                      }
+                      setShowAmbientMenu(false);
+                    }}
+                    className={`w-full text-left text-xs font-bold px-3 py-2 rounded-lg transition-all ${
+                      ambientSound === item.id
+                        ? "bg-emerald-500/10 text-emerald-400"
+                        : "text-slate-300 hover:bg-white/5 hover:text-white"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+                {ambientSound && (
+                  <button
+                    onClick={() => {
+                      stopAmbientSound();
+                      setAmbientSound(null);
+                      setShowAmbientMenu(false);
+                    }}
+                    className="w-full text-left text-xs font-bold px-3 py-2 rounded-lg text-rose-400 hover:bg-rose-500/10 transition-all mt-1 border-t border-white/5 pt-2"
+                  >
+                    ✕ Wyłącz dźwięk
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
           <button 
             onClick={handleShuffle}
             className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-slate-300 hover:text-white transition-all scale-hover"
@@ -516,12 +791,12 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
             onClick={() => setIsFlipped(!isFlipped)}
           >
             <div className="flashcard-inner">
-              {/* Front Side (English) */}
+              {/* Front Side */}
               <div className="flashcard-front">
                 <div className="flex justify-between items-center w-full">
                   <div className="flex gap-2 items-center flex-wrap">
                     <span className="text-[10px] font-extrabold tracking-wider text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 rounded-full uppercase">
-                      {currentCard.partOfSpeech || "word"}
+                      {reversedMode ? "Polskie słowo" : (currentCard.partOfSpeech || "word")}
                     </span>
 
                     {/* CEFR level badge */}
@@ -560,7 +835,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                   </div>
                   
                   <div className="flex items-center gap-3">
-                    {speakingType === "word" && (
+                    {!reversedMode && speakingType === "word" && (
                       <div className="sound-wave">
                         <div className="sound-wave-bar" />
                         <div className="sound-wave-bar" />
@@ -568,83 +843,87 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                         <div className="sound-wave-bar" />
                       </div>
                     )}
-                    <button 
-                      onClick={(e) => playTTS(currentCard.english, "word", e)}
-                      className={`p-2.5 rounded-xl transition-all scale-hover ${
-                        speakingType === "word" 
-                          ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30" 
-                          : "bg-white/5 text-slate-400 hover:text-white"
-                      }`}
-                      title="Odsłuchaj wymowę"
-                    >
-                      <Icons.Volume2 size={18} />
-                    </button>
+                    {!reversedMode && (
+                      <button 
+                        onClick={(e) => playTTS(currentCard.english, "word", e)}
+                        className={`p-2.5 rounded-xl transition-all scale-hover ${
+                          speakingType === "word" 
+                            ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30" 
+                            : "bg-white/5 text-slate-400 hover:text-white"
+                        }`}
+                        title="Odsłuchaj wymowę"
+                      >
+                        <Icons.Volume2 size={18} />
+                      </button>
+                    )}
                   </div>
                 </div>
                 
                 <div className="my-auto flex flex-col items-center text-center gap-3 w-full">
                   <h3 className="text-4xl md:text-5xl font-black text-[var(--text-primary)] tracking-tight leading-tight">
-                    {currentCard.english}
+                    {reversedMode ? currentCard.polish : currentCard.english}
                   </h3>
-                  {currentCard.pronunciation && (
+                  {!reversedMode && currentCard.pronunciation && (
                     <p className="text-[var(--secondary)] font-semibold font-mono text-sm tracking-wider">
                       {currentCard.pronunciation}
                     </p>
                   )}
                   
-                  {/* MIC INPUT CHECKER */}
-                  <div className="mt-6 flex flex-col items-center gap-2">
-                    <button
-                      onClick={startListening}
-                      className={`p-3 rounded-full border transition-all scale-hover btn-flashcard-mic ${
-                        isListening 
-                          ? "bg-rose-500/20 text-rose-400 border-rose-500/40 animate-pulse" 
-                          : ""
-                      }`}
-                      title="Przetestuj swoją wymowę"
-                    >
-                      <Icons.Mic size={20} />
-                    </button>
-                    
-                    {!pronunciationScore && !isListening && (
-                      <span className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-wider">Sprawdź swoją wymowę</span>
-                    )}
-                    {isListening && (
-                      <span className="text-xs text-rose-400 font-bold animate-pulse">Słucham... Mów teraz!</span>
-                    )}
-                    
-                    {pronunciationScore === "correct" && (
-                      <div className="text-xs text-emerald-400 font-bold flex items-center gap-1 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-                        <Icons.CheckCircle2 size={12} />
-                        <span>Świetna wymowa! 🎉</span>
-                      </div>
-                    )}
-                    {pronunciationScore === "incorrect" && (
-                      <div className="text-xs text-rose-400 font-bold flex flex-col items-center gap-1 bg-rose-500/10 px-3 py-1.5 rounded-xl border border-rose-500/20">
-                        <span className="flex items-center gap-1">
-                          <Icons.XCircle size={12} />
-                          <span>Nie do końca... Spróbuj ponownie.</span>
-                        </span>
-                        {heardText && (
-                          <span className="text-[10px] text-[var(--text-secondary)]">Usłyszano: "{heardText}"</span>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                  {/* MIC INPUT CHECKER - only in normal mode */}
+                  {!reversedMode && (
+                    <div className="mt-6 flex flex-col items-center gap-2">
+                      <button
+                        onClick={startListening}
+                        className={`p-3 rounded-full border transition-all scale-hover btn-flashcard-mic ${
+                          isListening 
+                            ? "bg-rose-500/20 text-rose-400 border-rose-500/40 animate-pulse" 
+                            : ""
+                        }`}
+                        title="Przetestuj swoją wymowę"
+                      >
+                        <Icons.Mic size={20} />
+                      </button>
+                      
+                      {!pronunciationScore && !isListening && (
+                        <span className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-wider">Sprawdź swoją wymowę</span>
+                      )}
+                      {isListening && (
+                        <span className="text-xs text-rose-400 font-bold animate-pulse">Słucham... Mów teraz!</span>
+                      )}
+                      
+                      {pronunciationScore === "correct" && (
+                        <div className="text-xs text-emerald-400 font-bold flex items-center gap-1 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                          <Icons.CheckCircle2 size={12} />
+                          <span>Świetna wymowa! 🎉</span>
+                        </div>
+                      )}
+                      {pronunciationScore === "incorrect" && (
+                        <div className="text-xs text-rose-400 font-bold flex flex-col items-center gap-1 bg-rose-500/10 px-3 py-1.5 rounded-xl border border-rose-500/20">
+                          <span className="flex items-center gap-1">
+                            <Icons.XCircle size={12} />
+                            <span>Nie do końca... Spróbuj ponownie.</span>
+                          </span>
+                          {heardText && (
+                            <span className="text-[10px] text-[var(--text-secondary)]">Usłyszano: "{heardText}"</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div className="text-xs text-[var(--text-muted)] font-bold flex items-center justify-center gap-2 opacity-80 mt-auto">
                   <Icons.Sparkles size={14} className="text-[var(--primary)]" />
-                  Kliknij w kartę, aby zobaczyć tłumaczenie
+                  {reversedMode ? "Kliknij w kartę, aby zobaczyć angielskie słówko" : "Kliknij w kartę, aby zobaczyć tłumaczenie"}
                 </div>
               </div>
 
-              {/* Back Side (Polish) */}
+              {/* Back Side */}
               <div className="flashcard-back">
                 <div className="flex justify-between items-center w-full">
                   <div className="flex gap-2 items-center">
                     <span className="text-[10px] font-extrabold tracking-wider text-[var(--secondary)] bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 rounded-full uppercase">
-                      Polskie znaczenie
+                      {reversedMode ? "English meaning" : "Polskie znaczenie"}
                     </span>
 
                     {/* CEFR level badge */}
@@ -669,7 +948,20 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                         <div className="sound-wave-bar" />
                       </div>
                     )}
-                    {currentCard.exampleEnglish && (
+                    {reversedMode && (
+                      <button 
+                        onClick={(e) => playTTS(currentCard.english, "word", e)}
+                        className={`p-2.5 rounded-xl transition-all scale-hover ${
+                          speakingType === "word" 
+                            ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30" 
+                            : "bg-white/5 text-slate-400 hover:text-white"
+                        }`}
+                        title="Odsłuchaj wymowę"
+                      >
+                        <Icons.Volume2 size={18} />
+                      </button>
+                    )}
+                    {!reversedMode && currentCard.exampleEnglish && (
                       <button 
                         onClick={(e) => playTTS(currentCard.exampleEnglish, "example", e)}
                         className={`p-2.5 rounded-xl transition-all scale-hover ${
@@ -687,8 +979,13 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
 
                 <div className="my-auto flex flex-col items-center text-center gap-5 w-full">
                   <h3 className="text-3xl font-black text-[var(--text-primary)] tracking-tight leading-snug">
-                    {currentCard.polish}
+                    {reversedMode ? currentCard.english : currentCard.polish}
                   </h3>
+                  {reversedMode && currentCard.pronunciation && (
+                    <p className="text-[var(--secondary)] font-semibold font-mono text-sm tracking-wider">
+                      {currentCard.pronunciation}
+                    </p>
+                  )}
                   
                   {currentCard.exampleEnglish && (
                     <div className="text-center flashcard-example-block p-4 rounded-2xl w-full">
@@ -706,7 +1003,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                 </div>
 
                 <div className="text-xs text-[var(--text-muted)] font-bold flex items-center justify-center gap-2 opacity-80">
-                  Kliknij w kartę, aby zobaczyć słówko
+                  {reversedMode ? "Kliknij w kartę, aby zobaczyć polskie słówko" : "Kliknij w kartę, aby zobaczyć słówko"}
                 </div>
               </div>
             </div>
@@ -720,25 +1017,29 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                   <button 
                     onClick={() => handleSrsRate("again")}
-                    className="btn btn-secondary btn-srs-again py-3.5 px-2 text-xs font-bold text-rose-400 border-rose-500/10 hover:bg-rose-500/5 hover:border-rose-500/30 w-full"
+                    disabled={!canRate}
+                    className="btn btn-secondary btn-srs-again py-3.5 px-2 text-xs font-bold text-rose-400 border-rose-500/10 hover:bg-rose-500/5 hover:border-rose-500/30 w-full disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Powtórz
                   </button>
                   <button 
                     onClick={() => handleSrsRate("hard")}
-                    className="btn btn-secondary btn-srs-hard py-3.5 px-2 text-xs font-bold text-amber-500 border-amber-500/10 hover:bg-amber-500/5 hover:border-amber-500/30 w-full"
+                    disabled={!canRate}
+                    className="btn btn-secondary btn-srs-hard py-3.5 px-2 text-xs font-bold text-amber-500 border-amber-500/10 hover:bg-amber-500/5 hover:border-amber-500/30 w-full disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Trudno
                   </button>
                   <button 
                     onClick={() => handleSrsRate("good")}
-                    className="btn btn-primary py-3.5 px-2 text-xs font-bold bg-gradient-to-r from-indigo-500 to-cyan-600 shadow-indigo-500/10 hover:from-indigo-400 hover:to-cyan-500 w-full"
+                    disabled={!canRate}
+                    className="btn btn-primary py-3.5 px-2 text-xs font-bold bg-gradient-to-r from-indigo-500 to-cyan-600 shadow-indigo-500/10 hover:from-indigo-400 hover:to-cyan-500 w-full disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Dobrze
                   </button>
                   <button 
                     onClick={() => handleSrsRate("easy")}
-                    className="btn btn-primary py-3.5 px-2 text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-600 shadow-emerald-500/10 hover:from-emerald-400 hover:to-teal-500 w-full"
+                    disabled={!canRate}
+                    className="btn btn-primary py-3.5 px-2 text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-600 shadow-emerald-500/10 hover:from-emerald-400 hover:to-teal-500 w-full disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Łatwo
                   </button>
@@ -748,13 +1049,15 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                 <div className="flex gap-4">
                   <button 
                     onClick={() => handleSrsRate("again")}
-                    className="flex-1 btn btn-secondary py-4 flex items-center justify-center gap-2 font-bold text-rose-400 border-rose-500/10 hover:bg-rose-500/5 hover:border-rose-500/30 hover:text-rose-300"
+                    disabled={!canRate}
+                    className="flex-1 btn btn-secondary py-4 flex items-center justify-center gap-2 font-bold text-rose-400 border-rose-500/10 hover:bg-rose-500/5 hover:border-rose-500/30 hover:text-rose-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Icons.X size={18} /> Jeszcze nie umiem
                   </button>
                   <button 
                     onClick={() => handleSrsRate("good")}
-                    className="flex-1 btn btn-primary py-4 flex items-center justify-center gap-2 font-bold bg-gradient-to-r from-emerald-500 to-teal-600 shadow-emerald-500/10 hover:shadow-emerald-500/25 hover:from-emerald-400 hover:to-teal-500"
+                    disabled={!canRate}
+                    className="flex-1 btn btn-primary py-4 flex items-center justify-center gap-2 font-bold bg-gradient-to-r from-emerald-500 to-teal-600 shadow-emerald-500/10 hover:shadow-emerald-500/25 hover:from-emerald-400 hover:to-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Icons.Check size={18} /> Znam to słówko
                   </button>
@@ -815,6 +1118,43 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
               <span className="text-2xl font-black text-rose-400 mt-1 block">{sessionResults.unknown}</span>
             </div>
           </div>
+
+          {/* Enhanced stats row */}
+          <div className="grid grid-cols-3 gap-3 w-full">
+            <div className="bg-black/20 p-3 rounded-xl border border-white/5 text-center">
+              <Icons.Clock size={16} className="mx-auto text-slate-400 mb-1" />
+              <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">Czas</span>
+              <span className="text-sm font-black text-white mt-0.5 block">{formatTime(sessionElapsed)}</span>
+            </div>
+            <div className="bg-black/20 p-3 rounded-xl border border-white/5 text-center">
+              <Icons.Target size={16} className="mx-auto text-slate-400 mb-1" />
+              <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">Skuteczność</span>
+              <span className="text-sm font-black text-white mt-0.5 block">{cards.length > 0 ? Math.round((sessionResults.known / cards.length) * 100) : 0}%</span>
+            </div>
+            <div className="bg-black/20 p-3 rounded-xl border border-white/5 text-center">
+              <Icons.Flame size={16} className="mx-auto text-orange-400 mb-1" />
+              <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">Najdłuższa seria</span>
+              <span className="text-sm font-black text-white mt-0.5 block">{bestStreak}</span>
+            </div>
+          </div>
+
+          {/* Missed cards section */}
+          {missedCards.length > 0 && (
+            <div className="w-full bg-rose-500/5 border border-rose-500/10 rounded-xl p-4">
+              <div className="flex items-center gap-1.5 justify-center mb-3">
+                <Icons.AlertTriangle size={14} className="text-rose-400" />
+                <span className="text-xs font-black text-rose-400 uppercase tracking-wider">Najtrudniejsze słowa</span>
+              </div>
+              <div className="flex flex-col gap-2">
+                {missedCards.slice(0, 3).map((card, i) => (
+                  <div key={card.id || i} className="flex items-center justify-between bg-black/20 px-3 py-2 rounded-lg">
+                    <span className="text-sm font-bold text-white">{card.english}</span>
+                    <span className="text-sm text-slate-400">→ {card.polish}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="flex gap-3 w-full">
             <button onClick={() => onNavigate("dashboard")} className="flex-1 btn btn-secondary text-sm">

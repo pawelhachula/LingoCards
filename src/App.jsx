@@ -12,8 +12,31 @@ import Referrals from "./components/Referrals";
 import Leaderboard from "./components/Leaderboard";
 import StatsView from "./components/StatsView";
 import SearchModal from "./components/SearchModal";
+import Library from "./components/Library";
 import { playSound, triggerConfetti, triggerFireworks } from "./utils/effects";
 import * as Icons from "lucide-react";
+
+const DEFAULT_THEMES = [
+  { id: "graphite", label: "Aurora Graphite" },
+  { id: "green", label: "Bottle Green" },
+  { id: "navy", label: "Deep Navy" },
+  { id: "sakura", label: "Sakura (Jasny)" },
+  { id: "forest", label: "Forest (Jasny)" },
+  { id: "amber", label: "Amber (Jasny)" },
+];
+
+const PREMIUM_THEMES = [
+  { id: "sunset", label: "Sunset Glow (Jasny)", xpRequired: 10 },
+  { id: "mint", label: "Midnight Mint", xpRequired: 20 },
+  { id: "nebula", label: "Cosmic Nebula", xpRequired: 30 },
+  { id: "lavender", label: "Lavender Pastel (Jasny)", xpRequired: 40 },
+  { id: "cyberpunk", label: "Cyberpunk Neon", xpRequired: 50 },
+  { id: "ocean", label: "Ocean Breeze (Jasny)", xpRequired: 60 },
+  { id: "volcano", label: "Volcanic Ash", xpRequired: 70 },
+  { id: "glacier", label: "Frosted Glacier (Jasny)", xpRequired: 80 },
+  { id: "emerald", label: "Cyber Emerald", xpRequired: 90 },
+  { id: "gold", label: "Royal Gold", xpRequired: 100 },
+];
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -21,9 +44,11 @@ export default function App() {
   const [decks, setDecks] = useState([]);
   const [selectedDeck, setSelectedDeck] = useState(null);
   const [theme, setTheme] = useState("navy"); // default to navy (Deep Navy)
+  const [unlockedThemeToast, setUnlockedThemeToast] = useState("");
   const [showLevelUpModal, setShowLevelUpModal] = useState(false);
   const [levelUpInfo, setLevelUpInfo] = useState({ oldLevel: 1, newLevel: 1 });
   const [showSearch, setShowSearch] = useState(false);
+  const [activeDeckIds, setActiveDeckIds] = useState([]);
   // 'graphite' | 'green' | 'navy' | 'sakura' | 'forest' | 'amber'
   
   const [stats, setStats] = useState({
@@ -116,11 +141,36 @@ export default function App() {
     if (savedDecks) {
       try {
         loadedDecks = JSON.parse(savedDecks);
-        // Automatyczne przywracanie brakujących talii domyślnych
+        // Automatyczne przywracanie brakujących talii domyślnych lub aktualizacja słówek
+        let shouldSave = false;
+        
+        // Zaktualizuj istniejące talie systemowe, jeśli mają za mało słówek lub zdezaktualizowane dane
+        loadedDecks = loadedDecks.map(userDeck => {
+          const officialDeck = defaultDecks.find(d => d.id === userDeck.id);
+          if (officialDeck && (userDeck.cards?.length || 0) < (officialDeck.cards?.length || 0)) {
+            shouldSave = true;
+            const userCustomCards = (userDeck.cards || []).filter(c => c.id && c.id.startsWith("custom-card-"));
+            return {
+              ...userDeck,
+              cards: [...officialDeck.cards, ...userCustomCards],
+              category: officialDeck.category || userDeck.category,
+              level: officialDeck.level || userDeck.level,
+              title: officialDeck.title,
+              polishTitle: officialDeck.polishTitle,
+              description: officialDeck.description
+            };
+          }
+          return userDeck;
+        });
+
         const loadedIds = new Set(loadedDecks.map(d => d.id));
         const missingDefaultDecks = defaultDecks.filter(d => !loadedIds.has(d.id));
         if (missingDefaultDecks.length > 0) {
           loadedDecks = [...loadedDecks, ...missingDefaultDecks];
+          shouldSave = true;
+        }
+
+        if (shouldSave) {
           localStorage.setItem(userDecksKey, JSON.stringify(loadedDecks));
         }
       } catch (e) {
@@ -133,7 +183,23 @@ export default function App() {
     }
     setDecks(loadedDecks);
 
-    if (loadedDecks.length > 0) {
+    // Wczytaj aktywne talie (activeDeckIds)
+    const activeDecksKey = `lingocards_active_decks_${username.toLowerCase()}`;
+    const savedActiveDecks = localStorage.getItem(activeDecksKey);
+    let loadedActiveDecks = ["everyday", "travel"];
+    if (savedActiveDecks) {
+      try {
+        loadedActiveDecks = JSON.parse(savedActiveDecks);
+      } catch (e) {
+        console.error("Error parsing active decks", e);
+      }
+    }
+    setActiveDeckIds(loadedActiveDecks);
+
+    const activeDecks = loadedDecks.filter(d => loadedActiveDecks.includes(d.id) || d.id.startsWith("custom-deck-"));
+    if (activeDecks.length > 0) {
+      setSelectedDeck(activeDecks[0]);
+    } else if (loadedDecks.length > 0) {
       setSelectedDeck(loadedDecks[0]);
     }
 
@@ -202,6 +268,23 @@ export default function App() {
       loadedStats.bestStreak = loadedStats.streak;
     }
 
+    // Synchronizuj studyDates z aktualnym streakem, aby kalendarz odzwierciedlał serię dni
+    const streakVal = loadedStats.streak || 0;
+    if (streakVal > 0) {
+      const dates = loadedStats.studyDates || [];
+      const dateList = [...dates];
+      const baseDate = new Date(loadedStats.lastActiveDate || todayStr);
+      for (let i = 0; i < streakVal; i++) {
+        const d = new Date(baseDate);
+        d.setDate(baseDate.getDate() - i);
+        const dateStr = d.toISOString().split("T")[0];
+        if (!dateList.includes(dateStr)) {
+          dateList.push(dateStr);
+        }
+      }
+      loadedStats.studyDates = dateList;
+    }
+
     setStats(loadedStats);
     localStorage.setItem(userStatsKey, JSON.stringify(loadedStats));
   };
@@ -217,6 +300,9 @@ export default function App() {
     setCurrentUser(null);
     localStorage.removeItem("lingocards_current_user");
     setView("dashboard");
+    setDecks([]);
+    setActiveDeckIds([]);
+    setSelectedDeck(null);
   };
 
   const handleUpdateProfile = (newUsername, newAvatar) => {
@@ -332,6 +418,18 @@ export default function App() {
         studyDates: newStudyDates
       };
       
+      // Check theme unlocks
+      PREMIUM_THEMES.forEach(t => {
+        if (newXp >= t.xpRequired && currentXp < t.xpRequired) {
+          setTimeout(() => {
+            playSound("achievement", prev.audioStyle || "synth");
+            setUnlockedThemeToast(t.label);
+            // Hide after 4 seconds
+            setTimeout(() => setUnlockedThemeToast(""), 4000);
+          }, 50);
+        }
+      });
+      
       if (newLevel > currentLevel) {
         setTimeout(() => {
           playSound("levelup", prev.audioStyle || "synth");
@@ -381,7 +479,30 @@ export default function App() {
     const userDecksKey = `lingocards_decks_${username.toLowerCase()}`;
     setDecks(defaultDecks);
     localStorage.setItem(userDecksKey, JSON.stringify(defaultDecks));
-    setSelectedDeck(defaultDecks[0]);
+
+    // Reset active decks namespace
+    const activeDecksKey = `lingocards_active_decks_${username.toLowerCase()}`;
+    const defaultActiveDecks = ["everyday", "travel"];
+    setActiveDeckIds(defaultActiveDecks);
+    localStorage.setItem(activeDecksKey, JSON.stringify(defaultActiveDecks));
+
+    const activeDecks = defaultDecks.filter(d => defaultActiveDecks.includes(d.id));
+    setSelectedDeck(activeDecks[0] || defaultDecks[0]);
+  };
+
+  const handleToggleActiveDeck = (deckId) => {
+    if (!currentUser) return;
+    setActiveDeckIds(prev => {
+      let updated;
+      if (prev.includes(deckId)) {
+        updated = prev.filter(id => id !== deckId);
+      } else {
+        updated = [...prev, deckId];
+      }
+      const activeDecksKey = `lingocards_active_decks_${currentUser.username.toLowerCase()}`;
+      localStorage.setItem(activeDecksKey, JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const handleCreateDeck = (newDeck) => {
@@ -390,6 +511,63 @@ export default function App() {
     if (currentUser) {
       const userDecksKey = `lingocards_decks_${currentUser.username.toLowerCase()}`;
       localStorage.setItem(userDecksKey, JSON.stringify(updated));
+    }
+  };
+
+  const handleDeleteDeck = (deckId) => {
+    if (!deckId.startsWith("custom-deck-")) return;
+    const updated = decks.filter(d => d.id !== deckId);
+    setDecks(updated);
+    if (currentUser) {
+      const userDecksKey = `lingocards_decks_${currentUser.username.toLowerCase()}`;
+      localStorage.setItem(userDecksKey, JSON.stringify(updated));
+    }
+    if (selectedDeck && selectedDeck.id === deckId) {
+      setSelectedDeck(updated[0] || null);
+    }
+  };
+
+  const handleEditDeck = (deckId, updatedFields) => {
+    if (!deckId.startsWith("custom-deck-")) return;
+    const updated = decks.map(d => {
+      if (d.id === deckId) {
+        return { ...d, ...updatedFields };
+      }
+      return d;
+    });
+    setDecks(updated);
+    if (currentUser) {
+      const userDecksKey = `lingocards_decks_${currentUser.username.toLowerCase()}`;
+      localStorage.setItem(userDecksKey, JSON.stringify(updated));
+    }
+    if (selectedDeck && selectedDeck.id === deckId) {
+      setSelectedDeck(updated.find(d => d.id === deckId));
+    }
+  };
+
+  const handleEditCard = (deckId, cardId, updatedCardFields) => {
+    if (!cardId.startsWith("custom-card-")) return;
+    const updated = decks.map(deck => {
+      if (deck.id === deckId) {
+        return {
+          ...deck,
+          cards: deck.cards.map(c => {
+            if (c.id === cardId) {
+              return { ...c, ...updatedCardFields };
+            }
+            return c;
+          })
+        };
+      }
+      return deck;
+    });
+    setDecks(updated);
+    if (currentUser) {
+      const userDecksKey = `lingocards_decks_${currentUser.username.toLowerCase()}`;
+      localStorage.setItem(userDecksKey, JSON.stringify(updated));
+    }
+    if (selectedDeck && selectedDeck.id === deckId) {
+      setSelectedDeck(updated.find(d => d.id === deckId));
     }
   };
 
@@ -498,10 +676,25 @@ export default function App() {
     cards: starredCards
   };
 
-  const displayedDecks = [srsDeck, starredDeck, ...decks];
+  const activeAndCustomDecks = decks.filter(d => activeDeckIds.includes(d.id) || d.id.startsWith("custom-deck-"));
+  const displayedDecks = [srsDeck, starredDeck, ...activeAndCustomDecks];
 
   return (
     <div className="min-h-screen flex flex-col bg-transparent">
+      {/* Toast notification for unlocked theme */}
+      {unlockedThemeToast && (
+        <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[100] bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-black text-xs px-6 py-4.5 rounded-2xl border border-emerald-400/30 shadow-[0_0_25px_rgba(16,185,129,0.4)] flex items-center gap-3 animate-bounce">
+          <Icons.Sparkles size={18} className="text-yellow-300 animate-pulse" />
+          <div className="flex flex-col">
+            <span className="font-bold text-[10px] text-emerald-100 uppercase tracking-widest leading-none">Nowy Motyw Odblokowany! 🎉</span>
+            <span className="text-sm font-extrabold mt-1 text-white">{unlockedThemeToast}</span>
+          </div>
+          <button onClick={() => setUnlockedThemeToast("")} className="text-emerald-200 hover:text-white ml-2 transition-colors">
+            <Icons.X size={14} />
+          </button>
+        </div>
+      )}
+
       {/* Top Navbar */}
       <nav className="glass-card sticky top-0 z-50 rounded-none border-t-0 border-x-0 border-b border-white/5 bg-opacity-80 backdrop-blur-md px-5 md:px-8 py-3 flex items-center justify-between">
         
@@ -529,6 +722,18 @@ export default function App() {
             }`}
           >
             Pulpit
+          </button>
+
+          <button 
+            onClick={() => setView("library")} 
+            className={`px-4 py-2.5 rounded-xl transition-all border flex items-center gap-1.5 ${
+              view === "library" 
+                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm font-extrabold" 
+                : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
+            }`}
+          >
+            <Icons.Compass size={14} />
+            Katalog
           </button>
           
           <button 
@@ -617,107 +822,27 @@ export default function App() {
             </div>
           )}
 
-          {/* THEME SELECTOR BUTTONS */}
-          <div className="flex items-center gap-1.5 bg-black/30 border border-white/8 px-2.5 py-1.5 rounded-xl" title="Zmień motyw graficzny">
-            <button 
-              onClick={() => handleThemeChange("graphite")} 
-              className={`w-4 h-4 rounded-full bg-[#6366f1] border-2 transition-all hover:scale-110 ${
-                theme === "graphite" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
-              }`}
-              title="Aurora Graphite (Ciemny)"
-            />
-            <button 
-              onClick={() => handleThemeChange("green")} 
-              className={`w-4 h-4 rounded-full bg-[#10b981] border-2 transition-all hover:scale-110 ${
-                theme === "green" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
-              }`}
-              title="Bottle Green (Ciemny)"
-            />
-            <button 
-              onClick={() => handleThemeChange("navy")} 
-              className={`w-4 h-4 rounded-full bg-[#2563eb] border-2 transition-all hover:scale-110 ${
-                theme === "navy" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
-              }`}
-              title="Deep Navy (Ciemny)"
-            />
-            <div className="w-[1px] h-3 bg-white/20 mx-0.5" />
-            <button 
-              onClick={() => handleThemeChange("sakura")} 
-              className={`w-4 h-4 rounded-full bg-[#db2777] border-2 transition-all hover:scale-110 ${
-                theme === "sakura" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
-              }`}
-              title="Light Sakura (Jasny)"
-            />
-            <button 
-              onClick={() => handleThemeChange("forest")} 
-              className={`w-4 h-4 rounded-full bg-[#059669] border-2 transition-all hover:scale-110 ${
-                theme === "forest" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
-              }`}
-              title="Light Forest (Jasny)"
-            />
-            <button 
-              onClick={() => handleThemeChange("amber")} 
-              className={`w-4 h-4 rounded-full bg-[#d97706] border-2 transition-all hover:scale-110 ${
-                theme === "amber" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
-              }`}
-              title="Light Amber (Jasny)"
-            />
-            <div className="w-[1px] h-3 bg-white/20 mx-0.5" />
-            {(stats.referrals || []).length >= 1 ? (
-              <button 
-                onClick={() => handleThemeChange("cyberpunk")} 
-                className={`w-4 h-4 rounded-full border-2 transition-all hover:scale-110 ${
-                  theme === "cyberpunk" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
-                }`}
-                style={{ backgroundImage: "linear-gradient(135deg, #db2777, #06b6d4)" }}
-                title="Cyberpunk Neon (Premium Ciemny)"
-              />
-            ) : (
-              <div 
-                className="w-4 h-4 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center cursor-not-allowed opacity-30 relative group"
-                title="Cyberpunk Neon (Zablokowane - Poleć 1 znajomemu)"
-              >
-                <Icons.Lock size={8} className="text-slate-400" />
-              </div>
-            )}
-            
-            {/* Level 5 Cosmic Nebula */}
-            {(stats.level || 1) >= 5 ? (
-              <button 
-                onClick={() => handleThemeChange("nebula")} 
-                className={`w-4 h-4 rounded-full border-2 transition-all hover:scale-110 ${
-                  theme === "nebula" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
-                }`}
-                style={{ backgroundImage: "linear-gradient(135deg, #8b5cf6, #ec4899)" }}
-                title="Cosmic Nebula (Poziom 5+)"
-              />
-            ) : (
-              <div 
-                className="w-4 h-4 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center cursor-not-allowed opacity-30 relative group"
-                title="Cosmic Nebula (Zablokowane - Wymagany Level 5)"
-              >
-                <Icons.Lock size={8} className="text-slate-400" />
-              </div>
-            )}
-
-            {/* Level 10 Royal Gold */}
-            {(stats.level || 1) >= 10 ? (
-              <button 
-                onClick={() => handleThemeChange("gold")} 
-                className={`w-4 h-4 rounded-full border-2 transition-all hover:scale-110 ${
-                  theme === "gold" ? "border-[var(--text-primary)] scale-105" : "border-transparent opacity-60"
-                }`}
-                style={{ backgroundImage: "linear-gradient(135deg, #eab308, #f97316)" }}
-                title="Royal Gold (Poziom 10+)"
-              />
-            ) : (
-              <div 
-                className="w-4 h-4 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center cursor-not-allowed opacity-30 relative group"
-                title="Royal Gold (Zablokowane - Wymagany Level 10)"
-              >
-                <Icons.Lock size={8} className="text-slate-400" />
-              </div>
-            )}
+          {/* THEME SELECTOR DROPDOWN */}
+          <div className="flex items-center gap-2 bg-black/30 border border-white/8 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-300">
+            <Icons.Palette size={14} className="text-slate-400 shrink-0" />
+            <select
+              value={theme}
+              onChange={(e) => handleThemeChange(e.target.value)}
+              className="bg-transparent text-white focus:outline-none cursor-pointer font-bold border-none p-0 pr-6 text-xs"
+            >
+              <optgroup label="Motywy podstawowe" className="bg-[var(--bg-main)] text-slate-400">
+                {DEFAULT_THEMES.map(t => (
+                  <option key={t.id} value={t.id} className="bg-[var(--bg-main)] text-[var(--text-primary)]">{t.label}</option>
+                ))}
+              </optgroup>
+              {PREMIUM_THEMES.some(t => (stats.xp || 0) >= t.xpRequired) && (
+                <optgroup label="Motywy premium (Odblokowane)" className="bg-[var(--bg-main)] text-indigo-400">
+                  {PREMIUM_THEMES.filter(t => (stats.xp || 0) >= t.xpRequired).map(t => (
+                    <option key={t.id} value={t.id} className="bg-[var(--bg-main)] text-[var(--text-primary)]">✨ {t.label}</option>
+                  ))}
+                </optgroup>
+              )}
+            </select>
           </div>
 
           {/* Search button */}
@@ -795,6 +920,15 @@ export default function App() {
           <span>Start</span>
         </button>
         <button 
+          onClick={() => setView("library")} 
+          className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
+            view === "library" ? "text-indigo-400" : "text-slate-500 hover:text-slate-300"
+          }`}
+        >
+          <Icons.Compass size={20} />
+          <span>Katalog</span>
+        </button>
+        <button 
           onClick={() => setView("learn")} 
           className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
             view === "learn" ? "text-indigo-400" : "text-slate-500 hover:text-slate-300"
@@ -847,6 +981,18 @@ export default function App() {
             onNavigate={setView} 
           />
         )}
+
+        {view === "library" && (
+          <Library 
+            decks={decks.filter(d => !d.id.startsWith("custom-deck-"))} 
+            activeDeckIds={activeDeckIds} 
+            onToggleActiveDeck={handleToggleActiveDeck} 
+            onSelectDeck={setSelectedDeck} 
+            onNavigate={setView} 
+            stats={stats} 
+            onUpdateStats={handleSetStats} 
+          />
+        )}
         
         {view === "learn" && (
           <Flashcards 
@@ -883,7 +1029,10 @@ export default function App() {
           <Creator 
             decks={decks} 
             onCreateDeck={handleCreateDeck}
+            onEditDeck={handleEditDeck}
+            onDeleteDeck={handleDeleteDeck}
             onAddCard={handleAddCard}
+            onEditCard={handleEditCard}
             onDeleteCard={handleDeleteCard}
             onNavigate={setView}
           />
@@ -906,13 +1055,15 @@ export default function App() {
             theme={theme}
             onThemeChange={handleThemeChange}
             onResetData={handleResetData}
+            DEFAULT_THEMES={DEFAULT_THEMES}
+            PREMIUM_THEMES={PREMIUM_THEMES}
           />
         )}
 
         {view === "stats" && (
           <StatsView 
             stats={stats}
-            decks={displayedDecks}
+            decks={decks}
             onNavigate={setView}
             setStats={handleSetStats}
           />

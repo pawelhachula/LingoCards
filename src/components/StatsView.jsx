@@ -190,7 +190,7 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
       </div>
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         {/* Learned Words */}
         <div className="glass-card p-5 border-indigo-500/10 flex flex-col justify-between">
           <div>
@@ -199,6 +199,25 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
             <h3 className="text-3xl font-black text-white mt-1">{learnedCount}</h3>
           </div>
           <span className="text-[10px] text-slate-400 font-bold block mt-3">Z {totalCardsCount} wszystkich fiszek</span>
+        </div>
+
+        {/* Total Decks & Words */}
+        <div className="glass-card p-5 border-purple-500/10 flex flex-col justify-between">
+          <div>
+            <Icons.Layers className="text-purple-400 w-5 h-5 mb-3" />
+            <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">Zasoby aplikacji</span>
+            <div className="flex flex-col gap-1.5 mt-2">
+              <div className="flex justify-between items-baseline">
+                <span className="text-slate-400 text-xs font-semibold">Talie łącznie:</span>
+                <span className="text-base font-black text-white">{realDecks.length}</span>
+              </div>
+              <div className="flex justify-between items-baseline">
+                <span className="text-slate-400 text-xs font-semibold">Słówka łącznie:</span>
+                <span className="text-base font-black text-white">{totalCardsCount}</span>
+              </div>
+            </div>
+          </div>
+          <span className="text-[10px] text-slate-400 font-bold block mt-3">Talie systemowe i własne</span>
         </div>
 
         {/* Total Reviews */}
@@ -234,7 +253,7 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
         </div>
 
         {/* Best Day */}
-        <div className="glass-card p-5 border-cyan-500/10 flex flex-col justify-between sm:col-span-2 lg:col-span-1">
+        <div className="glass-card p-5 border-cyan-500/10 flex flex-col justify-between">
           <div>
             <Icons.CalendarDays className="text-cyan-400 w-5 h-5 mb-3" />
             <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">Najlepszy dzień</span>

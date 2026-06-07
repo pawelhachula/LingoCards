@@ -1,8 +1,17 @@
 import React, { useState } from "react";
 import * as Icons from "lucide-react";
 
-export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, onNavigate }) {
-  const [activeTab, setActiveTab] = useState("add-card"); // 'add-card' | 'create-deck'
+export default function Creator({ 
+  decks, 
+  onCreateDeck, 
+  onEditDeck, 
+  onDeleteDeck, 
+  onAddCard, 
+  onEditCard, 
+  onDeleteCard, 
+  onNavigate 
+}) {
+  const [activeTab, setActiveTab] = useState("add-card"); // 'add-card' | 'create-deck' | 'manage-decks'
   const [selectedDeckId, setSelectedDeckId] = useState(decks[0]?.id || "");
   
   // Card Form
@@ -25,8 +34,55 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
   const [errorDeck, setErrorDeck] = useState("");
   const [successDeck, setSuccessDeck] = useState(false);
 
+  // Editing & Deletion states
+  const [editingCardId, setEditingCardId] = useState(null);
+  const [editingDeckId, setEditingDeckId] = useState(null);
+  const [showConfirmDeleteDeckId, setShowConfirmDeleteDeckId] = useState(null);
+
   const iconsList = ["BookOpen", "MessageSquare", "Briefcase", "Compass", "GraduationCap", "Flame", "Smile", "Heart", "Globe"];
   const colorsList = ["#6366f1", "#06b6d4", "#10b981", "#ec4899", "#f59e0b", "#f43f5e", "#3b82f6", "#14b8a6"];
+
+  const handleStartEditCard = (card) => {
+    setEditingCardId(card.id);
+    setEnglish(card.english);
+    setPolish(card.polish);
+    setPronunciation(card.pronunciation || "");
+    setPartOfSpeech(card.partOfSpeech || "word");
+    setLevel(card.level || "B1");
+    setExampleEnglish(card.exampleEnglish || "");
+    setExamplePolish(card.examplePolish || "");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleCancelEditCard = () => {
+    setEditingCardId(null);
+    setEnglish("");
+    setPolish("");
+    setPronunciation("");
+    setPartOfSpeech("word");
+    setLevel("B1");
+    setExampleEnglish("");
+    setExamplePolish("");
+  };
+
+  const handleStartEditDeck = (deck) => {
+    setEditingDeckId(deck.id);
+    setDeckTitle(deck.title);
+    setDeckPolishTitle(deck.polishTitle);
+    setDeckDesc(deck.description || "");
+    setDeckIcon(deck.icon || "BookOpen");
+    setDeckColor(deck.color || "#6366f1");
+    setActiveTab("create-deck");
+  };
+
+  const handleCancelEditDeck = () => {
+    setEditingDeckId(null);
+    setDeckTitle("");
+    setDeckPolishTitle("");
+    setDeckDesc("");
+    setDeckIcon("BookOpen");
+    setDeckColor("#6366f1");
+  };
 
   const handleCardSubmit = (e) => {
     e.preventDefault();
@@ -42,8 +98,7 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
       return;
     }
 
-    const newCard = {
-      id: `custom-card-${Date.now()}`,
+    const cardFields = {
       english: english.trim(),
       polish: polish.trim(),
       pronunciation: pronunciation.trim() ? pronunciation.trim() : undefined,
@@ -53,7 +108,18 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
       examplePolish: examplePolish.trim() ? examplePolish.trim() : undefined
     };
 
-    onAddCard(selectedDeckId, newCard);
+    if (editingCardId) {
+      onEditCard(selectedDeckId, editingCardId, cardFields);
+      setEditingCardId(null);
+      setSuccessCard(true);
+    } else {
+      const newCard = {
+        id: `custom-card-${Date.now()}`,
+        ...cardFields
+      };
+      onAddCard(selectedDeckId, newCard);
+      setSuccessCard(true);
+    }
     
     setEnglish("");
     setPolish("");
@@ -61,7 +127,6 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
     setLevel("B1");
     setExampleEnglish("");
     setExamplePolish("");
-    setSuccessCard(true);
 
     setTimeout(() => setSuccessCard(false), 3000);
   };
@@ -76,28 +141,46 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
       return;
     }
 
-    const newDeck = {
-      id: `custom-deck-${Date.now()}`,
+    const deckFields = {
       title: deckTitle.trim(),
       polishTitle: deckPolishTitle.trim(),
       description: deckDesc.trim() || "Własna, spersonalizowana talia fiszek.",
       icon: deckIcon,
-      color: deckColor,
-      cards: []
+      color: deckColor
     };
 
-    onCreateDeck(newDeck);
-    
-    setDeckTitle("");
-    setDeckPolishTitle("");
-    setDeckDesc("");
-    setSelectedDeckId(newDeck.id);
-    setSuccessDeck(true);
-    
-    setTimeout(() => {
-      setSuccessDeck(false);
-      setActiveTab("add-card");
-    }, 1500);
+    if (editingDeckId) {
+      onEditDeck(editingDeckId, deckFields);
+      setEditingDeckId(null);
+      setSuccessDeck(true);
+      
+      setDeckTitle("");
+      setDeckPolishTitle("");
+      setDeckDesc("");
+      
+      setTimeout(() => {
+        setSuccessDeck(false);
+        setActiveTab("manage-decks");
+      }, 1500);
+    } else {
+      const newDeck = {
+        id: `custom-deck-${Date.now()}`,
+        ...deckFields,
+        cards: []
+      };
+      onCreateDeck(newDeck);
+      setSuccessDeck(true);
+      
+      setDeckTitle("");
+      setDeckPolishTitle("");
+      setDeckDesc("");
+      setSelectedDeckId(newDeck.id);
+      
+      setTimeout(() => {
+        setSuccessDeck(false);
+        setActiveTab("add-card");
+      }, 1500);
+    }
   };
 
   const currentSelectedDeck = decks.find(d => d.id === selectedDeckId);
@@ -116,9 +199,12 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
       </div>
 
       {/* Selector Tabs */}
-      <div className="flex bg-black/40 p-1.5 rounded-2xl border border-white/5 gap-2 max-w-md">
+      <div className="flex bg-black/40 p-1.5 rounded-2xl border border-white/5 gap-2 max-w-lg">
         <button
-          onClick={() => setActiveTab("add-card")}
+          onClick={() => {
+            setActiveTab("add-card");
+            handleCancelEditCard();
+          }}
           className={`flex-1 btn text-xs font-bold py-2.5 rounded-xl transition-all ${
             activeTab === "add-card" 
               ? "bg-indigo-500/10 text-indigo-300 border border-indigo-500/25 shadow-sm" 
@@ -129,9 +215,12 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
           Nowe słówko
         </button>
         <button
-          onClick={() => setActiveTab("create-deck")}
+          onClick={() => {
+            setActiveTab("create-deck");
+            handleCancelEditDeck();
+          }}
           className={`flex-1 btn text-xs font-bold py-2.5 rounded-xl transition-all ${
-            activeTab === "create-deck" 
+            activeTab === "create-deck" && !editingDeckId
               ? "bg-indigo-500/10 text-indigo-300 border border-indigo-500/25 shadow-sm" 
               : "bg-transparent text-slate-400 hover:text-white border-transparent"
           }`}
@@ -139,13 +228,29 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
           <Icons.FolderPlus size={14} />
           Nowa talia
         </button>
+        <button
+          onClick={() => {
+            setActiveTab("manage-decks");
+            handleCancelEditDeck();
+          }}
+          className={`flex-1 btn text-xs font-bold py-2.5 rounded-xl transition-all ${
+            activeTab === "manage-decks" || (activeTab === "create-deck" && editingDeckId)
+              ? "bg-indigo-500/10 text-indigo-300 border border-indigo-500/25 shadow-sm" 
+              : "bg-transparent text-slate-400 hover:text-white border-transparent"
+          }`}
+        >
+          <Icons.FolderEdit size={14} />
+          Zarządzaj taliami
+        </button>
       </div>
 
       {activeTab === "add-card" ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Card Adding Form */}
           <div className="lg:col-span-2 glass-card p-6 md:p-8">
-            <h3 className="text-lg font-bold text-white mb-5">Dodaj nową fiszkę</h3>
+            <h3 className="text-lg font-bold text-white mb-5">
+              {editingCardId ? "Edytuj fiszkę" : "Dodaj nową fiszkę"}
+            </h3>
             
             {errorCard && (
               <div className="mb-4 bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs p-3 rounded-xl flex items-center gap-2">
@@ -156,7 +261,7 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
             {successCard && (
               <div className="mb-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs p-3 rounded-xl flex items-center gap-2">
                 <Icons.CheckCircle2 size={16} />
-                <span>Fiszka została pomyślnie dodana!</span>
+                <span>{editingCardId ? "Zmiany zostały zapisane!" : "Fiszka została pomyślnie dodana!"}</span>
               </div>
             )}
 
@@ -169,7 +274,8 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
                 <select
                   value={selectedDeckId}
                   onChange={(e) => setSelectedDeckId(e.target.value)}
-                  className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold"
+                  disabled={!!editingCardId}
+                  className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <option value="" disabled>Zaznacz talię...</option>
                   {decks.map(deck => (
@@ -267,7 +373,7 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
                   onChange={(e) => setExampleEnglish(e.target.value)}
                   placeholder="np. The team showed great resilience during the crisis."
                   rows={2}
-                  className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700 resize-none"
+                  className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700 resize-none animate-none"
                 />
               </div>
 
@@ -280,13 +386,32 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
                   onChange={(e) => setExamplePolish(e.target.value)}
                   placeholder="np. Zespół wykazał się ogromną odpornością w czasie kryzysu."
                   rows={2}
-                  className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700 resize-none"
+                  className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700 resize-none animate-none"
                 />
               </div>
 
-              <button type="submit" className="btn btn-primary mt-2 self-start px-8">
-                <Icons.Plus size={16} /> Dodaj Fiszkę
-              </button>
+              <div className="flex gap-3 mt-2">
+                <button type="submit" className="btn btn-primary px-8">
+                  {editingCardId ? (
+                    <>
+                      <Icons.Save size={16} /> Zapisz zmiany
+                    </>
+                  ) : (
+                    <>
+                      <Icons.Plus size={16} /> Dodaj Fiszkę
+                    </>
+                  )}
+                </button>
+                {editingCardId && (
+                  <button 
+                    type="button" 
+                    onClick={handleCancelEditCard} 
+                    className="btn btn-secondary px-6"
+                  >
+                    Anuluj edycję
+                  </button>
+                )}
+              </div>
             </form>
           </div>
 
@@ -298,7 +423,7 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
               <>
                 <div className="flex items-center gap-3 mb-4 bg-black/25 p-3 rounded-2xl border border-white/5">
                   <div 
-                    className="p-2.5 rounded-xl border"
+                    className="p-2.5 rounded-xl border animate-none"
                     style={{ 
                       backgroundColor: `${currentSelectedDeck.color}10`, 
                       color: currentSelectedDeck.color,
@@ -319,24 +444,43 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
                       Ta talia nie zawiera jeszcze żadnych fiszek. Wypełnij pola i kliknij "Dodaj fiszkę".
                     </div>
                   ) : (
-                    currentSelectedDeck.cards.map((card) => (
-                      <div 
-                        key={card.id}
-                        className="bg-black/30 p-3 rounded-xl border border-white/5 flex items-center justify-between text-xs hover:border-white/10 transition-colors"
-                      >
-                        <div className="flex-1 min-w-0 pr-3">
-                          <div className="font-extrabold text-white truncate">{card.english}</div>
-                          <div className="text-[10px] text-slate-400 truncate mt-0.5 font-medium">{card.polish}</div>
-                        </div>
-                        <button 
-                          onClick={() => onDeleteCard(currentSelectedDeck.id, card.id)}
-                          className="p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all"
-                          title="Usuń fiszkę"
+                    currentSelectedDeck.cards.map((card) => {
+                      const isCustomCard = card.id && card.id.startsWith("custom-card-");
+                      return (
+                        <div 
+                          key={card.id}
+                          className="bg-black/30 p-3 rounded-xl border border-white/5 flex items-center justify-between text-xs hover:border-white/10 transition-colors"
                         >
-                          <Icons.Trash2 size={13} />
-                        </button>
-                      </div>
-                    ))
+                          <div className="flex-1 min-w-0 pr-3">
+                            <div className="font-extrabold text-white truncate">{card.english}</div>
+                            <div className="text-[10px] text-slate-400 truncate mt-0.5 font-medium">{card.polish}</div>
+                          </div>
+                          
+                          <div className="flex gap-1 items-center shrink-0">
+                            {isCustomCard ? (
+                              <>
+                                <button 
+                                  onClick={() => handleStartEditCard(card)}
+                                  className="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-all"
+                                  title="Edytuj fiszkę"
+                                >
+                                  <Icons.Edit2 size={13} />
+                                </button>
+                                <button 
+                                  onClick={() => onDeleteCard(currentSelectedDeck.id, card.id)}
+                                  className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all"
+                                  title="Usuń fiszkę"
+                                >
+                                  <Icons.Trash2 size={13} />
+                                </button>
+                              </>
+                            ) : (
+                              <Icons.Lock size={12} className="text-slate-600 mr-1.5" title="Karta systemowa - nieedytowalna" />
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })
                   )}
                 </div>
               </>
@@ -347,10 +491,12 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
             )}
           </div>
         </div>
-      ) : (
-        /* Create New Deck Section */
+      ) : activeTab === "create-deck" || (activeTab === "manage-decks" && editingDeckId) ? (
+        /* Create or Edit Deck Section */
         <div className="glass-card p-6 md:p-8">
-          <h3 className="text-lg font-bold text-white mb-5">Stwórz nową talię</h3>
+          <h3 className="text-lg font-bold text-white mb-5">
+            {editingDeckId ? `Edytuj talię: ${deckTitle}` : "Stwórz nową talię"}
+          </h3>
           
           {errorDeck && (
             <div className="mb-4 bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs p-3 rounded-xl flex items-center gap-2">
@@ -361,7 +507,7 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
           {successDeck && (
             <div className="mb-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs p-3 rounded-xl flex items-center gap-2">
               <Icons.CheckCircle2 size={16} />
-              <span>Talia została stworzona! Przełączanie...</span>
+              <span>{editingDeckId ? "Talia została zaktualizowana!" : "Talia została stworzona! Przełączanie..."}</span>
             </div>
           )}
 
@@ -456,12 +602,118 @@ export default function Creator({ decks, onCreateDeck, onAddCard, onDeleteCard, 
               </div>
             </div>
 
-            <button type="submit" className="btn btn-primary mt-2 self-start px-8">
-              <Icons.BookOpen size={16} /> Stwórz Zestaw
-            </button>
+            <div className="flex gap-3 mt-2">
+              <button type="submit" className="btn btn-primary px-8">
+                {editingDeckId ? (
+                  <>
+                    <Icons.Save size={16} /> Zapisz zmiany
+                  </>
+                ) : (
+                  <>
+                    <Icons.BookOpen size={16} /> Stwórz Zestaw
+                  </>
+                )}
+              </button>
+              {editingDeckId && (
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    handleCancelEditDeck();
+                    setActiveTab("manage-decks");
+                  }} 
+                  className="btn btn-secondary px-6"
+                >
+                  Anuluj
+                </button>
+              )}
+            </div>
           </form>
+        </div>
+      ) : (
+        /* Manage Decks Section (activeTab === "manage-decks" && !editingDeckId) */
+        <div className="glass-card p-6 md:p-8 flex flex-col gap-5">
+          <h3 className="text-lg font-bold text-white">Zarządzaj własnymi taliami</h3>
+          
+          {(() => {
+            const customDecks = decks.filter(d => d.id.startsWith("custom-deck-"));
+            if (customDecks.length === 0) {
+              return (
+                <div className="text-center py-12 text-slate-500 text-xs font-medium leading-relaxed">
+                  Nie stworzyłeś jeszcze żadnej własnej talii. <br />
+                  Przejdź do zakładki <strong className="text-indigo-400 cursor-pointer hover:underline" onClick={() => setActiveTab("create-deck")}>Nowa talia</strong>, aby stworzyć swój pierwszy zestaw.
+                </div>
+              );
+            }
+            return (
+              <div className="flex flex-col gap-4">
+                {customDecks.map(deck => (
+                  <div key={deck.id} className="bg-black/35 p-4 rounded-2xl border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-white/10 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div 
+                        className="p-3 rounded-xl border flex items-center justify-center animate-none"
+                        style={{ 
+                          backgroundColor: `${deck.color}10`, 
+                          color: deck.color,
+                          borderColor: `${deck.color}20` 
+                        }}
+                      >
+                        {React.createElement(Icons[deck.icon] || Icons.BookOpen, { size: 20 })}
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-extrabold text-white">{deck.title} <span className="text-[10px] text-slate-400 font-medium">({deck.polishTitle})</span></h4>
+                        <p className="text-xs text-slate-400 mt-1 max-w-md">{deck.description}</p>
+                        <span className="text-[9px] bg-white/5 border border-white/10 px-2 py-0.5 rounded-full text-slate-400 font-extrabold uppercase mt-2 inline-block tracking-wider">
+                          {deck.cards.length} fiszek
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                      <button
+                        onClick={() => handleStartEditDeck(deck)}
+                        className="btn btn-secondary text-xs py-2 px-4 flex items-center gap-1.5"
+                      >
+                        <Icons.Edit2 size={13} />
+                        Edytuj
+                      </button>
+                      
+                      {showConfirmDeleteDeckId === deck.id ? (
+                        <div className="flex items-center gap-1.5 bg-rose-500/10 border border-rose-500/20 p-1 rounded-xl">
+                          <span className="text-[10px] text-rose-300 font-bold px-2">Na pewno?</span>
+                          <button
+                            onClick={() => {
+                              onDeleteDeck(deck.id);
+                              setShowConfirmDeleteDeckId(null);
+                            }}
+                            className="btn bg-rose-600 hover:bg-rose-700 text-white text-xs py-1.5 px-3 rounded-lg"
+                          >
+                            Tak
+                          </button>
+                          <button
+                            onClick={() => setShowConfirmDeleteDeckId(null)}
+                            className="btn btn-secondary text-xs py-1.5 px-3 rounded-lg"
+                          >
+                            Nie
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setShowConfirmDeleteDeckId(deck.id)}
+                          className="btn text-xs py-2 px-4 border border-rose-500/20 text-rose-400 bg-rose-500/5 hover:bg-rose-500/10 flex items-center gap-1.5"
+                        >
+                          <Icons.Trash2 size={13} />
+                          Usuń
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
         </div>
       )}
     </div>
   );
 }
+

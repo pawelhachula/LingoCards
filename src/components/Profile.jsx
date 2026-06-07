@@ -52,28 +52,36 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
       color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
     },
     {
-      id: "streak_3",
-      title: "Systematyczność",
-      desc: "Utrzymano streak nauki przez min. 3 dni",
+      id: "streak_5",
+      title: "Brązowy Płomień",
+      desc: "Utrzymano streak nauki przez min. 5 dni",
       icon: "Flame",
-      unlocked: stats.streak >= 3 || (stats.bestStreak || 0) >= 3,
+      unlocked: stats.streak >= 5 || (stats.bestStreak || 0) >= 5,
       color: "text-amber-500 bg-amber-500/10 border-amber-500/20"
     },
     {
-      id: "streak_7",
-      title: "Tydzień w transie",
-      desc: "Utrzymano streak nauki przez min. 7 dni",
-      icon: "Flame",
-      unlocked: stats.streak >= 7 || (stats.bestStreak || 0) >= 7,
-      color: "text-orange-500 bg-orange-500/10 border-orange-500/20"
+      id: "streak_10",
+      title: "Srebrny Płomień",
+      desc: "Utrzymano streak nauki przez min. 10 dni",
+      icon: "Shield",
+      unlocked: stats.streak >= 10 || (stats.bestStreak || 0) >= 10,
+      color: "text-slate-300 bg-slate-300/10 border-slate-300/20"
     },
     {
-      id: "streak_15",
-      title: "Wielki Mistrz",
-      desc: "Utrzymano streak nauki przez min. 15 dni",
-      icon: "Award",
-      unlocked: stats.streak >= 15 || (stats.bestStreak || 0) >= 15,
-      color: "text-rose-500 bg-rose-500/10 border-rose-500/20"
+      id: "streak_20",
+      title: "Złoty Płomień",
+      desc: "Utrzymano streak nauki przez min. 20 dni",
+      icon: "Trophy",
+      unlocked: stats.streak >= 20 || (stats.bestStreak || 0) >= 20,
+      color: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20"
+    },
+    {
+      id: "streak_30",
+      title: "Diamentowy Płomień",
+      desc: "Utrzymano streak nauki przez min. 30 dni (miesiąc)",
+      icon: "Crown",
+      unlocked: stats.streak >= 30 || (stats.bestStreak || 0) >= 30,
+      color: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20"
     },
     {
       id: "quiz_complete",

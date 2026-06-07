@@ -2,7 +2,8 @@ import React from "react";
 import * as Icons from "lucide-react";
 
 export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavigate }) {
-  const totalCards = decks.reduce((sum, deck) => sum + deck.cards.length, 0);
+  const realDecks = decks.filter(d => d.id !== "starred" && d.id !== "srs");
+  const totalCards = realDecks.reduce((sum, deck) => sum + deck.cards.length, 0);
   const learnedCount = Object.keys(stats.learnedCards || {}).length;
   const progressPercent = totalCards > 0 ? Math.round((learnedCount / totalCards) * 100) : 0;
   
@@ -13,9 +14,6 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
   // SRS calculations
   const srsData = stats.srsData || {};
   const todayStr = new Date().toISOString().split("T")[0];
-  
-  // Exclude virtual/utility decks to get unique real cards
-  const realDecks = decks.filter(d => d.id !== "starred" && d.id !== "srs");
   const allCards = realDecks.flatMap(d => d.cards || []);
   const uniqueCards = [];
   const cardIds = new Set();
@@ -524,6 +522,131 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
             ));
           })()}
         </div>
+
+        {/* Horizontal Divider */}
+        <div className="border-t border-white/5 my-1" />
+        
+        {/* Milestones Panel */}
+        <div className="flex flex-col gap-3">
+          <div className="flex justify-between items-center">
+            <h5 className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Odznaczenia za Serię Dni (Milestones)</h5>
+            <span className="text-[9px] font-bold text-slate-500">Najlepszy streak: {stats.bestStreak || stats.streak || 0} dni</span>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {/* 5 Dni - Brązowy Płomień */}
+            {(() => {
+              const bestStreak = stats.bestStreak || stats.streak || 0;
+              const unlocked = bestStreak >= 5;
+              return (
+                <div 
+                  className={`p-3 rounded-xl border flex items-center gap-3 transition-all duration-300 ${
+                    unlocked 
+                      ? "bg-amber-600/5 border-amber-600/30 text-amber-500 shadow-[0_0_12px_rgba(217,119,6,0.1)] hover:border-amber-500/40" 
+                      : "bg-black/20 border-white/5 text-slate-500 opacity-40"
+                  }`}
+                >
+                  <div className={`p-2 rounded-lg border flex items-center justify-center shrink-0 ${unlocked ? "border-amber-500/20 bg-amber-500/10" : "border-transparent bg-white/5"}`}>
+                    <Icons.Flame size={16} className={unlocked ? "fill-amber-500/15 text-amber-500 animate-pulse" : "text-slate-600"} />
+                  </div>
+                  <div className="min-w-0 flex-grow">
+                    <span className="text-[11px] font-bold text-white block truncate">Brązowy Płomień</span>
+                    <span className="text-[9px] font-medium text-slate-400 block mt-0.5">Seria 5 dni nauki</span>
+                  </div>
+                  {unlocked ? (
+                    <Icons.CheckCircle size={12} className="text-amber-500 shrink-0" />
+                  ) : (
+                    <Icons.Lock size={12} className="text-slate-600 shrink-0" />
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* 10 Dni - Srebrny Płomień */}
+            {(() => {
+              const bestStreak = stats.bestStreak || stats.streak || 0;
+              const unlocked = bestStreak >= 10;
+              return (
+                <div 
+                  className={`p-3 rounded-xl border flex items-center gap-3 transition-all duration-300 ${
+                    unlocked 
+                      ? "bg-slate-400/5 border-slate-400/30 text-slate-300 shadow-[0_0_12px_rgba(148,163,184,0.1)] hover:border-slate-300/40" 
+                      : "bg-black/20 border-white/5 text-slate-500 opacity-40"
+                  }`}
+                >
+                  <div className={`p-2 rounded-lg border flex items-center justify-center shrink-0 ${unlocked ? "border-slate-300/20 bg-slate-300/10" : "border-transparent bg-white/5"}`}>
+                    <Icons.Shield size={16} className={unlocked ? "text-slate-300" : "text-slate-600"} />
+                  </div>
+                  <div className="min-w-0 flex-grow">
+                    <span className="text-[11px] font-bold text-white block truncate">Srebrny Płomień</span>
+                    <span className="text-[9px] font-medium text-slate-400 block mt-0.5">Seria 10 dni nauki</span>
+                  </div>
+                  {unlocked ? (
+                    <Icons.CheckCircle size={12} className="text-slate-300 shrink-0" />
+                  ) : (
+                    <Icons.Lock size={12} className="text-slate-600 shrink-0" />
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* 20 Dni - Złoty Płomień */}
+            {(() => {
+              const bestStreak = stats.bestStreak || stats.streak || 0;
+              const unlocked = bestStreak >= 20;
+              return (
+                <div 
+                  className={`p-3 rounded-xl border flex items-center gap-3 transition-all duration-300 ${
+                    unlocked 
+                      ? "bg-yellow-500/5 border-yellow-500/30 text-yellow-500 shadow-[0_0_12px_rgba(234,179,8,0.1)] hover:border-yellow-400/40" 
+                      : "bg-black/20 border-white/5 text-slate-500 opacity-40"
+                  }`}
+                >
+                  <div className={`p-2 rounded-lg border flex items-center justify-center shrink-0 ${unlocked ? "border-yellow-500/20 bg-yellow-500/10" : "border-transparent bg-white/5"}`}>
+                    <Icons.Trophy size={16} className={unlocked ? "text-yellow-500" : "text-slate-600"} />
+                  </div>
+                  <div className="min-w-0 flex-grow">
+                    <span className="text-[11px] font-bold text-white block truncate">Złoty Płomień</span>
+                    <span className="text-[9px] font-medium text-slate-400 block mt-0.5">Seria 20 dni nauki</span>
+                  </div>
+                  {unlocked ? (
+                    <Icons.CheckCircle size={12} className="text-yellow-500 shrink-0" />
+                  ) : (
+                    <Icons.Lock size={12} className="text-slate-600 shrink-0" />
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* 30 Dni - Diamentowy Płomień */}
+            {(() => {
+              const bestStreak = stats.bestStreak || stats.streak || 0;
+              const unlocked = bestStreak >= 30;
+              return (
+                <div 
+                  className={`p-3 rounded-xl border flex items-center gap-3 transition-all duration-300 ${
+                    unlocked 
+                      ? "bg-cyan-500/5 border-cyan-500/30 text-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.1)] hover:border-cyan-400/40" 
+                      : "bg-black/20 border-white/5 text-slate-500 opacity-40"
+                  }`}
+                >
+                  <div className={`p-2 rounded-lg border flex items-center justify-center shrink-0 ${unlocked ? "border-cyan-500/20 bg-cyan-500/10" : "border-transparent bg-white/5"}`}>
+                    <Icons.Crown size={16} className={unlocked ? "text-cyan-400 animate-pulse" : "text-slate-600"} />
+                  </div>
+                  <div className="min-w-0 flex-grow">
+                    <span className="text-[11px] font-bold text-white block truncate">Diamentowy Płomień</span>
+                    <span className="text-[9px] font-medium text-slate-400 block mt-0.5">Seria 30 dni (Miesiąc)</span>
+                  </div>
+                  {unlocked ? (
+                    <Icons.CheckCircle size={12} className="text-cyan-400 shrink-0" />
+                  ) : (
+                    <Icons.Lock size={12} className="text-slate-600 shrink-0" />
+                  )}
+                </div>
+              );
+            })()}
+          </div>
+        </div>
       </div>
 
       {/* Decks listing */}
@@ -542,123 +665,140 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {decks.map((deck) => {
-            const IconComponent = Icons[deck.icon] || Icons.BookOpen;
-            
-            const deckCardsList = deck.cards || [];
-            const deckCardsCount = deckCardsList.length;
-            const deckLearnedCount = deckCardsList.filter(card => stats.learnedCards?.[card.id]).length;
-            const deckProgress = deckCardsCount > 0 ? Math.round((deckLearnedCount / deckCardsCount) * 100) : 0;
-            const isCompleted100 = deckProgress === 100;
-
-            const deckDueCount = deck.id !== "starred" && deck.id !== "srs"
-              ? deckCardsList.filter(card => {
-                  const srs = srsData[card.id];
-                  if (!srs) return true;
-                  return srs.nextReviewDate <= todayStr;
-                }).length
-              : 0;
-
-            return (
-              <div 
-                key={deck.id} 
-                className={`glass-card p-6 flex flex-col justify-between hover:-translate-y-1 scale-hover border-t-4 transition-all duration-300 ${
-                  isCompleted100 
-                    ? "gold-deck-outline" 
-                    : stats.deckMedals?.[deck.id] === 'gold' 
-                      ? "border-yellow-500/30 shadow-[0_0_20px_rgba(234,179,8,0.12)] ring-1 ring-yellow-500/20" 
-                      : ""
-                }`}
-                style={{
-                  borderTopColor: isCompleted100 ? '#eab308' : stats.deckMedals?.[deck.id] === 'gold' ? '#eab308' : (deck.color || '#6366f1')
-                }}
+          {realDecks.length === 0 ? (
+            <div className="col-span-full glass-card p-10 text-center flex flex-col items-center gap-4 border border-dashed border-white/10">
+              <Icons.Compass size={48} className="text-indigo-400 animate-pulse" />
+              <h4 className="text-lg font-bold text-white">Twój pulpit jest pusty</h4>
+              <p className="text-slate-400 text-xs max-w-sm mx-auto">
+                Przejdź do Katalogu Talii, aby wybrać i dodać interesujące Cię tematy do nauki! 🧭
+              </p>
+              <button 
+                onClick={() => onNavigate("library")} 
+                className="btn btn-primary text-xs py-2.5 px-5 rounded-xl scale-hover flex items-center gap-2 mt-2"
               >
-                <div>
-                  <div className="flex items-start justify-between">
-                    <div 
-                      className="p-3.5 rounded-2xl border"
-                      style={{ 
-                        backgroundColor: `${deck.color}10`, 
-                        color: deck.color,
-                        borderColor: `${deck.color}20`
-                      }}
-                    >
-                      <IconComponent size={22} />
-                    </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <span className="text-[10px] bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full font-bold text-slate-400 uppercase tracking-wider">
-                        {deckCardsCount} fiszek
-                      </span>
-                      {deckDueCount > 0 && (
-                        <span className="text-[9px] bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 rounded-full font-black text-pink-400 uppercase tracking-wider animate-pulse">
-                          Powtórka: {deckDueCount}
+                <Icons.Compass size={14} />
+                Przejdź do Katalogu Talii
+              </button>
+            </div>
+          ) : (
+            realDecks.map((deck) => {
+              const IconComponent = Icons[deck.icon] || Icons.BookOpen;
+              
+              const deckCardsList = deck.cards || [];
+              const deckCardsCount = deckCardsList.length;
+              const deckLearnedCount = deckCardsList.filter(card => stats.learnedCards?.[card.id]).length;
+              const deckProgress = deckCardsCount > 0 ? Math.round((deckLearnedCount / deckCardsCount) * 100) : 0;
+              const isCompleted100 = deckProgress === 100;
+
+              const deckDueCount = deck.id !== "starred" && deck.id !== "srs"
+                ? deckCardsList.filter(card => {
+                    const srs = srsData[card.id];
+                    if (!srs) return true;
+                    return srs.nextReviewDate <= todayStr;
+                  }).length
+                : 0;
+
+              return (
+                <div 
+                  key={deck.id} 
+                  className={`glass-card p-6 flex flex-col justify-between hover:-translate-y-1 scale-hover border-t-4 transition-all duration-300 ${
+                    isCompleted100 
+                      ? "gold-deck-outline" 
+                      : stats.deckMedals?.[deck.id] === 'gold' 
+                        ? "border-yellow-500/30 shadow-[0_0_20px_rgba(234,179,8,0.12)] ring-1 ring-yellow-500/20" 
+                        : ""
+                  }`}
+                  style={{
+                    borderTopColor: isCompleted100 ? '#eab308' : stats.deckMedals?.[deck.id] === 'gold' ? '#eab308' : (deck.color || '#6366f1')
+                  }}
+                >
+                  <div>
+                    <div className="flex items-start justify-between">
+                      <div 
+                        className="p-3.5 rounded-2xl border"
+                        style={{ 
+                          backgroundColor: `${deck.color}10`, 
+                          color: deck.color,
+                          borderColor: `${deck.color}20`
+                        }}
+                      >
+                        <IconComponent size={22} />
+                      </div>
+                      <div className="flex flex-col items-end gap-1">
+                        <span className="text-[10px] bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full font-bold text-slate-400 uppercase tracking-wider">
+                          {deckCardsCount} fiszek
                         </span>
-                      )}
-                      {stats.deckMedals?.[deck.id] && (
-                        <span className={`text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 border ${
-                          stats.deckMedals[deck.id] === 'gold' 
-                            ? "bg-yellow-500/15 border-yellow-500/30 text-yellow-400 shadow-[0_0_8px_rgba(234,179,8,0.2)]" 
-                            : stats.deckMedals[deck.id] === 'silver'
-                              ? "bg-slate-300/15 border-slate-300/30 text-slate-300"
-                              : "bg-amber-600/15 border-amber-600/30 text-amber-500"
-                        }`}>
-                          {stats.deckMedals[deck.id] === 'gold' ? "🥇 Złoto" : stats.deckMedals[deck.id] === 'silver' ? "🥈 Srebro" : "🥉 Brąz"}
-                        </span>
-                      )}
+                        {deckDueCount > 0 && (
+                          <span className="text-[9px] bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 rounded-full font-black text-pink-400 uppercase tracking-wider animate-pulse">
+                            Powtórka: {deckDueCount}
+                          </span>
+                        )}
+                        {stats.deckMedals?.[deck.id] && (
+                          <span className={`text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 border ${
+                            stats.deckMedals[deck.id] === 'gold' 
+                              ? "bg-yellow-500/15 border-yellow-500/30 text-yellow-400 shadow-[0_0_8px_rgba(234,179,8,0.2)]" 
+                              : stats.deckMedals[deck.id] === 'silver'
+                                ? "bg-slate-300/15 border-slate-300/30 text-slate-300"
+                                : "bg-amber-600/15 border-amber-600/30 text-amber-500"
+                          }`}>
+                            {stats.deckMedals[deck.id] === 'gold' ? "🥇 Złoto" : stats.deckMedals[deck.id] === 'silver' ? "🥈 Srebro" : "🥉 Brąz"}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <h4 className="text-lg font-bold text-white mt-4 tracking-tight">{deck.title}</h4>
+                    <span className="text-xs text-indigo-300 font-semibold">{deck.polishTitle}</span>
+                    <p className="text-slate-400 text-xs mt-3 line-clamp-2 leading-relaxed">
+                      {deck.description}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-white/5">
+                    <div className="flex justify-between items-center text-xs mb-2">
+                      <span className="text-slate-500 font-bold uppercase">Opanowane</span>
+                      <span className="text-white font-extrabold">{deckProgress}%</span>
+                    </div>
+                    <div className="bg-white/5 h-1.5 rounded-full overflow-hidden mb-5 border border-white/5">
+                      <div 
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{ 
+                          width: `${deckProgress}%`,
+                          backgroundColor: deck.color
+                        }}
+                      />
+                    </div>
+
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => {
+                          onSelectDeck(deck);
+                          onNavigate("learn");
+                        }}
+                        className="flex-grow btn btn-secondary text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform"
+                      >
+                        <Icons.Play size={12} /> Fiszki
+                      </button>
+                      <button 
+                        onClick={() => {
+                          onSelectDeck(deck);
+                          onNavigate("quiz");
+                        }}
+                        className="flex-grow btn text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform"
+                        style={{ 
+                          background: `${deck.color}12`, 
+                          color: deck.color,
+                          borderColor: `${deck.color}25`
+                        }}
+                      >
+                        <Icons.Award size={12} /> Test
+                      </button>
                     </div>
                   </div>
-
-                  <h4 className="text-lg font-bold text-white mt-4 tracking-tight">{deck.title}</h4>
-                  <span className="text-xs text-indigo-300 font-semibold">{deck.polishTitle}</span>
-                  <p className="text-slate-400 text-xs mt-3 line-clamp-2 leading-relaxed">
-                    {deck.description}
-                  </p>
                 </div>
-
-                <div className="mt-6 pt-4 border-t border-white/5">
-                  <div className="flex justify-between items-center text-xs mb-2">
-                    <span className="text-slate-500 font-bold uppercase">Opanowane</span>
-                    <span className="text-white font-extrabold">{deckProgress}%</span>
-                  </div>
-                  <div className="bg-white/5 h-1.5 rounded-full overflow-hidden mb-5 border border-white/5">
-                    <div 
-                      className="h-full rounded-full transition-all duration-500"
-                      style={{ 
-                        width: `${deckProgress}%`,
-                        backgroundColor: deck.color
-                      }}
-                    />
-                  </div>
-
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={() => {
-                        onSelectDeck(deck);
-                        onNavigate("learn");
-                      }}
-                      className="flex-grow btn btn-secondary text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform"
-                    >
-                      <Icons.Play size={12} /> Fiszki
-                    </button>
-                    <button 
-                      onClick={() => {
-                        onSelectDeck(deck);
-                        onNavigate("quiz");
-                      }}
-                      className="flex-grow btn text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform"
-                      style={{ 
-                        background: `${deck.color}12`, 
-                        color: deck.color,
-                        borderColor: `${deck.color}25`
-                      }}
-                    >
-                      <Icons.Award size={12} /> Test
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </div>
     </div>

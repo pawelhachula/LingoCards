@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import * as Icons from "lucide-react";
 
-export default function Settings({ stats, onUpdateStats, theme, onThemeChange, onResetData }) {
+export default function Settings({ stats, onUpdateStats, theme, onThemeChange, onResetData, DEFAULT_THEMES = [], PREMIUM_THEMES = [] }) {
   const [dailyGoal, setDailyGoal] = useState(stats.dailyTarget || 10);
   const [speechSpeed, setSpeechSpeed] = useState(localStorage.getItem("lingocards_speech_speed") || "1.0");
   const [autoplayAudio, setAutoplayAudio] = useState(localStorage.getItem("lingocards_autoplay") === "true");
@@ -182,7 +182,7 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
           </div>
 
           {/* Quick Theme Picker */}
-          <div className="flex flex-col gap-3 pb-5 border-b border-white/5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/5">
             <div>
               <h4 className="text-sm font-bold text-white flex items-center gap-2">
                 <Icons.Palette size={16} className="text-pink-500" />
@@ -190,28 +190,24 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
               </h4>
               <p className="text-[11px] text-slate-500 mt-0.5">Wybierz kolorystykę aplikacji</p>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-1">
-              {[
-                { id: "graphite", label: "Graphite", color: "bg-[#6366f1]" },
-                { id: "green", label: "Bottle Green", color: "bg-[#10b981]" },
-                { id: "navy", label: "Deep Navy", color: "bg-[#2563eb]" },
-                { id: "sakura", label: "Sakura (Jasny)", color: "bg-[#db2777]" },
-                { id: "forest", label: "Forest (Jasny)", color: "bg-[#059669]" },
-                { id: "amber", label: "Amber (Jasny)", color: "bg-[#d97706]" },
-              ].map((t) => (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => onThemeChange(t.id)}
-                  className={`flex items-center gap-2 p-2.5 rounded-xl border text-xs font-bold transition-all hover:bg-white/5 ${
-                    theme === t.id ? "border-[var(--text-primary)] bg-white/5" : "border-white/5 opacity-70"
-                  }`}
-                >
-                  <span className={`w-3.5 h-3.5 rounded-full ${t.color}`} />
-                  <span className="text-[var(--text-primary)]">{t.label}</span>
-                </button>
-              ))}
-            </div>
+            <select
+              value={theme}
+              onChange={(e) => onThemeChange(e.target.value)}
+              className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500/60 w-52"
+            >
+              <optgroup label="Motywy podstawowe" className="bg-[var(--bg-main)] text-slate-400">
+                {DEFAULT_THEMES.map(t => (
+                  <option key={t.id} value={t.id} className="bg-[var(--bg-main)] text-[var(--text-primary)]">{t.label}</option>
+                ))}
+              </optgroup>
+              {PREMIUM_THEMES.some(t => (stats.xp || 0) >= t.xpRequired) && (
+                <optgroup label="Motywy premium (Odblokowane)" className="bg-[var(--bg-main)] text-indigo-400">
+                  {PREMIUM_THEMES.filter(t => (stats.xp || 0) >= t.xpRequired).map(t => (
+                    <option key={t.id} value={t.id} className="bg-[var(--bg-main)] text-[var(--text-primary)]">✨ {t.label}</option>
+                  ))}
+                </optgroup>
+              )}
+            </select>
           </div>
 
           {successMsg && (
