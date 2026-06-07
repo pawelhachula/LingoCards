@@ -186,13 +186,22 @@ export default function App() {
     return isFirebaseUser ? uid : uid.toLowerCase();
   };
 
+  const getStatsScore = (s) => {
+    if (!s) return 0;
+    const xpVal = s.xp || 0;
+    const learnedCount = Object.keys(s.learnedCards || {}).length;
+    const completedCount = Object.values(s.completedDecks || {}).reduce((a, b) => a + b, 0);
+    const activeCount = (s.activeDeckIds || []).length;
+    return (xpVal * 10) + (learnedCount * 5) + (completedCount * 100) + activeCount;
+  };
+
   // Helper to load user specific data — uid = Firebase UID lub username dla kont lokalnych
   const loadUserData = async (uid, username) => {
     // Jeśli nie podano username, użyj uid jako username (dla kont lokalnych)
     const uname = username || uid;
     const uidKey = getFirestoreUidKey(uid);
 
-    // --- Załaduj talie ---
+    // --- 1. Załaduj talie ---
     let loadedDecks = [];
     try {
       const firestoreDecks = await loadDecks(uidKey);
@@ -241,22 +250,8 @@ export default function App() {
       loadedDecks = defaultDecks;
       saveDecks(uidKey, defaultDecks);
     }
-    setDecks(loadedDecks);
 
-    // --- Załaduj aktywne talie ---
-    const activeDecksKey = `lingocards_active_decks_${uname.toLowerCase()}`;
-    const savedActiveDecks = localStorage.getItem(activeDecksKey);
-    let loadedActiveDecks = [];
-    if (savedActiveDecks) {
-      try { loadedActiveDecks = JSON.parse(savedActiveDecks); } catch (e) { /* ignore */ }
-    }
-    setActiveDeckIds(loadedActiveDecks);
-
-    const activeDecks = loadedDecks.filter(d => loadedActiveDecks.includes(d.id) || !systemDeckIds.has(d.id));
-    if (activeDecks.length > 0) setSelectedDeck(activeDecks[0]);
-    else if (loadedDecks.length > 0) setSelectedDeck(loadedDecks[0]);
-
-    // --- Załaduj statystyki ---
+    // --- 2. Załaduj statystyki ---
     const defaultStatsTemplate = {
       streak: 0, dailyCount: 0, lastActiveDate: "",
       learnedCards: {}, starredCards: {}, quizTotal: 0, quizCorrect: 0,
@@ -316,10 +311,80 @@ export default function App() {
       loadedStats.studyDates = dateList;
     }
 
+    // --- 3. Automatyczna migracja starego lokalnego postępu komputera ---
+    // Jeśli w przeglądarce leżą stare dane lokalne z większym postępem niż te w chmurze,
+    // zmigrujmy je automatycznie do chmury!
+    try {
+      const currentStatsKey = `lingocards_stats_${uidKey.toLowerCase()}`;
+      const localStatsKeys = Object.keys(localStorage).filter(k => 
+        k.startsWith("lingocards_stats_") && 
+        k.toLowerCase() !== currentStatsKey.toLowerCase()
+      );
+      
+      let bestLocalStats = null;
+      let bestLocalKey = null;
+      let maxScore = getStatsScore(loadedStats);
+      
+      for (const key of localStatsKeys) {
+        const dataStr = localStorage.getItem(key);
+        if (dataStr) {
+          try {
+            const parsed = JSON.parse(dataStr);
+            const score = getStatsScore(parsed);
+            if (score > maxScore) {
+              maxScore = score;
+              bestLocalStats = parsed;
+              bestLocalKey = key;
+            }
+          } catch (err) { /* ignore */ }
+        }
+      }
+      
+      if (bestLocalStats) {
+        console.log(`[Migration] Migrating local progress from ${bestLocalKey} (score: ${maxScore})`);
+        
+        const migratedStats = {
+          ...loadedStats,
+          ...bestLocalStats,
+          avatarData: loadedStats.avatarData || bestLocalStats.avatarData,
+          customUsername: loadedStats.customUsername || bestLocalStats.customUsername
+        };
+        
+        loadedStats = migratedStats;
+        
+        // Migrujemy też własne talie z tamtego profilu
+        const usernamePart = bestLocalKey.replace("lingocards_stats_", "");
+        const localDecksKey = `lingocards_decks_${usernamePart}`;
+        const localDecksStr = localStorage.getItem(localDecksKey);
+        if (localDecksStr) {
+          try {
+            const parsedDecks = JSON.parse(localDecksStr);
+            if (parsedDecks && parsedDecks.length > 0) {
+              const mergedDecks = [...loadedDecks];
+              parsedDecks.forEach(d => {
+                if (!mergedDecks.some(md => md.id === d.id)) {
+                  mergedDecks.push(d);
+                }
+              });
+              loadedDecks = mergedDecks;
+            }
+          } catch (err) { /* ignore */ }
+        }
+      }
+    } catch (e) {
+      console.error("Failed to migrate local stats", e);
+    }
+
+    // --- 4. Zapisz i Ustaw stany końcowe ---
+    setDecks(loadedDecks);
+    saveDecks(uidKey, loadedDecks);
+
     setStats(loadedStats);
     saveStats(uidKey, loadedStats);
 
-    // Synchronizuj profil użytkownika (avatar i nazwa użytkownika z Firestore)
+    // --- 5. Synchronizacja stanów pobocznych UI ---
+    
+    // Zsynchronizuj profil użytkownika (avatar i nazwa użytkownika z Firestore)
     if (loadedStats.avatarData || loadedStats.customUsername) {
       setCurrentUser(prev => {
         if (!prev) return prev;
@@ -333,99 +398,20 @@ export default function App() {
       });
     }
 
-    // Synchronizuj aktywne talie z wczytanych statystyk (Firestore/localStorage)
-    if (loadedStats.activeDeckIds && loadedStats.activeDeckIds.length > 0) {
-      setActiveDeckIds(loadedStats.activeDeckIds);
-      const activeDecksKey = `lingocards_active_decks_${uname.toLowerCase()}`;
-      localStorage.setItem(activeDecksKey, JSON.stringify(loadedStats.activeDeckIds));
-      
-      const activeDecks = loadedDecks.filter(d => loadedStats.activeDeckIds.includes(d.id) || !systemDeckIds.has(d.id));
-      if (activeDecks.length > 0) setSelectedDeck(activeDecks[0]);
-    }
+    // Zsynchronizuj aktywne talie z wczytanych statystyk (defaults to [] if empty/new)
+    const activeDeckIdsToSet = loadedStats.activeDeckIds || [];
+    setActiveDeckIds(activeDeckIdsToSet);
+    const activeDecksKey = `lingocards_active_decks_${uname.toLowerCase()}`;
+    localStorage.setItem(activeDecksKey, JSON.stringify(activeDeckIdsToSet));
+    
+    const activeDecks = loadedDecks.filter(d => activeDeckIdsToSet.includes(d.id) || !systemDeckIds.has(d.id));
+    if (activeDecks.length > 0) setSelectedDeck(activeDecks[0]);
+    else if (loadedDecks.length > 0) setSelectedDeck(loadedDecks[0]);
 
-    // Synchronizuj motyw graficzny z wczytanych statystyk
-    if (loadedStats.theme) {
-      setTheme(loadedStats.theme);
-      localStorage.setItem("lingocards_theme", loadedStats.theme);
-    }
-
-    // --- Automatyczna migracja starego lokalnego postępu komputera ---
-    // Jeśli wczytany profil z chmury jest nowy/czysty (XP = 0), a w przeglądarce
-    // leżą stare dane lokalne z dużym postępem, zmigrujmy je automatycznie do chmury!
-    if ((loadedStats.xp || 0) === 0) {
-      try {
-        const currentStatsKey = `lingocards_stats_${uidKey.toLowerCase()}`;
-        const localStatsKeys = Object.keys(localStorage).filter(k => 
-          k.startsWith("lingocards_stats_") && 
-          k.toLowerCase() !== currentStatsKey.toLowerCase()
-        );
-        
-        let bestLocalStats = null;
-        let bestLocalKey = null;
-        let maxXp = 0;
-        
-        for (const key of localStatsKeys) {
-          const dataStr = localStorage.getItem(key);
-          if (dataStr) {
-            try {
-              const parsed = JSON.parse(dataStr);
-              if (parsed && (parsed.xp || 0) > maxXp) {
-                maxXp = parsed.xp;
-                bestLocalStats = parsed;
-                bestLocalKey = key;
-              }
-            } catch (err) { /* ignore */ }
-          }
-        }
-        
-        if (bestLocalStats && maxXp > 0) {
-          console.log(`[Migration] Migrating local progress from ${bestLocalKey} (${maxXp} XP)`);
-          
-          const migratedStats = {
-            ...loadedStats,
-            ...bestLocalStats,
-            avatarData: loadedStats.avatarData || bestLocalStats.avatarData,
-            customUsername: loadedStats.customUsername || bestLocalStats.customUsername
-          };
-          
-          setStats(migratedStats);
-          saveStats(uidKey, migratedStats);
-
-          // Synchronizuj aktywne talie z zmigrowanych statystyk
-          if (migratedStats.activeDeckIds && migratedStats.activeDeckIds.length > 0) {
-            setActiveDeckIds(migratedStats.activeDeckIds);
-            const activeDecksKey = `lingocards_active_decks_${uname.toLowerCase()}`;
-            localStorage.setItem(activeDecksKey, JSON.stringify(migratedStats.activeDeckIds));
-          }
-          if (migratedStats.theme) {
-            setTheme(migratedStats.theme);
-            localStorage.setItem("lingocards_theme", migratedStats.theme);
-          }
-          
-          // Migrujemy też własne talie z tamtego profilu
-          const usernamePart = bestLocalKey.replace("lingocards_stats_", "");
-          const localDecksKey = `lingocards_decks_${usernamePart}`;
-          const localDecksStr = localStorage.getItem(localDecksKey);
-          if (localDecksStr) {
-            try {
-              const parsedDecks = JSON.parse(localDecksStr);
-              if (parsedDecks && parsedDecks.length > 0) {
-                const mergedDecks = [...loadedDecks];
-                parsedDecks.forEach(d => {
-                  if (!mergedDecks.some(md => md.id === d.id)) {
-                    mergedDecks.push(d);
-                  }
-                });
-                setDecks(mergedDecks);
-                saveDecks(uidKey, mergedDecks);
-              }
-            } catch (err) { /* ignore */ }
-          }
-        }
-      } catch (e) {
-        console.error("Failed to migrate local stats", e);
-      }
-    }
+    // Zsynchronizuj motyw graficzny z wczytanych statystyk (defaults to navy)
+    const themeToSet = loadedStats.theme || "navy";
+    setTheme(themeToSet);
+    localStorage.setItem("lingocards_theme", themeToSet);
   };
 
   const handleLogin = (user) => {
