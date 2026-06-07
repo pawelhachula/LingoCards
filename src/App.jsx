@@ -321,9 +321,15 @@ export default function App() {
         k.toLowerCase() !== currentStatsKey.toLowerCase()
       );
       
+      console.log("[Migration Diagnostic] uidKey:", uidKey);
+      console.log("[Migration Diagnostic] currentStatsKey:", currentStatsKey);
+      console.log("[Migration Diagnostic] localStatsKeys found in browser:", localStatsKeys);
+      
       let bestLocalStats = null;
       let bestLocalKey = null;
       let maxScore = getStatsScore(loadedStats);
+      
+      console.log("[Migration Diagnostic] Current loadedStats score:", maxScore, loadedStats);
       
       for (const key of localStatsKeys) {
         const dataStr = localStorage.getItem(key);
@@ -331,17 +337,20 @@ export default function App() {
           try {
             const parsed = JSON.parse(dataStr);
             const score = getStatsScore(parsed);
+            console.log(`[Migration Diagnostic] Key "${key}" -> Score: ${score}`, parsed);
             if (score > maxScore) {
               maxScore = score;
               bestLocalStats = parsed;
               bestLocalKey = key;
             }
-          } catch (err) { /* ignore */ }
+          } catch (err) {
+            console.warn(`[Migration Diagnostic] Failed to parse key "${key}":`, err.message);
+          }
         }
       }
       
       if (bestLocalStats) {
-        console.log(`[Migration] Migrating local progress from ${bestLocalKey} (score: ${maxScore})`);
+        console.log(`[Migration Diagnostic] TRIGGERING MIGRATION from "${bestLocalKey}" (new score: ${maxScore})`);
         
         const migratedStats = {
           ...loadedStats,
@@ -360,6 +369,7 @@ export default function App() {
           try {
             const parsedDecks = JSON.parse(localDecksStr);
             if (parsedDecks && parsedDecks.length > 0) {
+              console.log(`[Migration Diagnostic] Copying custom decks from "${localDecksKey}":`, parsedDecks);
               const mergedDecks = [...loadedDecks];
               parsedDecks.forEach(d => {
                 if (!mergedDecks.some(md => md.id === d.id)) {
@@ -370,9 +380,11 @@ export default function App() {
             }
           } catch (err) { /* ignore */ }
         }
+      } else {
+        console.log("[Migration Diagnostic] NO MIGRATION: No local profile had a score higher than current chmura profile.");
       }
     } catch (e) {
-      console.error("Failed to migrate local stats", e);
+      console.error("[Migration Diagnostic] Exception during migration:", e);
     }
 
     // --- 4. Zapisz i Ustaw stany końcowe ---
@@ -522,6 +534,73 @@ export default function App() {
     }
 
     return { success: true, message: "Profil został zaktualizowany!" };
+  };
+
+  const handleMigrateFromProfile = (localStatsKey) => {
+    try {
+      const dataStr = localStorage.getItem(localStatsKey);
+      if (!dataStr) return { success: false, message: "Nie znaleziono danych dla tego profilu." };
+      const parsedStats = JSON.parse(dataStr);
+      
+      const uidKey = getFirestoreUidKey();
+      if (!uidKey) return { success: false, message: "Musisz być zalogowany, aby przeprowadzić migrację." };
+
+      console.log(`[Manual Migration] Migrating from "${localStatsKey}" to Firestore key "${uidKey}"`);
+
+      // Merge stats
+      const newStats = {
+        ...stats,
+        ...parsedStats,
+        avatarData: parsedStats.avatarData || stats.avatarData,
+        customUsername: parsedStats.customUsername || stats.customUsername
+      };
+
+      setStats(newStats);
+      saveStats(uidKey, newStats);
+
+      // Merge decks
+      const usernamePart = localStatsKey.replace("lingocards_stats_", "");
+      const localDecksKey = `lingocards_decks_${usernamePart}`;
+      const localDecksStr = localStorage.getItem(localDecksKey);
+      let updatedDecks = [...decks];
+      if (localDecksStr) {
+        try {
+          const parsedDecks = JSON.parse(localDecksStr);
+          if (parsedDecks && parsedDecks.length > 0) {
+            const merged = [...decks];
+            parsedDecks.forEach(d => {
+              if (!merged.some(md => md.id === d.id)) {
+                merged.push(d);
+              }
+            });
+            updatedDecks = merged;
+          }
+        } catch (e) {
+          console.warn("Failed to parse local decks during manual migration:", e);
+        }
+      }
+      setDecks(updatedDecks);
+      saveDecks(uidKey, updatedDecks);
+
+      // Sync active decks
+      const activeDeckIdsToSet = newStats.activeDeckIds || [];
+      setActiveDeckIds(activeDeckIdsToSet);
+      
+      const uname = currentUser?.username || uidKey;
+      const activeDecksKey = `lingocards_active_decks_${uname.toLowerCase()}`;
+      localStorage.setItem(activeDecksKey, JSON.stringify(activeDeckIdsToSet));
+
+      // Theme sync
+      if (newStats.theme) {
+        setTheme(newStats.theme);
+        localStorage.setItem("lingocards_theme", newStats.theme);
+      }
+
+      return { success: true, message: `Pomyślnie zmigrowano dane z profilu "${usernamePart}"!` };
+    } catch (e) {
+      console.error(e);
+      return { success: false, message: "Wystąpił błąd podczas migracji: " + e.message };
+    }
   };
 
   const handleSetStats = (newStatsOrFunc) => {
@@ -1215,6 +1294,7 @@ export default function App() {
             stats={stats}
             decks={[srsDeck, starredDeck, ...decks]}
             onUpdateProfile={handleUpdateProfile}
+            onMigrateFromProfile={handleMigrateFromProfile}
           />
         )}
 
