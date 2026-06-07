@@ -6,8 +6,8 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
   const [editorDeck, setEditorDeck] = useState(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const realDecks = decks.filter(d => d.id !== "starred" && d.id !== "srs");
-  // Liczba słówek tylko z aktywnych talii
-  const activeDecks = realDecks.filter(d => !activeDeckIds || activeDeckIds.includes(d.id));
+  // Liczba słówek: talie użytkownika zawsze + talie systemowe tylko aktywne
+  const activeDecks = realDecks.filter(d => !systemDeckIds?.has(d.id) || activeDeckIds?.includes(d.id));
   const totalCards = activeDecks.reduce((sum, deck) => sum + deck.cards.length, 0);
   const learnedCount = Object.keys(stats.learnedCards || {}).length;
   const progressPercent = totalCards > 0 ? Math.round((learnedCount / totalCards) * 100) : 0;
