@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { defaultDecks } from "./data/defaultDecks";
 import Dashboard from "./components/Dashboard";
 import Flashcards from "./components/Flashcards";
@@ -14,6 +14,8 @@ import StatsView from "./components/StatsView";
 import SearchModal from "./components/SearchModal";
 import Library from "./components/Library";
 import { playSound, triggerConfetti, triggerFireworks } from "./utils/effects";
+import { useFirestore } from "./hooks/useFirestore";
+import { auth, onAuthStateChanged, signOutUser } from "./firebase";
 import * as Icons from "lucide-react";
 
 const DEFAULT_THEMES = [
@@ -38,18 +40,24 @@ const PREMIUM_THEMES = [
   { id: "gold", label: "Royal Gold", levelRequired: 11 },
 ];
 
+const systemDeckIds = new Set(defaultDecks.map(d => d.id));
+
 export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
-  const [view, setView] = useState("dashboard"); // 'dashboard', 'learn', 'quiz', 'match', 'creator', 'profile'
+  const [view, setView] = useState("dashboard");
   const [decks, setDecks] = useState([]);
   const [selectedDeck, setSelectedDeck] = useState(null);
-  const [theme, setTheme] = useState("navy"); // default to navy (Deep Navy)
+  const [theme, setTheme] = useState("navy");
   const [unlockedThemeToast, setUnlockedThemeToast] = useState("");
   const [showLevelUpModal, setShowLevelUpModal] = useState(false);
   const [levelUpInfo, setLevelUpInfo] = useState({ oldLevel: 1, newLevel: 1 });
   const [showSearch, setShowSearch] = useState(false);
   const [activeDeckIds, setActiveDeckIds] = useState([]);
-  // 'graphite' | 'green' | 'navy' | 'sakura' | 'forest' | 'amber'
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const moreMenuRef = useRef(null);
+
+  // Firestore sync hook — działa zarówno gdy Firebase jest skonfigurowany, jak i bez niego
+  const { saveStats, loadStats, saveDecks, loadDecks } = useFirestore();
   
   const [stats, setStats] = useState({
     streak: 0,
@@ -67,6 +75,7 @@ export default function App() {
     level: 1,
     studyDates: [],
     deckMedals: {},
+    completedDecks: {},
     audioStyle: "synth",
     confettiStyle: "standard",
     reviewsCount: 0,
@@ -75,23 +84,51 @@ export default function App() {
     studyTime: 0
   });
 
-  // Check login session & theme on mount
+  // Firebase Auth — automatyczne przywracanie sesji po odświeżeniu strony
   useEffect(() => {
-    // Load Theme
+    // Wczytaj motyw
     const savedTheme = localStorage.getItem("lingocards_theme") || "navy";
     setTheme(savedTheme);
 
-    // Load Session
-    const sessionUserStr = localStorage.getItem("lingocards_current_user");
-    if (sessionUserStr) {
-      try {
-        const sessionUser = JSON.parse(sessionUserStr);
-        setCurrentUser(sessionUser);
-        loadUserData(sessionUser.username);
-      } catch (e) {
-        console.error("Error loading session", e);
+    if (!auth) {
+      // Firebase nie skonfigurowany — fallback na localStorage
+      const sessionUserStr = localStorage.getItem("lingocards_current_user");
+      if (sessionUserStr) {
+        try {
+          const sessionUser = JSON.parse(sessionUserStr);
+          setCurrentUser(sessionUser);
+          const uid = sessionUser.uid || sessionUser.username;
+          loadUserData(uid, sessionUser.username);
+        } catch (e) {
+          console.error("Error loading session", e);
+        }
       }
+      return;
     }
+
+    // Firebase Auth — nasłuchuj zmiany stanu logowania
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        // Użytkownik zalogowany — odtwórz profil
+        const savedAvatar = localStorage.getItem(`lingocards_avatar_${firebaseUser.uid}`) || "👑";
+        const user = {
+          uid: firebaseUser.uid,
+          username: firebaseUser.displayName || firebaseUser.email.split("@")[0],
+          email: firebaseUser.email,
+          avatar: savedAvatar,
+          isGoogle: firebaseUser.providerData?.[0]?.providerId === "google.com"
+        };
+        setCurrentUser(user);
+        localStorage.setItem("lingocards_current_user", JSON.stringify(user));
+        loadUserData(user.uid, user.username);
+      } else {
+        // Wylogowany
+        setCurrentUser(null);
+        localStorage.removeItem("lingocards_current_user");
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   // Ctrl+K / Cmd+K to open search
@@ -104,6 +141,17 @@ export default function App() {
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
+  }, []);
+
+  // Close Więcej menu on click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(event.target)) {
+        setShowMoreMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   // Update HTML data-theme attribute whenever theme changes
@@ -133,128 +181,109 @@ export default function App() {
     localStorage.setItem("lingocards_theme", newTheme);
   };
 
-  // Helper to load user specific data
-  const loadUserData = (username) => {
-    const userDecksKey = `lingocards_decks_${username.toLowerCase()}`;
-    const savedDecks = localStorage.getItem(userDecksKey);
+  // Helper to load user specific data — uid = Firebase UID lub username dla kont lokalnych
+  const loadUserData = async (uid, username) => {
+    // Jeśli nie podano username, użyj uid jako username (dla kont lokalnych)
+    const uname = username || uid;
+    const uidKey = uid.toLowerCase();
+
+    // --- Załaduj talie ---
     let loadedDecks = [];
-    if (savedDecks) {
-      try {
-        loadedDecks = JSON.parse(savedDecks);
-        // Automatyczne przywracanie brakujących talii domyślnych lub aktualizacja słówek
-        let shouldSave = false;
-        
-        // Zaktualizuj istniejące talie systemowe, jeśli mają za mało słówek lub zdezaktualizowane dane
-        loadedDecks = loadedDecks.map(userDeck => {
-          const officialDeck = defaultDecks.find(d => d.id === userDeck.id);
-          if (officialDeck && (userDeck.cards?.length || 0) < (officialDeck.cards?.length || 0)) {
-            shouldSave = true;
-            const userCustomCards = (userDeck.cards || []).filter(c => c.id && c.id.startsWith("custom-card-"));
-            return {
-              ...userDeck,
-              cards: [...officialDeck.cards, ...userCustomCards],
-              category: officialDeck.category || userDeck.category,
-              level: officialDeck.level || userDeck.level,
-              title: officialDeck.title,
-              polishTitle: officialDeck.polishTitle,
-              description: officialDeck.description
-            };
-          }
-          return userDeck;
-        });
+    try {
+      const firestoreDecks = await loadDecks(uidKey);
+      if (firestoreDecks && firestoreDecks.length > 0) {
+        loadedDecks = firestoreDecks;
+      } else {
+        // Fallback: localStorage z kluczem po username
+        const savedDecks = localStorage.getItem(`lingocards_decks_${uname.toLowerCase()}`);
+        loadedDecks = savedDecks ? JSON.parse(savedDecks) : [];
+      }
+    } catch (e) {
+      console.error("Error loading decks", e);
+      loadedDecks = [];
+    }
 
-        const loadedIds = new Set(loadedDecks.map(d => d.id));
-        const missingDefaultDecks = defaultDecks.filter(d => !loadedIds.has(d.id));
-        if (missingDefaultDecks.length > 0) {
-          loadedDecks = [...loadedDecks, ...missingDefaultDecks];
+    // Automatyczne uzupełnianie brakujących/przestarzałych talii systemowych
+    if (loadedDecks.length > 0) {
+      let shouldSave = false;
+      loadedDecks = loadedDecks.map(userDeck => {
+        const officialDeck = defaultDecks.find(d => d.id === userDeck.id);
+        if (officialDeck && (userDeck.cards?.length || 0) < (officialDeck.cards?.length || 0)) {
           shouldSave = true;
+          const userCustomCards = (userDeck.cards || []).filter(c => c.id && c.id.startsWith("custom-card-"));
+          return {
+            ...userDeck,
+            cards: [...officialDeck.cards, ...userCustomCards],
+            category: officialDeck.category || userDeck.category,
+            level: officialDeck.level || userDeck.level,
+            title: officialDeck.title,
+            polishTitle: officialDeck.polishTitle,
+            description: officialDeck.description
+          };
         }
-
-        if (shouldSave) {
-          localStorage.setItem(userDecksKey, JSON.stringify(loadedDecks));
-        }
-      } catch (e) {
-        console.error("Error parsing user decks", e);
-        loadedDecks = defaultDecks;
+        return userDeck;
+      });
+      const loadedIds = new Set(loadedDecks.map(d => d.id));
+      const missingDefaultDecks = defaultDecks.filter(d => !loadedIds.has(d.id));
+      if (missingDefaultDecks.length > 0) {
+        loadedDecks = [...loadedDecks, ...missingDefaultDecks];
+        shouldSave = true;
+      }
+      if (shouldSave) {
+        saveDecks(uidKey, loadedDecks);
       }
     } else {
       loadedDecks = defaultDecks;
-      localStorage.setItem(userDecksKey, JSON.stringify(defaultDecks));
+      saveDecks(uidKey, defaultDecks);
     }
     setDecks(loadedDecks);
 
-    // Wczytaj aktywne talie (activeDeckIds)
-    const activeDecksKey = `lingocards_active_decks_${username.toLowerCase()}`;
+    // --- Załaduj aktywne talie ---
+    const activeDecksKey = `lingocards_active_decks_${uname.toLowerCase()}`;
     const savedActiveDecks = localStorage.getItem(activeDecksKey);
     let loadedActiveDecks = ["everyday", "travel"];
     if (savedActiveDecks) {
-      try {
-        loadedActiveDecks = JSON.parse(savedActiveDecks);
-      } catch (e) {
-        console.error("Error parsing active decks", e);
-      }
+      try { loadedActiveDecks = JSON.parse(savedActiveDecks); } catch (e) { /* ignore */ }
     }
     setActiveDeckIds(loadedActiveDecks);
 
-    const activeDecks = loadedDecks.filter(d => loadedActiveDecks.includes(d.id) || d.id.startsWith("custom-deck-"));
-    if (activeDecks.length > 0) {
-      setSelectedDeck(activeDecks[0]);
-    } else if (loadedDecks.length > 0) {
-      setSelectedDeck(loadedDecks[0]);
-    }
+    const activeDecks = loadedDecks.filter(d => loadedActiveDecks.includes(d.id) || !systemDeckIds.has(d.id));
+    if (activeDecks.length > 0) setSelectedDeck(activeDecks[0]);
+    else if (loadedDecks.length > 0) setSelectedDeck(loadedDecks[0]);
 
-    const userStatsKey = `lingocards_stats_${username.toLowerCase()}`;
-    const savedStats = localStorage.getItem(userStatsKey);
-    let loadedStats = {
-      streak: 0,
-      dailyCount: 0,
-      lastActiveDate: "",
-      learnedCards: {},
-      starredCards: {},
-      quizTotal: 0,
-      quizCorrect: 0,
-      matchesWon: 0,
-      srsData: {},
-      bestStreak: 0,
-      referrals: [],
-      xp: 0,
-      level: 1,
-      studyDates: [],
-      deckMedals: {},
-      audioStyle: "synth",
-      confettiStyle: "standard",
-      reviewsCount: 0,
-      cardMistakes: {},
-      dailyHistory: {},
-      studyTime: 0
+    // --- Załaduj statystyki ---
+    const defaultStatsTemplate = {
+      streak: 0, dailyCount: 0, lastActiveDate: "",
+      learnedCards: {}, starredCards: {}, quizTotal: 0, quizCorrect: 0,
+      matchesWon: 0, srsData: {}, bestStreak: 0, referrals: [],
+      xp: 0, level: 1, studyDates: [], deckMedals: {}, completedDecks: {},
+      audioStyle: "synth", confettiStyle: "standard",
+      reviewsCount: 0, cardMistakes: {}, dailyHistory: {}, studyTime: 0
     };
 
-    if (savedStats) {
-      try {
-        loadedStats = { ...loadedStats, ...JSON.parse(savedStats) };
-      } catch (e) {
-        console.error("Error parsing user stats", e);
+    let loadedStats = { ...defaultStatsTemplate };
+    try {
+      // Próbuj Firestore (z fallback na localStorage)
+      const firestoreStats = await loadStats(uidKey);
+      if (firestoreStats) {
+        loadedStats = { ...defaultStatsTemplate, ...firestoreStats };
+      } else {
+        // Fallback: localStorage z kluczem po username
+        const savedStats = localStorage.getItem(`lingocards_stats_${uname.toLowerCase()}`);
+        if (savedStats) loadedStats = { ...defaultStatsTemplate, ...JSON.parse(savedStats) };
       }
+    } catch (e) {
+      console.error("Error loading stats", e);
     }
 
+    // Oblicz streak na podstawie daty
     const todayStr = new Date().toISOString().split("T")[0];
     const lastActive = loadedStats.lastActiveDate;
-
     if (lastActive) {
-      if (lastActive === todayStr) {
-        // Keep current day stats
-      } else {
-        const lastDate = new Date(lastActive);
-        const todayDate = new Date(todayStr);
-        const diffTime = Math.abs(todayDate - lastDate);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        if (diffDays === 1) {
-          loadedStats.streak += 1;
-        } else if (diffDays > 1) {
-          loadedStats.streak = 1;
-        }
-        
+      if (lastActive !== todayStr) {
+        const diffDays = Math.ceil(Math.abs(new Date(todayStr) - new Date(lastActive)) / (1000 * 60 * 60 * 24));
+        if (diffDays === 1) loadedStats.streak += 1;
+        else if (diffDays > 1) loadedStats.streak = 1;
         loadedStats.dailyCount = 0;
         loadedStats.lastActiveDate = todayStr;
       }
@@ -263,12 +292,11 @@ export default function App() {
       loadedStats.lastActiveDate = todayStr;
       loadedStats.dailyCount = 0;
     }
-
     if (loadedStats.streak > (loadedStats.bestStreak || 0)) {
       loadedStats.bestStreak = loadedStats.streak;
     }
 
-    // Synchronizuj studyDates z aktualnym streakem, aby kalendarz odzwierciedlał serię dni
+    // Synchronizuj studyDates
     const streakVal = loadedStats.streak || 0;
     if (streakVal > 0) {
       const dates = loadedStats.studyDates || [];
@@ -278,25 +306,30 @@ export default function App() {
         const d = new Date(baseDate);
         d.setDate(baseDate.getDate() - i);
         const dateStr = d.toISOString().split("T")[0];
-        if (!dateList.includes(dateStr)) {
-          dateList.push(dateStr);
-        }
+        if (!dateList.includes(dateStr)) dateList.push(dateStr);
       }
       loadedStats.studyDates = dateList;
     }
 
     setStats(loadedStats);
-    localStorage.setItem(userStatsKey, JSON.stringify(loadedStats));
+    saveStats(uidKey, loadedStats);
   };
 
   const handleLogin = (user) => {
     setCurrentUser(user);
     localStorage.setItem("lingocards_current_user", JSON.stringify(user));
-    loadUserData(user.username);
+    // Użyj uid (Google) lub username (lokalny) jako klucz Firestore
+    const uid = user.uid || user.username;
+    loadUserData(uid, user.username);
     setView("dashboard");
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await signOutUser(); // wyloguj z Firebase Auth
+    } catch (e) {
+      console.error("Logout error", e);
+    }
     setCurrentUser(null);
     localStorage.removeItem("lingocards_current_user");
     setView("dashboard");
@@ -390,8 +423,9 @@ export default function App() {
         updatedStats.bestStreak = updatedStats.streak;
       }
       if (currentUser) {
-        const userStatsKey = `lingocards_stats_${currentUser.username.toLowerCase()}`;
-        localStorage.setItem(userStatsKey, JSON.stringify(updatedStats));
+        // Zapisz do Firestore (z localStorage fallback)
+        const uid = currentUser.uid || currentUser.username;
+        saveStats(uid, updatedStats);
       }
       return updatedStats;
     });
@@ -439,8 +473,8 @@ export default function App() {
         }, 100);
       }
       
-      const userStatsKey = `lingocards_stats_${currentUser.username.toLowerCase()}`;
-      localStorage.setItem(userStatsKey, JSON.stringify(updatedStats));
+      const uid = currentUser.uid || currentUser.username;
+      saveStats(uid.toLowerCase(), updatedStats);
       
       return updatedStats;
     });
@@ -515,20 +549,30 @@ export default function App() {
   };
 
   const handleDeleteDeck = (deckId) => {
-    if (!deckId.startsWith("custom-deck-")) return;
+    if (systemDeckIds.has(deckId)) return;
     const updated = decks.filter(d => d.id !== deckId);
     setDecks(updated);
     if (currentUser) {
       const userDecksKey = `lingocards_decks_${currentUser.username.toLowerCase()}`;
       localStorage.setItem(userDecksKey, JSON.stringify(updated));
     }
+    
+    setActiveDeckIds(prev => {
+      const updatedActive = prev.filter(id => id !== deckId);
+      if (currentUser) {
+        const activeDecksKey = `lingocards_active_decks_${currentUser.username.toLowerCase()}`;
+        localStorage.setItem(activeDecksKey, JSON.stringify(updatedActive));
+      }
+      return updatedActive;
+    });
+
     if (selectedDeck && selectedDeck.id === deckId) {
       setSelectedDeck(updated[0] || null);
     }
   };
 
   const handleEditDeck = (deckId, updatedFields) => {
-    if (!deckId.startsWith("custom-deck-")) return;
+    if (systemDeckIds.has(deckId)) return;
     const updated = decks.map(d => {
       if (d.id === deckId) {
         return { ...d, ...updatedFields };
@@ -630,6 +674,20 @@ export default function App() {
     });
   };
 
+  // Generic full-deck update — used by DeckEditor for card CRUD + deletedCards tracking
+  const handleUpdateDeck = (deckId, updatedDeck) => {
+    if (systemDeckIds.has(deckId)) return;
+    const updated = decks.map(d => d.id === deckId ? { ...d, ...updatedDeck } : d);
+    setDecks(updated);
+    if (currentUser) {
+      const uid = currentUser.uid || currentUser.username;
+      saveDecks(uid.toLowerCase(), updated);
+    }
+    if (selectedDeck && selectedDeck.id === deckId) {
+      setSelectedDeck(updated.find(d => d.id === deckId));
+    }
+  };
+
   // If not logged in, show login page
   if (!currentUser) {
     return <Auth onLogin={handleLogin} />;
@@ -676,7 +734,7 @@ export default function App() {
     cards: starredCards
   };
 
-  const activeAndCustomDecks = decks.filter(d => activeDeckIds.includes(d.id) || d.id.startsWith("custom-deck-"));
+  const activeAndCustomDecks = decks.filter(d => activeDeckIds.includes(d.id) || !systemDeckIds.has(d.id));
   const displayedDecks = [srsDeck, starredDeck, ...activeAndCustomDecks];
 
   return (
@@ -699,7 +757,7 @@ export default function App() {
       <nav className="glass-card sticky top-0 z-50 rounded-none border-t-0 border-x-0 border-b border-white/5 bg-opacity-80 backdrop-blur-md px-5 md:px-8 py-3 flex items-center justify-between">
         
         {/* Brand Logo */}
-        <div className="flex items-center gap-3 cursor-pointer select-none group" onClick={() => setView("dashboard")}>
+        <div className="flex items-center gap-3 cursor-pointer select-none group shrink-0" onClick={() => setView("dashboard")}>
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/10 group-hover:scale-105 transition-transform duration-200">
             <Icons.BookOpen className="text-white w-5 h-5" />
           </div>
@@ -707,128 +765,79 @@ export default function App() {
             <h1 className="text-base font-extrabold tracking-tight text-white flex items-center gap-1.5">
               LingoCards <span className="text-[10px] bg-indigo-500/15 text-indigo-400 px-2 py-0.5 rounded-full font-black border border-indigo-500/10">PRO</span>
             </h1>
-            <p className="text-[8px] text-slate-500 uppercase tracking-widest font-black mt-0.5">Premium Language Learning</p>
+            <p className="text-[8px] text-slate-500 uppercase tracking-widest font-black mt-0.5 whitespace-nowrap">Premium Language Learning</p>
           </div>
         </div>
 
-        {/* Tab Actions */}
-        <div className="hidden md:flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider">
-          <button 
-            onClick={() => setView("dashboard")} 
-            className={`px-4 py-2.5 rounded-xl transition-all border ${
-              view === "dashboard" 
-                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
-                : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
-            }`}
-          >
-            Pulpit
-          </button>
-
-          <button 
-            onClick={() => setView("library")} 
-            className={`px-4 py-2.5 rounded-xl transition-all border flex items-center gap-1.5 ${
-              view === "library" 
-                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm font-extrabold" 
-                : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
-            }`}
-          >
-            <Icons.Compass size={14} />
-            Katalog
-          </button>
-          
-          <button 
-            onClick={() => setView("learn")} 
-            className={`px-4 py-2.5 rounded-xl transition-all border ${
-              view === "learn" 
-                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
-                : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
-            }`}
-          >
-            Fiszki
-          </button>
-
-          <button 
-            onClick={() => setView("quiz")} 
-            className={`px-4 py-2.5 rounded-xl transition-all border ${
-              view === "quiz" 
-                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
-                : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
-            }`}
-          >
-            Testy
-          </button>
-
-          <button 
-            onClick={() => setView("match")} 
-            className={`px-4 py-2.5 rounded-xl transition-all border ${
-              view === "match" 
-                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
-                : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
-            }`}
-          >
-            Gra w pary
-          </button>
-
-          <button 
-            onClick={() => setView("creator")} 
-            className={`px-4 py-2.5 rounded-xl transition-all border ${
-              view === "creator" 
-                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
-                : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
-            }`}
-          >
-            Menedżer
-          </button>
-
-          <button 
-            onClick={() => setView("stats")} 
-            className={`px-4 py-2.5 rounded-xl transition-all border flex items-center gap-1.5 ${
-              view === "stats" 
-                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
-                : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
-            }`}
-          >
-            <Icons.BarChart2 size={14} />
-            Statystyki
-          </button>
-
-          <button 
-            onClick={() => setView("referrals")} 
-            className={`px-4 py-2.5 rounded-xl transition-all border flex items-center gap-1.5 ${
-              view === "referrals" 
-                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
-                : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
-            }`}
-          >
-            <Icons.Users size={14} />
-            Polecenia
-          </button>
+        {/* Tab Actions — wszystkie zakładki obok siebie */}
+        <div className="hidden lg:flex items-center gap-0.5 text-[10px] font-bold uppercase tracking-wider shrink-0 overflow-x-auto no-scrollbar">
+          {[
+            { id: "dashboard", label: "Pulpit", icon: null },
+            { id: "library",   label: "Katalog", icon: "Compass" },
+            { id: "learn",     label: "Fiszki",  icon: null },
+            { id: "quiz",      label: "Testy",   icon: null },
+            { id: "match",     label: "Gra",     icon: "Zap" },
+            { id: "creator",   label: "Menedżer",icon: "PlusCircle" },
+            { id: "stats",     label: "Statyst.",icon: "BarChart2" },
+            { id: "referrals", label: "Polecenia",icon: "Users" },
+          ].map(({ id, label, icon }) => {
+            const IconEl = icon ? Icons[icon] : null;
+            const active = view === id;
+            return (
+              <button
+                key={id}
+                onClick={() => setView(id)}
+                className={`px-2 xl:px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${
+                  active
+                    ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm"
+                    : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
+                }`}
+              >
+                {IconEl && <IconEl size={12} className="shrink-0" />}
+                {label}
+              </button>
+            );
+          })}
         </div>
 
         {/* Global Streak / Theme Selector / User Profile */}
-        <div className="flex items-center gap-3">
-          {view !== "dashboard" && view !== "profile" && displayedDecks.length > 0 && (
-            <div className="hidden sm:flex items-center gap-2 bg-black/30 border border-white/5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-300">
+        <div className="flex items-center gap-2 lg:gap-3 shrink-0">
+          {(view === "learn" || view === "quiz" || view === "match") && decks.length > 0 && (
+            <div className="hidden sm:flex items-center gap-1.5 bg-black/30 border border-white/5 px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-300 whitespace-nowrap shrink-0">
               <span className="text-slate-500 font-extrabold uppercase text-[9px] tracking-wider">Talia:</span>
               <select 
                 value={selectedDeck?.id || ""} 
-                onChange={(e) => setSelectedDeck(displayedDecks.find(d => d.id === e.target.value))}
-                className="bg-transparent text-white focus:outline-none cursor-pointer font-bold border-none p-0 pr-6"
+                onChange={(e) => {
+                  const allDecks = [srsDeck, starredDeck, ...decks];
+                  const found = allDecks.find(d => d.id === e.target.value);
+                  if (found) setSelectedDeck(found);
+                }}
+                className="bg-transparent text-white focus:outline-none cursor-pointer font-bold border-none p-0 pr-6 max-w-[110px] sm:max-w-[140px] md:max-w-[160px] truncate"
               >
-                {displayedDecks.map(d => (
-                  <option key={d.id} value={d.id} className="bg-[var(--bg-main)] text-[var(--text-primary)]">{d.title}</option>
-                ))}
+                {[srsDeck, starredDeck, ...decks].map(d => {
+                  const isLocked = !stats.isPro && (d.level && d.level !== "A1" && d.level !== "A2");
+                  return (
+                    <option 
+                      key={d.id} 
+                      value={d.id} 
+                      disabled={isLocked}
+                      className={`bg-[var(--bg-main)] ${isLocked ? "text-slate-600 font-normal" : "text-[var(--text-primary)]"}`}
+                    >
+                      {isLocked ? `🔒 ${d.title} (PRO)` : d.title}
+                    </option>
+                  );
+                })}
               </select>
             </div>
           )}
 
           {/* THEME SELECTOR DROPDOWN */}
-          <div className="flex items-center gap-2 bg-black/30 border border-white/8 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-300">
+          <div className="hidden lg:flex items-center gap-1.5 bg-black/30 border border-white/8 px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-300 whitespace-nowrap shrink-0">
             <Icons.Palette size={14} className="text-slate-400 shrink-0" />
             <select
               value={theme}
               onChange={(e) => handleThemeChange(e.target.value)}
-              className="bg-transparent text-white focus:outline-none cursor-pointer font-bold border-none p-0 pr-6 text-xs"
+              className="bg-transparent text-white focus:outline-none cursor-pointer font-bold border-none p-0 pr-6 text-xs max-w-[90px] sm:max-w-[120px] truncate"
             >
               <optgroup label="Motywy podstawowe" className="bg-[var(--bg-main)] text-slate-400">
                 {DEFAULT_THEMES.map(t => (
@@ -856,68 +865,68 @@ export default function App() {
           {/* Search button */}
           <button
             onClick={() => setShowSearch(true)}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl border bg-white/5 border-white/10 text-slate-300 hover:text-white hover:bg-white/10 hover:border-white/15 transition-all scale-hover"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl border bg-white/5 border-white/10 text-slate-300 hover:text-white hover:bg-white/10 hover:border-white/15 transition-all scale-hover whitespace-nowrap shrink-0"
             title="Wyszukaj słówko (Ctrl+K)"
           >
-            <Icons.Search size={15} />
-            <span className="hidden lg:flex items-center gap-1.5 text-[10px] font-bold text-slate-500">
+            <Icons.Search size={15} className="shrink-0" />
+            <span className="hidden xl:flex items-center gap-1.5 text-[10px] font-bold text-slate-500 whitespace-nowrap shrink-0">
               Szukaj
-              <kbd className="border border-white/10 rounded px-1.5 py-0.5 font-mono text-[9px]">Ctrl K</kbd>
+              <kbd className="border border-white/10 rounded px-1.5 py-0.5 font-mono text-[9px] whitespace-nowrap shrink-0">Ctrl K</kbd>
             </span>
           </button>
 
           {/* Leaderboard button */}
           <button 
             onClick={() => setView("leaderboard")}
-            className={`flex items-center justify-center p-2.5 rounded-xl border scale-hover ${
+            className={`flex items-center justify-center p-2.5 rounded-xl border scale-hover shrink-0 ${
               view === "leaderboard" 
                 ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
                 : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
             }`}
             title="Ranking Rywalizacji"
           >
-            <Icons.Trophy size={16} />
+            <Icons.Trophy size={16} className="shrink-0" />
           </button>
 
           {/* Settings gear button */}
           <button 
             onClick={() => setView("settings")}
-            className={`flex items-center justify-center p-2.5 rounded-xl border scale-hover ${
+            className={`flex items-center justify-center p-2.5 rounded-xl border scale-hover shrink-0 ${
               view === "settings" 
                 ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
                 : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
             }`}
             title="Ustawienia"
           >
-            <Icons.Settings size={16} />
+            <Icons.Settings size={16} className="shrink-0" />
           </button>
 
           <button 
             onClick={() => setView("profile")}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border scale-hover ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border scale-hover whitespace-nowrap shrink-0 ${
               view === "profile" 
                 ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
                 : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
             }`}
           >
             {currentUser.avatar && currentUser.avatar.startsWith("data:") ? (
-              <img src={currentUser.avatar} alt="Avatar" className="w-5 h-5 rounded-full object-cover border border-white/20" />
+              <img src={currentUser.avatar} alt="Avatar" className="w-5 h-5 rounded-full object-cover border border-white/20 shrink-0" />
             ) : (
-              <span className="text-base">{currentUser.avatar || "👑"}</span>
+              <span className="text-base shrink-0">{currentUser.avatar || "👑"}</span>
             )}
-            <span className="hidden lg:inline text-xs font-bold">{currentUser.username}</span>
+            <span className="hidden xl:inline text-xs font-bold whitespace-nowrap shrink-0">{currentUser.username}</span>
           </button>
 
           {/* Daily streak indicator */}
-          <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-500 px-3.5 py-2 rounded-xl font-mono text-sm font-bold shadow-sm" title="Twój codzienny streak nauki!">
-            <Icons.Flame size={16} className="fill-amber-500/15" />
-            <span>{stats.streak || 0} dni</span>
+          <div className="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 text-amber-500 px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold shadow-sm whitespace-nowrap shrink-0" title="Twój codzienny streak nauki!">
+            <Icons.Flame size={15} className="fill-amber-500/15 shrink-0" />
+            <span className="whitespace-nowrap shrink-0">{stats.streak || 0} dni</span>
           </div>
         </div>
       </nav>
 
       {/* Bottom Nav Bar for Mobile Screens */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-xl border-t border-white/5 px-2 py-2 flex items-center justify-around shadow-2xl">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-xl border-t border-white/5 px-2 py-2 flex items-center justify-around shadow-2xl">
         <button 
           onClick={() => setView("dashboard")} 
           className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
@@ -979,20 +988,22 @@ export default function App() {
       </div>
 
       {/* Main Core View Area */}
-      <main className="flex-grow p-4 md:p-8 max-w-7xl mx-auto w-full pb-24 md:pb-8">
+      <main className="flex-grow p-4 md:p-8 max-w-7xl mx-auto w-full pb-24 lg:pb-8">
         {view === "dashboard" && (
           <Dashboard 
             decks={displayedDecks} 
             stats={stats} 
             setStats={handleSetStats}
             onSelectDeck={setSelectedDeck} 
-            onNavigate={setView} 
+            onNavigate={setView}
+            onUpdateDeck={handleUpdateDeck}
+            systemDeckIds={systemDeckIds}
           />
         )}
 
         {view === "library" && (
           <Library 
-            decks={decks.filter(d => !d.id.startsWith("custom-deck-"))} 
+            decks={decks.filter(d => systemDeckIds.has(d.id))} 
             activeDeckIds={activeDeckIds} 
             onToggleActiveDeck={handleToggleActiveDeck} 
             onSelectDeck={setSelectedDeck} 
@@ -1015,7 +1026,7 @@ export default function App() {
         {view === "quiz" && (
           <Quiz 
             selectedDeck={selectedDeck} 
-            decks={displayedDecks} 
+            decks={decks} 
             stats={stats} 
             setStats={handleSetStats} 
             onNavigate={setView} 
@@ -1138,7 +1149,7 @@ export default function App() {
       {/* Search Modal (Ctrl+K) */}
       {showSearch && currentUser && (
         <SearchModal
-          decks={displayedDecks}
+          decks={decks}
           stats={stats}
           setStats={handleSetStats}
           onNavigate={setView}

@@ -1,8 +1,20 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+// src/firebase.js
+// Firebase konfiguracja — używa zmiennych środowiskowych z .env
+// Uzupełnij plik .env.local swoimi danymi z Firebase Console
 
-// TUTAJ wklej swoją rzeczywistą konfigurację Firebase z konsoli Firebase (https://console.firebase.google.com/)
-// Aby włączyć logowanie Google, przejdź do zakładki Authentication -> Sign-in method -> Włącz Google.
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+  onAuthStateChanged
+} from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "PLACEHOLDER_API_KEY",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "PLACEHOLDER_AUTH_DOMAIN",
@@ -12,49 +24,65 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID || "PLACEHOLDER_APP_ID"
 };
 
-// Sprawdzamy, czy klucz API jest skonfigurowany
-const isFirebaseConfigured = firebaseConfig.apiKey && firebaseConfig.apiKey !== "PLACEHOLDER_API_KEY";
+export const isFirebaseConfigured =
+  firebaseConfig.apiKey && firebaseConfig.apiKey !== "PLACEHOLDER_API_KEY";
 
-let app;
-let auth;
-let googleProvider;
+let app, auth, db, googleProvider;
 
 if (isFirebaseConfigured) {
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
+  db = getFirestore(app);
   googleProvider = new GoogleAuthProvider();
+  googleProvider.setCustomParameters({ prompt: "select_account" });
 }
 
-export { auth, googleProvider, isFirebaseConfigured };
+export { auth, db, googleProvider, onAuthStateChanged };
 
-// Funkcja logowania Google z fallbackiem (symulacją) dla łatwego testowania bez konfiguracji
+// ─── Logowanie przez Google ───────────────────────────────────────────────────
 export const signInWithGoogle = async () => {
-  if (isFirebaseConfigured) {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      // Zwracamy ujednolicony profil użytkownika
-      return {
-        username: result.user.displayName || result.user.email.split("@")[0],
-        email: result.user.email,
-        avatar: "👩‍🚀", // Domyślny awatar
-        isGoogle: true
-      };
-    } catch (error) {
-      console.error("Firebase Google Auth Error:", error);
-      throw error;
-    }
-  } else {
-    // Symulacja (Mock) - pozwala przetestować flow logowania Google bez konieczności zakładania konta Firebase
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          username: "Krzysztof Kowalski",
-          email: "krzysztof.kowalski@gmail.com",
-          avatar: "🦉",
-          isGoogle: true,
-          isMock: true
-        });
-      }, 1000);
-    });
-  }
+  const result = await signInWithPopup(auth, googleProvider);
+  const user = result.user;
+  return {
+    uid: user.uid,
+    username: user.displayName || user.email.split("@")[0],
+    email: user.email,
+    avatar: "👑",
+    isGoogle: true
+  };
 };
+
+// ─── Rejestracja emailem ──────────────────────────────────────────────────────
+export const registerWithEmail = async (email, password, username, avatar) => {
+  const result = await createUserWithEmailAndPassword(auth, email, password);
+  const user = result.user;
+  // Zapisz displayName w Firebase Auth
+  await updateProfile(user, { displayName: username });
+  return {
+    uid: user.uid,
+    username: username,
+    email: user.email,
+    avatar: avatar || "👑",
+    isGoogle: false
+  };
+};
+
+// ─── Logowanie emailem ────────────────────────────────────────────────────────
+export const signInWithEmail = async (email, password) => {
+  const result = await signInWithEmailAndPassword(auth, email, password);
+  const user = result.user;
+  return {
+    uid: user.uid,
+    username: user.displayName || user.email.split("@")[0],
+    email: user.email,
+    avatar: "👑",
+    isGoogle: false
+  };
+};
+
+// ─── Wylogowanie ──────────────────────────────────────────────────────────────
+export const signOutUser = async () => {
+  if (auth) await signOut(auth);
+};
+
+export default app;

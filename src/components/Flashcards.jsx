@@ -48,9 +48,13 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
   // Ambient sound
   const [ambientSound, setAmbientSound] = useState(null);
   const [showAmbientMenu, setShowAmbientMenu] = useState(false);
-  const ambientCtxRef = useRef(null);
-  const ambientNodesRef = useRef([]);
+  // Odtwarzacz dźwięków otoczenia — używa lokalnych plików z public/sounds/
+  const ambientAudioRef = useRef(null);
   const [canRate, setCanRate] = useState(false);
+
+  // Refs to fix stale closure bug in setTimeout
+  const currentIndexRef = useRef(0);
+  const cardsRef = useRef([]);
 
   // SRS States
   const [srsOnly, setSrsOnly] = useState(selectedDeck?.id === "srs");
@@ -70,6 +74,8 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
           return srs.nextReviewDate <= todayStr;
         });
       }
+      cardsRef.current = filteredCards;
+      currentIndexRef.current = 0;
       setCards(filteredCards);
       setCurrentIndex(0);
       setIsFlipped(false);
@@ -83,6 +89,10 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
       setBestStreak(0);
     }
   }, [selectedDeck, srsOnly]);
+
+  // Keep refs in sync with state
+  useEffect(() => { currentIndexRef.current = currentIndex; }, [currentIndex]);
+  useEffect(() => { cardsRef.current = cards; }, [cards]);
 
   useEffect(() => {
     return () => {
@@ -151,17 +161,29 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     return `${m}m ${s < 10 ? '0' : ''}${s}s`;
   };
 
+  // Mapa: id dźwięku → plik w public/sounds/
+  const AMBIENT_FILES = {
+    rain:   '/sounds/mixkit-light-rain-loop-1253.wav',
+    forest: '/sounds/mixkit-forest-with-birds-and-insect-flying-hum-1223.wav',
+    cafe:   '/sounds/mixkit-restaurant-crowd-talking-ambience-444.wav',
+    lofi:   '/sounds/mirostar-lofi-lofi-music-531487.mp3',
+  };
+
   const stopAmbientSound = useCallback(() => {
-    try {
-      ambientNodesRef.current.forEach(node => {
-        try { node.disconnect(); } catch(e) {}
-      });
-      ambientNodesRef.current = [];
-      if (ambientCtxRef.current) {
-        ambientCtxRef.current.close().catch(() => {});
-        ambientCtxRef.current = null;
-      }
-    } catch(e) {}
+    if (ambientAudioRef.current) {
+      const audio = ambientAudioRef.current;
+      // Płynne ściszenie
+      const fadeOut = setInterval(() => {
+        if (audio.volume > 0.05) {
+          audio.volume = Math.max(0, audio.volume - 0.05);
+        } else {
+          audio.pause();
+          audio.currentTime = 0;
+          clearInterval(fadeOut);
+        }
+      }, 50);
+      ambientAudioRef.current = null;
+    }
   }, []);
 
   const startAmbientSound = useCallback((type) => {
@@ -170,111 +192,32 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
       setAmbientSound(null);
       return;
     }
+
+    const filePath = AMBIENT_FILES[type];
+    if (!filePath) {
+      setAmbientSound(null);
+      return;
+    }
+
     try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      ambientCtxRef.current = ctx;
-      const nodes = [];
-      const gainNode = ctx.createGain();
-      gainNode.gain.value = 0.15;
-      gainNode.connect(ctx.destination);
-      nodes.push(gainNode);
+      const audio = new Audio(filePath);
+      audio.loop = true;
+      audio.volume = 0; // Zacznij od ciszy — fade in
+      ambientAudioRef.current = audio;
 
-      if (type === 'rain') {
-        const bufferSize = 2 * ctx.sampleRate;
-        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-        const noise = ctx.createBufferSource();
-        noise.buffer = buffer;
-        noise.loop = true;
-        const lp = ctx.createBiquadFilter();
-        lp.type = 'lowpass';
-        lp.frequency.value = 1200;
-        noise.connect(lp);
-        lp.connect(gainNode);
-        noise.start();
-        nodes.push(noise, lp);
-      } else if (type === 'forest') {
-        const bufferSize = 2 * ctx.sampleRate;
-        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        let last = 0;
-        for (let i = 0; i < bufferSize; i++) {
-          last = (last + (Math.random() * 2 - 1) * 0.06) * 0.994;
-          data[i] = last;
-        }
-        const noise = ctx.createBufferSource();
-        noise.buffer = buffer;
-        noise.loop = true;
-        const bp = ctx.createBiquadFilter();
-        bp.type = 'bandpass';
-        bp.frequency.value = 400;
-        bp.Q.value = 0.5;
-        noise.connect(bp);
-        bp.connect(gainNode);
-        noise.start();
-        nodes.push(noise, bp);
-        // Bird-like chirps
-        const chirpOsc = ctx.createOscillator();
-        chirpOsc.type = 'sine';
-        chirpOsc.frequency.value = 2200;
-        const chirpGain = ctx.createGain();
-        chirpGain.gain.value = 0;
-        const lfo = ctx.createOscillator();
-        lfo.frequency.value = 3;
-        const lfoGain = ctx.createGain();
-        lfoGain.gain.value = 0.015;
-        lfo.connect(lfoGain);
-        lfoGain.connect(chirpGain.gain);
-        chirpOsc.connect(chirpGain);
-        chirpGain.connect(gainNode);
-        chirpOsc.start();
-        lfo.start();
-        nodes.push(chirpOsc, chirpGain, lfo, lfoGain);
-      } else if (type === 'lofi') {
-        // C major chord: C4, E4, G4
-        [261.63, 329.63, 392.00].forEach(freq => {
-          const osc = ctx.createOscillator();
-          osc.type = 'sine';
-          osc.frequency.value = freq;
-          const oscGain = ctx.createGain();
-          oscGain.gain.value = 0.4;
-          // Tremolo
-          const trem = ctx.createOscillator();
-          trem.frequency.value = 0.3 + Math.random() * 0.2;
-          const tremGain = ctx.createGain();
-          tremGain.gain.value = 0.08;
-          trem.connect(tremGain);
-          tremGain.connect(oscGain.gain);
-          osc.connect(oscGain);
-          oscGain.connect(gainNode);
-          osc.start();
-          trem.start();
-          nodes.push(osc, oscGain, trem, tremGain);
-        });
-      } else if (type === 'cafe') {
-        const bufferSize = 2 * ctx.sampleRate;
-        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        let last = 0;
-        for (let i = 0; i < bufferSize; i++) {
-          last = (last + (Math.random() * 2 - 1) * 0.04) * 0.998;
-          data[i] = last;
-        }
-        const noise = ctx.createBufferSource();
-        noise.buffer = buffer;
-        noise.loop = true;
-        const bp = ctx.createBiquadFilter();
-        bp.type = 'bandpass';
-        bp.frequency.value = 800;
-        bp.Q.value = 0.8;
-        noise.connect(bp);
-        bp.connect(gainNode);
-        noise.start();
-        nodes.push(noise, bp);
-      }
+      audio.play().then(() => {
+        // Płynne narastanie głośności
+        const fadeIn = setInterval(() => {
+          if (audio.volume < 0.65) {
+            audio.volume = Math.min(0.65, audio.volume + 0.03);
+          } else {
+            clearInterval(fadeIn);
+          }
+        }, 60);
+      }).catch(err => {
+        console.warn('Ambient audio play failed:', err);
+      });
 
-      ambientNodesRef.current = nodes;
       setAmbientSound(type);
     } catch(e) {
       console.error('Ambient sound error:', e);
@@ -483,8 +426,14 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
 
     setIsFlipped(false);
     setTimeout(() => {
-      if (currentIndex + 1 < cards.length) {
-        setCurrentIndex(currentIndex + 1);
+      // Use refs to avoid stale closure bug (React state captured at closure creation time)
+      const idx = currentIndexRef.current;
+      const len = cardsRef.current.length;
+
+      if (idx + 1 < len) {
+        const nextIdx = idx + 1;
+        currentIndexRef.current = nextIdx;
+        setCurrentIndex(nextIdx);
       } else {
         // Ukończenie talii!
         setCompleted(true);
@@ -492,48 +441,51 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
         setAmbientSound(null);
         
         // Calculate completion medal
-        const total = cards.length;
+        const total = cardsRef.current.length;
         const firstTryCorrect = Object.values(updatedFirstTryStats).filter(v => v === "known").length;
         const pct = total > 0 ? (firstTryCorrect / total) * 100 : 0;
         
         let medal = null;
-        if (pct === 100) {
-          medal = "gold";
-        } else if (pct >= 80) {
-          medal = "silver";
-        } else if (pct >= 50) {
-          medal = "bronze";
-        }
+        if (pct === 100) medal = "gold";
+        else if (pct >= 80) medal = "silver";
+        else if (pct >= 50) medal = "bronze";
         
         if (medal) {
           setAwardedMedal(medal);
-          
           const medalWeights = { gold: 3, silver: 2, bronze: 1, null: 0 };
-          
           setStats(prev => {
             const currentMedals = prev.deckMedals || {};
             const oldMedal = currentMedals[selectedDeck.id];
             if (!oldMedal || medalWeights[medal] > medalWeights[oldMedal]) {
-              const newMedals = {
-                ...currentMedals,
-                [selectedDeck.id]: medal
-              };
-              return {
-                deckMedals: newMedals
-              };
+              return { deckMedals: { ...currentMedals, [selectedDeck.id]: medal } };
             }
             return {};
           });
         }
+
+        // XP: first completion bonus + per-medal bonus
+        const deckCompletionCount = (stats.completedDecks?.[selectedDeck.id] || 0);
+        const isFirstCompletion = deckCompletionCount === 0;
         
-        // Award deck completion bonus: +100 XP
-        onAddXp(100);
+        // Always award per-medal XP bonus
+        const medalXp = medal === "gold" ? 100 : medal === "silver" ? 75 : medal === "bronze" ? 50 : 0;
+        // First completion: +100 XP one-time bonus
+        const firstCompletionXp = isFirstCompletion ? 100 : 0;
+        
+        // Update completedDecks count in stats
+        setStats(prev => {
+          const completedDecks = { ...(prev.completedDecks || {}) };
+          completedDecks[selectedDeck.id] = (completedDecks[selectedDeck.id] || 0) + 1;
+          return { completedDecks };
+        });
+
+        // Award XP (per-card XP already given above, now deck bonuses)
+        if (firstCompletionXp > 0) onAddXp(firstCompletionXp);
+        if (medalXp > 0) onAddXp(medalXp);
         
         setTimeout(() => {
           playSound("achievement", stats.audioStyle || "synth");
-          if (pct === 100) {
-            triggerFireworks();
-          }
+          if (pct === 100) triggerFireworks();
           triggerConfetti(stats.confettiStyle || "standard");
         }, 150);
       }

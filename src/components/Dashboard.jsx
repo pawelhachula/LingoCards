@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import * as Icons from "lucide-react";
+import DeckEditor from "./DeckEditor";
 
-export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavigate }) {
+export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavigate, onUpdateDeck, systemDeckIds }) {
+  const [editorDeck, setEditorDeck] = useState(null);
   const realDecks = decks.filter(d => d.id !== "starred" && d.id !== "srs");
   const totalCards = realDecks.reduce((sum, deck) => sum + deck.cards.length, 0);
   const learnedCount = Object.keys(stats.learnedCards || {}).length;
@@ -793,6 +795,15 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
                       >
                         <Icons.Award size={12} /> Test
                       </button>
+                      {onUpdateDeck && systemDeckIds && !systemDeckIds.has(deck.id) && (
+                        <button
+                          onClick={() => setEditorDeck(deck)}
+                          className="btn text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform text-slate-400 hover:text-white"
+                          title="Rejestr słów"
+                        >
+                          <Icons.List size={12} />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -801,6 +812,19 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
           )}
         </div>
       </div>
+
+      {/* Deck Editor Modal */}
+      {editorDeck && (
+        <DeckEditor
+          deck={editorDeck}
+          onClose={() => setEditorDeck(null)}
+          onUpdateDeck={(deckId, updated) => {
+            onUpdateDeck(deckId, updated);
+            // Keep editorDeck in sync with the updated deck
+            setEditorDeck(prev => prev ? { ...prev, ...updated } : null);
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import * as Icons from "lucide-react";
 
 const cleanWord = (str) => {
@@ -15,6 +15,7 @@ const cleanWord = (str) => {
 };
 
 export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavigate, onAddXp }) {
+  const [direction, setDirection] = useState("default"); // 'default' | 'reversed'
   const [quizMode, setQuizMode] = useState(null); // 'choice' | 'spell'
   const [quizTimer, setQuizTimer] = useState(null);
   const [questions, setQuestions] = useState([]);
@@ -26,6 +27,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
   const [score, setScore] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
   const [incorrectCardIds, setIncorrectCardIds] = useState([]);
+  const spellInputRef = useRef(null);
 
   // High quality premium distractors for fallback
   const premiumFallbacks = [
@@ -57,6 +59,18 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
     };
   }, [quizTimer]);
 
+  // Automatic input focus for spelling mode
+  useEffect(() => {
+    if (quizMode === "spell" && !quizFinished) {
+      const timer = setTimeout(() => {
+        if (spellInputRef.current) {
+          spellInputRef.current.focus();
+        }
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [quizMode, currentIndex, isAnswered, quizFinished]);
+
   useEffect(() => {
     if (selectedDeck && selectedDeck.cards && quizMode) {
       const deckCards = selectedDeck.cards;
@@ -66,30 +80,67 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
       const allDecksCards = decks.flatMap(d => d.cards || []);
       
       const preparedQuestions = shuffledCards.map((card) => {
-        // Find distractors from other decks first to maximize diversity
-        let distractors = allDecksCards
-          .filter(c => c.id !== card.id && c.polish.toLowerCase() !== card.polish.toLowerCase())
-          .map(c => c.polish);
-        
-        // Remove duplicates from distractors
-        distractors = [...new Set(distractors)];
-
-        // If not enough distractors from all decks, append premium fallbacks
-        if (distractors.length < 3) {
-          distractors = [...distractors, ...premiumFallbacks];
+        if (quizMode === 'choice') {
+          if (direction === 'default') {
+            // ENG ➔ PL
+            let distractors = allDecksCards
+              .filter(c => c.id !== card.id && c.polish.toLowerCase() !== card.polish.toLowerCase())
+              .map(c => c.polish);
+            distractors = [...new Set(distractors)];
+            if (distractors.length < 3) {
+              distractors = [...distractors, ...premiumFallbacks];
+            }
+            distractors = distractors.sort(() => Math.random() - 0.5).slice(0, 3);
+            const options = [...distractors, card.polish].sort(() => Math.random() - 0.5);
+            return {
+              card,
+              prompt: card.english,
+              options,
+              correctAnswer: card.polish
+            };
+          } else {
+            // PL ➔ ENG
+            let distractors = allDecksCards
+              .filter(c => c.id !== card.id && c.english.toLowerCase() !== card.english.toLowerCase())
+              .map(c => c.english);
+            distractors = [...new Set(distractors)];
+            if (distractors.length < 3) {
+              const englishFallbacks = [
+                "Bite the bullet", "Breathtaking", "Call it a day", "Ambiguous", "Postpone the meeting",
+                "Meticulous attention to detail", "Ubiquitous", "Think outside the box", "Reschedule",
+                "Start from scratch", "Bottleneck", "Deliverable", "Spill the beans", "Off the beaten track",
+                "Keep in touch", "Under the weather", "Layover", "Equivocal behavior", "Fleeting moment",
+                "Look forward to"
+              ];
+              distractors = [...distractors, ...englishFallbacks];
+            }
+            distractors = distractors.sort(() => Math.random() - 0.5).slice(0, 3);
+            const options = [...distractors, card.english].sort(() => Math.random() - 0.5);
+            return {
+              card,
+              prompt: card.polish,
+              options,
+              correctAnswer: card.english
+            };
+          }
+        } else {
+          // quizMode === 'spell'
+          if (direction === 'default') {
+            // PL ➔ ENG
+            return {
+              card,
+              prompt: card.polish,
+              correctAnswer: card.english
+            };
+          } else {
+            // ENG ➔ PL
+            return {
+              card,
+              prompt: card.english,
+              correctAnswer: card.polish
+            };
+          }
         }
-        
-        // Shuffle and take 3 distractors
-        distractors = distractors.sort(() => Math.random() - 0.5).slice(0, 3);
-        
-        // Mix with the correct answer
-        const options = [...distractors, card.polish].sort(() => Math.random() - 0.5);
-        
-        return {
-          card,
-          options,
-          correctAnswer: card.polish
-        };
       });
 
       setQuestions(preparedQuestions);
@@ -101,7 +152,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
       setScore(0);
       setQuizFinished(false);
     }
-  }, [selectedDeck, quizMode, decks]);
+  }, [selectedDeck, quizMode, decks, direction]);
 
   if (!selectedDeck) {
     return (
@@ -159,9 +210,12 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
     
     setIsAnswered(true);
     const answerClean = cleanWord(spellingInput);
-    const correctClean = cleanWord(questions[currentIndex].card.english);
+    const correctAnswersList = questions[currentIndex].correctAnswer
+      .split("/")
+      .map(ans => cleanWord(ans))
+      .filter(Boolean);
     
-    const isCorrect = answerClean === correctClean;
+    const isCorrect = correctAnswersList.includes(answerClean);
     if (isCorrect) {
       setScore(prev => prev + 1);
       playTTS(questions[currentIndex].card.english);
@@ -213,9 +267,16 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
     if (quizMode === 'choice') {
       return selectedAnswer === questions[currentIndex].correctAnswer;
     } else {
-      return cleanWord(spellingInput) === cleanWord(questions[currentIndex].card.english);
+      const answerClean = cleanWord(spellingInput);
+      const correctAnswersList = questions[currentIndex].correctAnswer
+        .split("/")
+        .map(ans => cleanWord(ans))
+        .filter(Boolean);
+      return correctAnswersList.includes(answerClean);
     }
   };
+
+
 
   const handleRestart = () => {
     setQuizMode(null);
@@ -224,6 +285,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
   };
 
   if (!quizMode) {
+    const isDefault = direction === 'default';
     return (
       <div className="flex flex-col gap-8 max-w-xl mx-auto w-full animate-slide-in">
         <div>
@@ -234,12 +296,39 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
             <Icons.ChevronLeft size={16} /> Powrót do pulpitu
           </button>
           <h2 className="text-2xl font-black mt-2 text-white">Wybierz tryb sprawdzianu</h2>
-          <p className="text-slate-400 text-sm mt-1">Utrwal wiedzę z zestawu: <span className="text-indigo-400 font-extrabold">{selectedDeck.title}</span></p>
+          <p className="text-slate-400 text-sm mt-1">Zestaw: <span className="text-indigo-400 font-extrabold">{selectedDeck.title}</span></p>
+        </div>
+
+        {/* Direction toggle */}
+        <div className="glass-card p-5 flex flex-col gap-3">
+          <p className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Kierunek testu</p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setDirection('default')}
+              className={`flex-1 py-2.5 px-4 rounded-xl border text-xs font-bold uppercase tracking-wide transition-all ${
+                isDefault
+                  ? 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30 shadow-sm'
+                  : 'text-slate-400 border-white/10 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              🇬🇧 ENG → PL
+            </button>
+            <button
+              onClick={() => setDirection('reversed')}
+              className={`flex-1 py-2.5 px-4 rounded-xl border text-xs font-bold uppercase tracking-wide transition-all ${
+                !isDefault
+                  ? 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30 shadow-sm'
+                  : 'text-slate-400 border-white/10 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              🇵🇱 PL → ENG
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <button 
-            onClick={() => setQuizMode("choice")}
+            onClick={() => setQuizMode('choice')}
             className="glass-card p-8 text-center flex flex-col items-center gap-5 hover:-translate-y-1 scale-hover group hover:border-indigo-500/30"
           >
             <div className="p-4 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 group-hover:scale-110 transition-transform">
@@ -248,13 +337,13 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
             <div>
               <h4 className="text-lg font-bold text-white">Test wyboru</h4>
               <p className="text-xs text-slate-400 mt-2 leading-relaxed font-medium">
-                Dopasuj słówko angielskie do jednego z czterech zróżnicowanych polskich tłumaczeń.
+                {isDefault ? 'Pytanie po angielsku → wybierz polskie tłumaczenie.' : 'Pytanie po polsku → wybierz angielski odpowiednik.'}
               </p>
             </div>
           </button>
 
           <button 
-            onClick={() => setQuizMode("spell")}
+            onClick={() => setQuizMode('spell')}
             className="glass-card p-8 text-center flex flex-col items-center gap-5 hover:-translate-y-1 scale-hover group hover:border-cyan-500/30"
           >
             <div className="p-4 rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 group-hover:scale-110 transition-transform">
@@ -263,7 +352,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
             <div>
               <h4 className="text-lg font-bold text-white">Pisanie i pisownia</h4>
               <p className="text-xs text-slate-400 mt-2 leading-relaxed font-medium">
-                Wpisz poprawne angielskie słówko odpowiadające polskiemu znaczeniu.
+                {isDefault ? 'Pytanie po polsku → wpisz słówko po angielsku.' : 'Pytanie po angielsku → wpisz tłumaczenie po polsku.'}
               </p>
             </div>
           </button>
@@ -361,19 +450,21 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
         {quizMode === 'choice' ? (
           <>
             <span className="text-[10px] bg-indigo-500/10 text-indigo-400 font-extrabold uppercase px-3.5 py-1 rounded-full border border-indigo-500/20 tracking-wider">
-              Przetłumacz na polski
+              {direction === 'default' ? 'Przetłumacz na polski' : 'Przetłumacz na angielski'}
             </span>
             <div className="flex items-center gap-3">
-              <h3 className="text-3xl font-black text-white">{currentQuestion.card.english}</h3>
-              <button 
-                onClick={() => playTTS(currentQuestion.card.english)}
-                className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-indigo-400 hover:text-white transition-all scale-hover border border-white/5"
-                title="Posłuchaj wymowy"
-              >
-                <Icons.Volume2 size={16} />
-              </button>
+              <h3 className="text-3xl font-black text-white">{currentQuestion.prompt}</h3>
+              {direction === 'default' && (
+                <button 
+                  onClick={() => playTTS(currentQuestion.card.english)}
+                  className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-indigo-400 hover:text-white transition-all scale-hover border border-white/5"
+                  title="Posłuchaj wymowy"
+                >
+                  <Icons.Volume2 size={16} />
+                </button>
+              )}
             </div>
-            {currentQuestion.card.pronunciation && (
+            {direction === 'default' && currentQuestion.card.pronunciation && (
               <p className="text-slate-400 font-semibold font-mono text-sm tracking-wide -mt-3">
                 {currentQuestion.card.pronunciation}
               </p>
@@ -416,25 +507,25 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
         ) : (
           <>
             <span className="text-[10px] bg-cyan-500/10 text-cyan-400 font-extrabold uppercase px-3.5 py-1 rounded-full border border-cyan-500/20 tracking-wider">
-              Przetłumacz na angielski
+              {direction === 'default' ? 'Przetłumacz na angielski' : 'Przetłumacz na polski'}
             </span>
             
-            <h3 className="text-3xl font-black text-white text-center leading-snug">{currentQuestion.card.polish}</h3>
+            <h3 className="text-3xl font-black text-white text-center leading-snug">{currentQuestion.prompt}</h3>
 
             <form onSubmit={handleSpellSubmit} className="w-full flex flex-col gap-4 mt-2">
               <div className="flex gap-3">
                 <input
+                  ref={spellInputRef}
                   type="text"
                   value={spellingInput}
                   onChange={(e) => setSpellingInput(e.target.value)}
                   readOnly={isAnswered}
-                  placeholder={isAnswered ? "Naciśnij Enter, aby przejść dalej..." : "Wpisz słówko po angielsku..."}
-                  className="flex-grow bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-cyan-500/60 font-semibold placeholder-slate-700"
-                  autoFocus
+                  placeholder={isAnswered ? 'Naciśnij Enter, aby przejść dalej...' : (direction === 'default' ? 'Wpisz słówko po angielsku...' : 'Wpisz tłumaczenie po polsku...')}
+                  className="flex-grow bg-[var(--bg-input,#0d0d1a)] border border-white/10 rounded-xl px-4 py-3.5 text-[var(--text-primary,#fff)] focus:outline-none focus:border-cyan-500/60 font-semibold placeholder-slate-600"
                 />
                 
                 <button type="submit" className="btn btn-primary bg-cyan-600 hover:bg-cyan-500 shadow-cyan-600/10">
-                  {isAnswered ? "Dalej" : "Sprawdź"}
+                  {isAnswered ? 'Dalej' : 'Sprawdź'}
                 </button>
               </div>
 
@@ -446,32 +537,37 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
                   className="text-xs text-cyan-400 hover:text-cyan-300 font-bold self-start flex items-center gap-1 transition-colors"
                 >
                   <Icons.HelpCircle size={14} /> 
-                  Pokaż podpowiedź ({currentQuestion.card.english.length} liter)
+                  Pokaż podpowiedź ({currentQuestion.correctAnswer.split('/')[0].trim().length} liter)
                 </button>
               )}
 
               {/* Show Hint card */}
-              {showHint && !isAnswered && (
-                <div className="bg-black/40 p-4 rounded-xl border border-white/5 text-xs text-slate-400 w-full text-left font-mono leading-relaxed">
-                  Pierwsza litera: <strong className="text-white text-sm">{currentQuestion.card.english.charAt(0)}</strong>, 
-                  ostatnia: <strong className="text-white text-sm">{currentQuestion.card.english.charAt(currentQuestion.card.english.length - 1)}</strong>
-                  <button 
-                    type="button" 
-                    onClick={() => playTTS(currentQuestion.card.english)} 
-                    className="ml-3 text-cyan-400 hover:underline inline-flex items-center gap-1"
-                  >
-                    <Icons.Volume2 size={12} /> posłuchaj słówka
-                  </button>
-                </div>
-              )}
+              {showHint && !isAnswered && (() => {
+                const hintWord = currentQuestion.correctAnswer.split('/')[0].trim();
+                return (
+                  <div className="bg-black/40 p-4 rounded-xl border border-white/5 text-xs text-slate-400 w-full text-left font-mono leading-relaxed">
+                    Pierwsza litera: <strong className="text-white text-sm">{hintWord.charAt(0)}</strong>,{' '}
+                    ostatnia: <strong className="text-white text-sm">{hintWord.charAt(hintWord.length - 1)}</strong>
+                    {direction === 'default' && (
+                      <button 
+                        type="button" 
+                        onClick={() => playTTS(currentQuestion.card.english)} 
+                        className="ml-3 text-cyan-400 hover:underline inline-flex items-center gap-1"
+                      >
+                        <Icons.Volume2 size={12} /> posłuchaj słówka
+                      </button>
+                    )}
+                  </div>
+                );
+              })()}
             </form>
 
             {/* Answer Checker Feedback */}
             {isAnswered && (
               <div className={`w-full p-5 rounded-2xl border text-center flex flex-col items-center gap-2 mt-2 ${
                 isCurrentCorrect() 
-                  ? "bg-emerald-500/10 border-emerald-500/25 text-emerald-300"
-                  : "bg-rose-500/10 border-rose-500/25 text-rose-300"
+                  ? 'bg-emerald-500/10 border-emerald-500/25 text-emerald-300'
+                  : 'bg-rose-500/10 border-rose-500/25 text-rose-300'
               }`}>
                 <div className="flex items-center gap-2 font-bold text-sm">
                   {isCurrentCorrect() ? (
@@ -488,12 +584,12 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
                 </div>
                 
                 <div className="text-xs text-slate-400">
-                  Wpisano: <span className="font-mono text-slate-200">{spellingInput || "(puste)"}</span>
+                  Wpisano: <span className="font-mono text-slate-200">{spellingInput || '(puste)'}</span>
                 </div>
                 <div className="text-sm text-white font-extrabold mt-1">
-                  Prawidłowo: <span className="text-cyan-300 font-mono text-lg">{currentQuestion.card.english}</span>
+                  Prawidłowo: <span className="text-cyan-300 font-mono text-lg">{currentQuestion.correctAnswer}</span>
                 </div>
-                {currentQuestion.card.pronunciation && (
+                {direction === 'default' && currentQuestion.card.pronunciation && (
                   <span className="text-xs text-slate-500 font-mono">{currentQuestion.card.pronunciation}</span>
                 )}
               </div>

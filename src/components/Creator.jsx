@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import * as Icons from "lucide-react";
+import { defaultDecks } from "../data/defaultDecks";
+
+const systemDeckIds = new Set(defaultDecks.map(d => d.id));
 
 export default function Creator({ 
   decks, 
@@ -635,7 +638,7 @@ export default function Creator({
           <h3 className="text-lg font-bold text-white">Zarządzaj własnymi taliami</h3>
           
           {(() => {
-            const customDecks = decks.filter(d => d.id.startsWith("custom-deck-"));
+            const customDecks = decks.filter(d => !systemDeckIds.has(d.id));
             if (customDecks.length === 0) {
               return (
                 <div className="text-center py-12 text-slate-500 text-xs font-medium leading-relaxed">
