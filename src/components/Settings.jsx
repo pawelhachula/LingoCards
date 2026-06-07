@@ -200,13 +200,21 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
                   <option key={t.id} value={t.id} className="bg-[var(--bg-main)] text-[var(--text-primary)]">{t.label}</option>
                 ))}
               </optgroup>
-              {PREMIUM_THEMES.some(t => (stats.xp || 0) >= t.xpRequired) && (
-                <optgroup label="Motywy premium (Odblokowane)" className="bg-[var(--bg-main)] text-indigo-400">
-                  {PREMIUM_THEMES.filter(t => (stats.xp || 0) >= t.xpRequired).map(t => (
-                    <option key={t.id} value={t.id} className="bg-[var(--bg-main)] text-[var(--text-primary)]">✨ {t.label}</option>
-                  ))}
-                </optgroup>
-              )}
+              <optgroup label="Motywy premium" className="bg-[var(--bg-main)] text-indigo-400">
+                {PREMIUM_THEMES.map(t => {
+                  const isUnlocked = (stats.level || 1) >= t.levelRequired;
+                  return (
+                    <option 
+                      key={t.id} 
+                      value={t.id} 
+                      disabled={!isUnlocked} 
+                      className={`bg-[var(--bg-main)] ${isUnlocked ? "text-[var(--text-primary)]" : "text-slate-600 font-normal"}`}
+                    >
+                      {isUnlocked ? `✨ ${t.label}` : `🔒 ${t.label} (Poziom ${t.levelRequired})`}
+                    </option>
+                  );
+                })}
+              </optgroup>
             </select>
           </div>
 

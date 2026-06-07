@@ -26,16 +26,16 @@ const DEFAULT_THEMES = [
 ];
 
 const PREMIUM_THEMES = [
-  { id: "sunset", label: "Sunset Glow (Jasny)", xpRequired: 10 },
-  { id: "mint", label: "Midnight Mint", xpRequired: 20 },
-  { id: "nebula", label: "Cosmic Nebula", xpRequired: 30 },
-  { id: "lavender", label: "Lavender Pastel (Jasny)", xpRequired: 40 },
-  { id: "cyberpunk", label: "Cyberpunk Neon", xpRequired: 50 },
-  { id: "ocean", label: "Ocean Breeze (Jasny)", xpRequired: 60 },
-  { id: "volcano", label: "Volcanic Ash", xpRequired: 70 },
-  { id: "glacier", label: "Frosted Glacier (Jasny)", xpRequired: 80 },
-  { id: "emerald", label: "Cyber Emerald", xpRequired: 90 },
-  { id: "gold", label: "Royal Gold", xpRequired: 100 },
+  { id: "sunset", label: "Sunset Glow (Jasny)", levelRequired: 2 },
+  { id: "mint", label: "Midnight Mint", levelRequired: 3 },
+  { id: "nebula", label: "Cosmic Nebula", levelRequired: 4 },
+  { id: "lavender", label: "Lavender Pastel (Jasny)", levelRequired: 5 },
+  { id: "cyberpunk", label: "Cyberpunk Neon", levelRequired: 6 },
+  { id: "ocean", label: "Ocean Breeze (Jasny)", levelRequired: 7 },
+  { id: "volcano", label: "Volcanic Ash", levelRequired: 8 },
+  { id: "glacier", label: "Frosted Glacier (Jasny)", levelRequired: 9 },
+  { id: "emerald", label: "Cyber Emerald", levelRequired: 10 },
+  { id: "gold", label: "Royal Gold", levelRequired: 11 },
 ];
 
 export default function App() {
@@ -420,7 +420,7 @@ export default function App() {
       
       // Check theme unlocks
       PREMIUM_THEMES.forEach(t => {
-        if (newXp >= t.xpRequired && currentXp < t.xpRequired) {
+        if (newLevel >= t.levelRequired && currentLevel < t.levelRequired) {
           setTimeout(() => {
             playSound("achievement", prev.audioStyle || "synth");
             setUnlockedThemeToast(t.label);
@@ -835,13 +835,21 @@ export default function App() {
                   <option key={t.id} value={t.id} className="bg-[var(--bg-main)] text-[var(--text-primary)]">{t.label}</option>
                 ))}
               </optgroup>
-              {PREMIUM_THEMES.some(t => (stats.xp || 0) >= t.xpRequired) && (
-                <optgroup label="Motywy premium (Odblokowane)" className="bg-[var(--bg-main)] text-indigo-400">
-                  {PREMIUM_THEMES.filter(t => (stats.xp || 0) >= t.xpRequired).map(t => (
-                    <option key={t.id} value={t.id} className="bg-[var(--bg-main)] text-[var(--text-primary)]">✨ {t.label}</option>
-                  ))}
-                </optgroup>
-              )}
+              <optgroup label="Motywy premium" className="bg-[var(--bg-main)] text-indigo-400">
+                {PREMIUM_THEMES.map(t => {
+                  const isUnlocked = (stats.level || 1) >= t.levelRequired;
+                  return (
+                    <option 
+                      key={t.id} 
+                      value={t.id} 
+                      disabled={!isUnlocked} 
+                      className={`bg-[var(--bg-main)] ${isUnlocked ? "text-[var(--text-primary)]" : "text-slate-600 font-normal"}`}
+                    >
+                      {isUnlocked ? `✨ ${t.label}` : `🔒 ${t.label} (Poziom ${t.levelRequired})`}
+                    </option>
+                  );
+                })}
+              </optgroup>
             </select>
           </div>
 
