@@ -246,7 +246,7 @@ export default function App() {
     // --- Załaduj aktywne talie ---
     const activeDecksKey = `lingocards_active_decks_${uname.toLowerCase()}`;
     const savedActiveDecks = localStorage.getItem(activeDecksKey);
-    let loadedActiveDecks = ["everyday", "travel"];
+    let loadedActiveDecks = [];
     if (savedActiveDecks) {
       try { loadedActiveDecks = JSON.parse(savedActiveDecks); } catch (e) { /* ignore */ }
     }
@@ -354,10 +354,10 @@ export default function App() {
     // leżą stare dane lokalne z dużym postępem, zmigrujmy je automatycznie do chmury!
     if ((loadedStats.xp || 0) === 0) {
       try {
+        const currentStatsKey = `lingocards_stats_${uidKey.toLowerCase()}`;
         const localStatsKeys = Object.keys(localStorage).filter(k => 
           k.startsWith("lingocards_stats_") && 
-          !k.toLowerCase().includes(uid.toLowerCase()) && 
-          !k.toLowerCase().includes(uname.toLowerCase())
+          k.toLowerCase() !== currentStatsKey.toLowerCase()
         );
         
         let bestLocalStats = null;
@@ -628,7 +628,7 @@ export default function App() {
       deckMedals: {},
       audioStyle: "synth",
       confettiStyle: "standard",
-      activeDeckIds: ["everyday", "travel"],
+      activeDeckIds: [],
       theme: "navy"
     };
     setStats(defaultStatsObj);
@@ -641,7 +641,7 @@ export default function App() {
 
     // Reset active decks namespace
     const activeDecksKey = `lingocards_active_decks_${username.toLowerCase()}`;
-    const defaultActiveDecks = ["everyday", "travel"];
+    const defaultActiveDecks = [];
     setActiveDeckIds(defaultActiveDecks);
     localStorage.setItem(activeDecksKey, JSON.stringify(defaultActiveDecks));
 
