@@ -41,7 +41,7 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
     rankColor = "text-emerald-400";
   }
 
-  // Calculate achievements (12 items total)
+  // Calculate achievements
   const achievements = [
     {
       id: "first_word",
@@ -50,6 +50,38 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
       icon: "Award",
       unlocked: learnedCount >= 1,
       color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+    },
+    {
+      id: "learned_10",
+      title: "Dobry start",
+      desc: "Opanowano co najmniej 10 słówek",
+      icon: "BookOpen",
+      unlocked: learnedCount >= 10,
+      color: "text-blue-400 bg-blue-500/10 border-blue-500/20"
+    },
+    {
+      id: "learned_50",
+      title: "Mistrz Pamięci",
+      desc: "Opanowano co najmniej 50 słówek angielskich",
+      icon: "Award",
+      unlocked: learnedCount >= 50,
+      color: "text-rose-400 bg-rose-500/10 border-rose-500/20"
+    },
+    {
+      id: "learned_100",
+      title: "Setka!",
+      desc: "Opanowano co najmniej 100 słówek — jesteś półzaawansowany",
+      icon: "Star",
+      unlocked: learnedCount >= 100,
+      color: "text-amber-400 bg-amber-500/10 border-amber-500/20"
+    },
+    {
+      id: "learned_250",
+      title: "Legenda Słów",
+      desc: "Opanowano co najmniej 250 słówek",
+      icon: "Crown",
+      unlocked: learnedCount >= 250,
+      color: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20"
     },
     {
       id: "streak_5",
@@ -84,68 +116,84 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
       color: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20"
     },
     {
-      id: "quiz_complete",
+      id: "quiz_10",
       title: "Sprawdzona wiedza",
-      desc: "Rozwiązano co najmniej 1 test słówek",
+      desc: "Rozwiązano co najmniej 10 testów (100+ pytań)",
       icon: "ListChecks",
-      unlocked: stats.quizTotal > 0,
+      unlocked: stats.quizTotal >= 100,
       color: "text-indigo-400 bg-indigo-500/10 border-indigo-500/20"
     },
     {
       id: "perfect_score",
       title: "Perfekcjonista",
-      desc: "Uzyskano skuteczność w testach powyżej 80%",
+      desc: "Uzyskano skuteczność w testach powyżej 85% (min. 50 pytań)",
       icon: "Trophy",
-      unlocked: stats.quizTotal > 0 && (stats.quizCorrect / stats.quizTotal) >= 0.8,
+      unlocked: stats.quizTotal >= 50 && (stats.quizCorrect / stats.quizTotal) >= 0.85,
       color: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20"
     },
     {
       id: "match_win",
       title: "Szybki refleks",
-      desc: "Wygrano co najmniej 1 grę w dopasowywanie",
+      desc: "Wygrano co najmniej 5 gier w dopasowywanie",
       icon: "Zap",
-      unlocked: stats.matchesWon > 0,
+      unlocked: stats.matchesWon >= 5,
       color: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20"
+    },
+    {
+      id: "match_10",
+      title: "Mistrz Matcher",
+      desc: "Wygrano co najmniej 10 gier w dopasowywanie",
+      icon: "Gamepad2",
+      unlocked: stats.matchesWon >= 10,
+      color: "text-fuchsia-400 bg-fuchsia-500/10 border-fuchsia-500/20"
     },
     {
       id: "srs_first",
       title: "Złoty podział",
-      desc: "Rozpocznij naukę w trybie SRS (oceniono 1 słówko)",
+      desc: "Rozpocznij naukę w trybie SRS (oceniono min. 20 słówek)",
       icon: "BrainCircuit",
-      unlocked: Object.keys(stats.srsData || {}).length >= 1,
+      unlocked: Object.keys(stats.srsData || {}).length >= 20,
       color: "text-pink-400 bg-pink-500/10 border-pink-500/20"
     },
     {
       id: "srs_master",
       title: "Pamięć absolutna",
-      desc: "Osiągnij interwał powtórek >= 10 dni dla min. 5 słówek",
+      desc: "Osiągnij interwał powtórek >= 10 dni dla min. 10 słówek",
       icon: "Sparkles",
-      unlocked: Object.values(stats.srsData || {}).filter(s => s.interval >= 10).length >= 5,
+      unlocked: Object.values(stats.srsData || {}).filter(s => s.interval >= 10).length >= 10,
       color: "text-purple-400 bg-purple-500/10 border-purple-500/20"
-    },
-    {
-      id: "referral_first",
-      title: "Ambasador Wiedzy",
-      desc: "Polecono aplikację przynajmniej jednemu znajomemu",
-      icon: "Users",
-      unlocked: (stats.referrals || []).length >= 1,
-      color: "text-teal-400 bg-teal-500/10 border-teal-500/20"
     },
     {
       id: "custom_words",
       title: "Twórca wiedzy",
-      desc: "Dodano własną fiszkę w kreatorze",
+      desc: "Dodano własną talię z min. 5 fiszkami",
       icon: "PlusCircle",
-      unlocked: decks.some(d => d.id.startsWith("custom-") && (d.cards || []).length > 0) || decks.flatMap(d => d.cards || []).some(c => c.id.startsWith("custom-")),
+      unlocked: decks.some(d => !d.isSystem && (d.cards || []).length >= 5),
       color: "text-pink-400 bg-pink-500/10 border-pink-500/20"
     },
     {
-      id: "learned_30",
-      title: "Mistrz Pamięci",
-      desc: "Opanowano co najmniej 30 słówek angielskich",
-      icon: "Award",
-      unlocked: learnedCount >= 30,
-      color: "text-rose-400 bg-rose-500/10 border-rose-500/20"
+      id: "referral_first",
+      title: "Ambasador Wiedzy",
+      desc: "Polecono aplikację przynajmniej 3 znajomym",
+      icon: "Users",
+      unlocked: (stats.referrals || []).length >= 3,
+      color: "text-teal-400 bg-teal-500/10 border-teal-500/20"
+    },
+    {
+      id: "deck_gold",
+      title: "Złota Fiszka",
+      desc: "Zdobyto złoty medal w co najmniej jednej talii",
+      icon: "Medal",
+      unlocked: Object.values(stats.deckMedals || {}).some(m => m === 'gold'),
+      color: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20"
+    },
+    {
+      id: "deck_gold_3",
+      title: "Kolekcjoner Złota",
+      desc: "Zdobyto złoty medal w co najmniej 3 taliach",
+      icon: "GalleryHorizontal",
+      unlocked: Object.values(stats.deckMedals || {}).filter(m => m === 'gold').length >= 3,
+      color: "text-amber-300 bg-amber-400/10 border-amber-400/20"
     }
   ];
 
@@ -483,7 +531,9 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
 
             <div className="bg-black/30 p-4 rounded-2xl border border-white/5 text-center">
               <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Rozwiązane testy</span>
-              <span className="text-2xl font-black text-white mt-1.5 block">{stats.quizTotal || 0} pytań</span>
+              <span className="text-2xl font-black text-white mt-1.5 block">
+                {`${stats.quizTotal || 0} ${(stats.quizTotal || 0) === 1 ? 'pytanie' : (stats.quizTotal || 0) <= 4 ? 'pytania' : 'pytań'}`}
+              </span>
             </div>
 
             <div className="bg-black/30 p-4 rounded-2xl border border-white/5 text-center">
@@ -519,16 +569,16 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {decks.map(deck => {
-                const medal = stats.deckMedals?.[deck.id];
-                if (!medal) return null;
+              {Object.entries(stats.deckMedals || {}).map(([deckId, medal]) => {
+                const deck = decks.find(d => d.id === deckId);
+                const deckTitle = deck?.title || deckId;
                 return (
-                  <div key={deck.id} className="bg-black/30 border border-white/5 p-3.5 rounded-2xl flex flex-col items-center gap-1.5 text-center">
+                  <div key={deckId} className="bg-black/30 border border-white/5 p-3.5 rounded-2xl flex flex-col items-center gap-1.5 text-center">
                     <span className="text-3xl">
                       {medal === 'gold' ? "🥇" : medal === 'silver' ? "🥈" : "🥉"}
                     </span>
                     <div className="min-w-0 w-full">
-                      <span className="text-[10px] font-bold text-slate-200 block truncate">{deck.title}</span>
+                      <span className="text-[10px] font-bold text-slate-200 block truncate">{deckTitle}</span>
                       <span className={`text-[8px] font-black uppercase tracking-wider block mt-0.5 ${
                         medal === 'gold' ? "text-yellow-400" : medal === 'silver' ? "text-slate-400" : "text-amber-500"
                       }`}>

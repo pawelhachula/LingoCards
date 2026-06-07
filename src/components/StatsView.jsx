@@ -97,7 +97,7 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
     if (dateStr === "Brak aktywności") return dateStr;
     try {
       const date = new Date(dateStr);
-      return date.toLocaleDateString("pl-PL", { day: "numeric", month: "long", year: "numeric" }) + ` (${maxActivity} aktyw.)`;
+      return date.toLocaleDateString("pl-PL", { day: "numeric", month: "long", year: "numeric" });
     } catch (e) {
       return dateStr;
     }
@@ -249,7 +249,7 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
               {stats.quizTotal > 0 ? `${Math.round((stats.quizCorrect / stats.quizTotal) * 100)}%` : "0%"}
             </h3>
           </div>
-          <span className="text-[10px] text-slate-400 font-bold block mt-3">Z {stats.quizTotal || 0} rozwiązanych pytań</span>
+          <span className="text-[10px] text-slate-400 font-bold block mt-3">{`Z ${stats.quizTotal || 0} rozwiązanych pytań`}</span>
         </div>
 
         {/* Best Day */}

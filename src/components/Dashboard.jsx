@@ -774,13 +774,13 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
                       />
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-wrap">
                       <button 
                         onClick={() => {
                           onSelectDeck(deck);
                           onNavigate("learn");
                         }}
-                        className="flex-grow btn btn-secondary text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform"
+                        className="flex-1 min-w-0 btn btn-secondary text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform"
                       >
                         <Icons.Play size={12} /> Fiszki
                       </button>
@@ -789,7 +789,7 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
                           onSelectDeck(deck);
                           onNavigate("quiz");
                         }}
-                        className="flex-grow btn text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform"
+                        className="flex-1 min-w-0 btn text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform"
                         style={{ 
                           background: `${deck.color}12`, 
                           color: deck.color,
@@ -809,26 +809,26 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
                       )}
                       {onDeleteDeck && systemDeckIds && !systemDeckIds.has(deck.id) && (
                         confirmDeleteId === deck.id ? (
-                          <div className="flex gap-1">
+                          <>
                             <button
                               onClick={() => { onDeleteDeck(deck.id); setConfirmDeleteId(null); }}
-                              className="btn text-xs py-2.5 px-2.5 flex items-center justify-center font-bold bg-rose-500/15 border-rose-500/30 text-rose-400 hover:bg-rose-500/25 transition-all"
+                              className="btn text-xs py-2.5 px-3 flex items-center justify-center gap-1 font-bold bg-rose-500/15 border-rose-500/30 text-rose-400 hover:bg-rose-500/25 transition-all"
                               title="Potwierdź usunięcie"
                             >
-                              <Icons.Check size={12} />
+                              <Icons.Check size={12} /> Usuń
                             </button>
                             <button
                               onClick={() => setConfirmDeleteId(null)}
-                              className="btn text-xs py-2.5 px-2.5 flex items-center justify-center font-bold text-slate-400 hover:text-white transition-all"
+                              className="btn text-xs py-2.5 px-3 flex items-center justify-center font-bold text-slate-400 hover:text-white transition-all"
                               title="Anuluj"
                             >
                               <Icons.X size={12} />
                             </button>
-                          </div>
+                          </>
                         ) : (
                           <button
                             onClick={() => setConfirmDeleteId(deck.id)}
-                            className="btn text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform text-slate-500 hover:text-rose-400 hover:border-rose-500/30"
+                            className="btn text-xs py-2.5 px-3 flex items-center justify-center font-bold hover:scale-[1.02] transition-transform text-slate-500 hover:text-rose-400 hover:border-rose-500/30"
                             title="Usuń talię"
                           >
                             <Icons.Trash2 size={12} />
