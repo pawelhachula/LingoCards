@@ -23,7 +23,7 @@ const CEFR_COLORS = {
   C2: "bg-rose-500/15 text-rose-400 border-rose-500/25"
 };
 
-export default function Library({ decks, activeDeckIds, onToggleActiveDeck, onSelectDeck, onNavigate, stats, onUpdateStats }) {
+export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleActiveDeck, onSelectDeck, onNavigate, stats, onUpdateStats }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCefr, setSelectedCefr] = useState("all");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -31,6 +31,10 @@ export default function Library({ decks, activeDeckIds, onToggleActiveDeck, onSe
   const [premiumTriggerDeck, setPremiumTriggerDeck] = useState(null);
 
   const isPro = !!stats.isPro;
+
+  // Rozdziel talie systemowe od użytkownika
+  const systemDecks = systemDeckIds ? decks.filter(d => systemDeckIds.has(d.id)) : decks;
+  const userDecks = systemDeckIds ? decks.filter(d => !systemDeckIds.has(d.id)) : [];
 
   const handleTogglePro = () => {
     onUpdateStats({ isPro: !isPro });
@@ -43,8 +47,8 @@ export default function Library({ decks, activeDeckIds, onToggleActiveDeck, onSe
     setShowPremiumModal(true);
   };
 
-  // Filter Decks
-  const filteredDecks = decks.filter(deck => {
+  // Filtruj tylko talie systemowe
+  const filteredDecks = systemDecks.filter(deck => {
     const matchesSearch = 
       deck.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (deck.polishTitle && deck.polishTitle.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -79,10 +83,50 @@ export default function Library({ decks, activeDeckIds, onToggleActiveDeck, onSe
               : "bg-white/5 text-slate-400 border-white/10 hover:text-white"
           }`}
         >
-          <Icons.Crown size={15} className={isPro ? "fill-amber-400" : ""} />
+        <Icons.Crown size={15} className={isPro ? "fill-amber-400" : ""} />
           <span>Status: {isPro ? "Konto PRO (Aktywne)" : "Konto FREE (Zmień)"}</span>
         </button>
       </div>
+
+      {/* Sekcja talii użytkownika */}
+      {userDecks.length > 0 && (
+        <div>
+          <h3 className="text-sm font-extrabold text-white uppercase tracking-widest mb-3 flex items-center gap-2">
+            <Icons.User size={14} className="text-indigo-400" />
+            Twoje własne talie
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {userDecks.map(deck => {
+              const IconComponent = Icons[deck.icon] || Icons.BookOpen;
+              const isActive = activeDeckIds.includes(deck.id);
+              return (
+                <div key={deck.id} className="glass-card p-4 flex items-center gap-4 hover:border-indigo-500/20 transition-all">
+                  <div
+                    className="p-3 rounded-xl border shrink-0"
+                    style={{ backgroundColor: `${deck.color}15`, color: deck.color, borderColor: `${deck.color}25` }}
+                  >
+                    <IconComponent size={18} />
+                  </div>
+                  <div className="flex-grow min-w-0">
+                    <p className="text-sm font-bold text-white truncate">{deck.title}</p>
+                    <p className="text-[11px] text-slate-500">{deck.cards?.length || 0} słówek</p>
+                  </div>
+                  <button
+                    onClick={() => onToggleActiveDeck(deck.id)}
+                    className={`shrink-0 text-xs font-bold px-3 py-2 rounded-xl border transition-all ${
+                      isActive
+                        ? "bg-indigo-500/15 border-indigo-500/30 text-indigo-300 hover:bg-rose-500/15 hover:border-rose-500/30 hover:text-rose-400"
+                        : "bg-white/5 border-white/10 text-slate-400 hover:text-white hover:border-white/20"
+                    }`}
+                  >
+                    {isActive ? "Aktywna" : "Dodaj"}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Filter and Search Bar */}
       <div className="glass-card p-4 flex flex-col gap-4">

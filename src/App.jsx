@@ -548,29 +548,6 @@ export default function App() {
     }
   };
 
-  const handleDeleteDeck = (deckId) => {
-    if (systemDeckIds.has(deckId)) return;
-    const updated = decks.filter(d => d.id !== deckId);
-    setDecks(updated);
-    if (currentUser) {
-      const userDecksKey = `lingocards_decks_${currentUser.username.toLowerCase()}`;
-      localStorage.setItem(userDecksKey, JSON.stringify(updated));
-    }
-    
-    setActiveDeckIds(prev => {
-      const updatedActive = prev.filter(id => id !== deckId);
-      if (currentUser) {
-        const activeDecksKey = `lingocards_active_decks_${currentUser.username.toLowerCase()}`;
-        localStorage.setItem(activeDecksKey, JSON.stringify(updatedActive));
-      }
-      return updatedActive;
-    });
-
-    if (selectedDeck && selectedDeck.id === deckId) {
-      setSelectedDeck(updated[0] || null);
-    }
-  };
-
   const handleEditDeck = (deckId, updatedFields) => {
     if (systemDeckIds.has(deckId)) return;
     const updated = decks.map(d => {
@@ -685,6 +662,18 @@ export default function App() {
     }
     if (selectedDeck && selectedDeck.id === deckId) {
       setSelectedDeck(updated.find(d => d.id === deckId));
+    }
+  };
+
+  const handleDeleteDeck = (deckId) => {
+    if (systemDeckIds.has(deckId)) return;
+    const updated = decks.filter(d => d.id !== deckId);
+    setDecks(updated);
+    setActiveDeckIds(prev => prev.filter(id => id !== deckId));
+    if (selectedDeck?.id === deckId) setSelectedDeck(null);
+    if (currentUser) {
+      const uid = currentUser.uid || currentUser.username;
+      saveDecks(uid.toLowerCase(), updated);
     }
   };
 
@@ -997,13 +986,16 @@ export default function App() {
             onSelectDeck={setSelectedDeck} 
             onNavigate={setView}
             onUpdateDeck={handleUpdateDeck}
+            onDeleteDeck={handleDeleteDeck}
             systemDeckIds={systemDeckIds}
+            activeDeckIds={activeDeckIds}
           />
         )}
 
         {view === "library" && (
           <Library 
-            decks={decks.filter(d => systemDeckIds.has(d.id))} 
+            decks={decks.filter(d => d.id !== 'starred' && d.id !== 'srs')} 
+            systemDeckIds={systemDeckIds}
             activeDeckIds={activeDeckIds} 
             onToggleActiveDeck={handleToggleActiveDeck} 
             onSelectDeck={setSelectedDeck} 

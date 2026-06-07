@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import * as Icons from "lucide-react";
 import DeckEditor from "./DeckEditor";
 
-export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavigate, onUpdateDeck, systemDeckIds }) {
+export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavigate, onUpdateDeck, onDeleteDeck, systemDeckIds, activeDeckIds }) {
   const [editorDeck, setEditorDeck] = useState(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const realDecks = decks.filter(d => d.id !== "starred" && d.id !== "srs");
-  const totalCards = realDecks.reduce((sum, deck) => sum + deck.cards.length, 0);
+  // Liczba słówek tylko z aktywnych talii
+  const activeDecks = realDecks.filter(d => !activeDeckIds || activeDeckIds.includes(d.id));
+  const totalCards = activeDecks.reduce((sum, deck) => sum + deck.cards.length, 0);
   const learnedCount = Object.keys(stats.learnedCards || {}).length;
   const progressPercent = totalCards > 0 ? Math.round((learnedCount / totalCards) * 100) : 0;
   
@@ -803,6 +806,34 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
                         >
                           <Icons.List size={12} />
                         </button>
+                      )}
+                      {onDeleteDeck && systemDeckIds && !systemDeckIds.has(deck.id) && (
+                        confirmDeleteId === deck.id ? (
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => { onDeleteDeck(deck.id); setConfirmDeleteId(null); }}
+                              className="btn text-xs py-2.5 px-2.5 flex items-center justify-center font-bold bg-rose-500/15 border-rose-500/30 text-rose-400 hover:bg-rose-500/25 transition-all"
+                              title="Potwierdź usunięcie"
+                            >
+                              <Icons.Check size={12} />
+                            </button>
+                            <button
+                              onClick={() => setConfirmDeleteId(null)}
+                              className="btn text-xs py-2.5 px-2.5 flex items-center justify-center font-bold text-slate-400 hover:text-white transition-all"
+                              title="Anuluj"
+                            >
+                              <Icons.X size={12} />
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setConfirmDeleteId(deck.id)}
+                            className="btn text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform text-slate-500 hover:text-rose-400 hover:border-rose-500/30"
+                            title="Usuń talię"
+                          >
+                            <Icons.Trash2 size={12} />
+                          </button>
+                        )
                       )}
                     </div>
                   </div>
