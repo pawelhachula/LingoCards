@@ -23,6 +23,11 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
   // Calculate dynamic stats
   const totalCards = decks.reduce((sum, deck) => sum + (deck.cards || []).length, 0);
   const learnedCount = Object.keys(stats.learnedCards || {}).length;
+
+  // Filtrujemy medale, aby nie pokazywać medali dla usuniętych talii
+  const activeMedals = Object.entries(stats.deckMedals || {}).filter(([deckId]) =>
+    decks.some(d => d.id === deckId)
+  );
   
   // Calculate Rank/Ranga
   let rank = "Nowicjusz";
@@ -184,7 +189,7 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
       title: "Złota Fiszka",
       desc: "Zdobyto złoty medal w co najmniej jednej talii",
       icon: "Medal",
-      unlocked: Object.values(stats.deckMedals || {}).some(m => m === 'gold'),
+      unlocked: activeMedals.some(([_, m]) => m === 'gold'),
       color: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20"
     },
     {
@@ -192,7 +197,7 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
       title: "Kolekcjoner Złota",
       desc: "Zdobyto złoty medal w co najmniej 3 taliach",
       icon: "GalleryHorizontal",
-      unlocked: Object.values(stats.deckMedals || {}).filter(m => m === 'gold').length >= 3,
+      unlocked: activeMedals.filter(([_, m]) => m === 'gold').length >= 3,
       color: "text-amber-300 bg-amber-400/10 border-amber-400/20"
     }
   ];
@@ -557,11 +562,11 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
               Gablota Medalowa Zestawów
             </h4>
             <span className="text-xs font-bold text-slate-400 bg-white/5 border border-white/5 px-2.5 py-1 rounded-xl">
-              Zdobyte medale: {Object.keys(stats.deckMedals || {}).length}
+              Zdobyte medale: {activeMedals.length}
             </span>
           </div>
 
-          {Object.keys(stats.deckMedals || {}).length === 0 ? (
+          {activeMedals.length === 0 ? (
             <div className="text-center py-8 border border-dashed border-white/10 rounded-2xl bg-black/10">
               <Icons.Trophy className="text-slate-600 mx-auto mb-2" size={32} />
               <p className="text-xs text-slate-500 font-bold">Brak zdobytych medali</p>
@@ -569,7 +574,7 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {Object.entries(stats.deckMedals || {}).map(([deckId, medal]) => {
+              {activeMedals.map(([deckId, medal]) => {
                 const deck = decks.find(d => d.id === deckId);
                 const deckTitle = deck?.title || deckId;
                 return (

@@ -109,7 +109,6 @@ export default function App() {
     // Firebase Auth — nasłuchuj zmiany stanu logowania
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
-        // Użytkownik zalogowany — odtwórz profil
         const savedAvatar = localStorage.getItem(`lingocards_avatar_${firebaseUser.uid}`) || "👑";
         const user = {
           uid: firebaseUser.uid,
@@ -313,6 +312,20 @@ export default function App() {
 
     setStats(loadedStats);
     saveStats(uidKey, loadedStats);
+
+    // Synchronizuj profil użytkownika (avatar i nazwa użytkownika z Firestore)
+    if (loadedStats.avatarData || loadedStats.customUsername) {
+      setCurrentUser(prev => {
+        if (!prev) return prev;
+        const updated = {
+          ...prev,
+          avatar: loadedStats.avatarData || prev.avatar,
+          username: loadedStats.customUsername || prev.username
+        };
+        localStorage.setItem("lingocards_current_user", JSON.stringify(updated));
+        return updated;
+      });
+    }
   };
 
   const handleLogin = (user) => {
@@ -406,10 +419,20 @@ export default function App() {
     const updatedUser = { ...currentUser, username: cleanNewUsername, avatar: newAvatar };
     setCurrentUser(updatedUser);
     localStorage.setItem("lingocards_current_user", JSON.stringify(updatedUser));
+
+    // Zapisz avatar również do stats (Firestore) żeby nie zniknął po nowym deploymencie
+    if (currentUser.uid) {
+      localStorage.setItem(`lingocards_avatar_${currentUser.uid}`, newAvatar);
+    }
+    // Synchronizuj avatar oraz nową nazwę użytkownika ze statystykami (Firestore)
+    handleSetStats({
+      avatarData: newAvatar,
+      customUsername: cleanNewUsername
+    });
     
     // If username changed, reload states with the new namespace
     if (cleanNewUsername.toLowerCase() !== oldUsername.toLowerCase()) {
-      loadUserData(cleanNewUsername);
+      loadUserData(currentUser.uid || cleanNewUsername, cleanNewUsername);
     }
 
     return { success: true, message: "Profil został zaktualizowany!" };
@@ -675,6 +698,19 @@ export default function App() {
       const uid = currentUser.uid || currentUser.username;
       saveDecks(uid.toLowerCase(), updated);
     }
+
+    // Usuń medal i status ukończenia dla tej talii ze statystyk (Firestore)
+    handleSetStats(prev => {
+      const updatedMedals = { ...prev.deckMedals };
+      delete updatedMedals[deckId];
+      const updatedCompleted = { ...prev.completedDecks };
+      delete updatedCompleted[deckId];
+      return {
+        ...prev,
+        deckMedals: updatedMedals,
+        completedDecks: updatedCompleted
+      };
+    });
   };
 
   // If not logged in, show login page
@@ -1051,10 +1087,11 @@ export default function App() {
 
         {view === "profile" && (
           <Profile 
+            key={`${currentUser.username}-${currentUser.avatar}`}
             user={currentUser}
             onLogout={handleLogout}
             stats={stats}
-            decks={decks}
+            decks={[srsDeck, starredDeck, ...decks]}
             onUpdateProfile={handleUpdateProfile}
           />
         )}

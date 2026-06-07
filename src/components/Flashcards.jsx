@@ -452,15 +452,6 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
         
         if (medal) {
           setAwardedMedal(medal);
-          const medalWeights = { gold: 3, silver: 2, bronze: 1, null: 0 };
-          setStats(prev => {
-            const currentMedals = prev.deckMedals || {};
-            const oldMedal = currentMedals[selectedDeck.id];
-            if (!oldMedal || medalWeights[medal] > medalWeights[oldMedal]) {
-              return { deckMedals: { ...currentMedals, [selectedDeck.id]: medal } };
-            }
-            return {};
-          });
         }
 
         // XP: first completion bonus + per-medal bonus
@@ -472,11 +463,24 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
         // First completion: +100 XP one-time bonus
         const firstCompletionXp = isFirstCompletion ? 100 : 0;
         
-        // Update completedDecks count in stats
+        // Update both deckMedals and completedDecks count in a single setStats call
         setStats(prev => {
+          const updatedStats = { ...prev };
+          
+          if (medal) {
+            const currentMedals = prev.deckMedals || {};
+            const oldMedal = currentMedals[selectedDeck.id];
+            const medalWeights = { gold: 3, silver: 2, bronze: 1, null: 0 };
+            if (!oldMedal || medalWeights[medal] > medalWeights[oldMedal]) {
+              updatedStats.deckMedals = { ...currentMedals, [selectedDeck.id]: medal };
+            }
+          }
+          
           const completedDecks = { ...(prev.completedDecks || {}) };
           completedDecks[selectedDeck.id] = (completedDecks[selectedDeck.id] || 0) + 1;
-          return { completedDecks };
+          updatedStats.completedDecks = completedDecks;
+          
+          return updatedStats;
         });
 
         // Award XP (per-card XP already given above, now deck bonuses)
