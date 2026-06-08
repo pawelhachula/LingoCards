@@ -536,73 +536,6 @@ export default function App() {
     return { success: true, message: "Profil został zaktualizowany!" };
   };
 
-  const handleMigrateFromProfile = (localStatsKey) => {
-    try {
-      const dataStr = localStorage.getItem(localStatsKey);
-      if (!dataStr) return { success: false, message: "Nie znaleziono danych dla tego profilu." };
-      const parsedStats = JSON.parse(dataStr);
-      
-      const uidKey = getFirestoreUidKey();
-      if (!uidKey) return { success: false, message: "Musisz być zalogowany, aby przeprowadzić migrację." };
-
-      console.log(`[Manual Migration] Migrating from "${localStatsKey}" to Firestore key "${uidKey}"`);
-
-      // Merge stats
-      const newStats = {
-        ...stats,
-        ...parsedStats,
-        avatarData: parsedStats.avatarData || stats.avatarData,
-        customUsername: parsedStats.customUsername || stats.customUsername
-      };
-
-      setStats(newStats);
-      saveStats(uidKey, newStats);
-
-      // Merge decks
-      const usernamePart = localStatsKey.replace("lingocards_stats_", "");
-      const localDecksKey = `lingocards_decks_${usernamePart}`;
-      const localDecksStr = localStorage.getItem(localDecksKey);
-      let updatedDecks = [...decks];
-      if (localDecksStr) {
-        try {
-          const parsedDecks = JSON.parse(localDecksStr);
-          if (parsedDecks && parsedDecks.length > 0) {
-            const merged = [...decks];
-            parsedDecks.forEach(d => {
-              if (!merged.some(md => md.id === d.id)) {
-                merged.push(d);
-              }
-            });
-            updatedDecks = merged;
-          }
-        } catch (e) {
-          console.warn("Failed to parse local decks during manual migration:", e);
-        }
-      }
-      setDecks(updatedDecks);
-      saveDecks(uidKey, updatedDecks);
-
-      // Sync active decks
-      const activeDeckIdsToSet = newStats.activeDeckIds || [];
-      setActiveDeckIds(activeDeckIdsToSet);
-      
-      const uname = currentUser?.username || uidKey;
-      const activeDecksKey = `lingocards_active_decks_${uname.toLowerCase()}`;
-      localStorage.setItem(activeDecksKey, JSON.stringify(activeDeckIdsToSet));
-
-      // Theme sync
-      if (newStats.theme) {
-        setTheme(newStats.theme);
-        localStorage.setItem("lingocards_theme", newStats.theme);
-      }
-
-      return { success: true, message: `Pomyślnie zmigrowano dane z profilu "${usernamePart}"!` };
-    } catch (e) {
-      console.error(e);
-      return { success: false, message: "Wystąpił błąd podczas migracji: " + e.message };
-    }
-  };
-
   const handleSetStats = (newStatsOrFunc) => {
     setStats(prev => {
       const resolvedStats = typeof newStatsOrFunc === 'function' ? newStatsOrFunc(prev) : newStatsOrFunc;
@@ -1288,13 +1221,12 @@ export default function App() {
 
         {view === "profile" && (
           <Profile 
-            key={`${currentUser.username}-${currentUser.avatar}`}
+            key={currentUser.uid || currentUser.username}
             user={currentUser}
             onLogout={handleLogout}
             stats={stats}
             decks={[srsDeck, starredDeck, ...decks]}
             onUpdateProfile={handleUpdateProfile}
-            onMigrateFromProfile={handleMigrateFromProfile}
           />
         )}
 

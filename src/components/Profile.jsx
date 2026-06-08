@@ -1,71 +1,11 @@
 import React, { useState } from "react";
 import * as Icons from "lucide-react";
 
-export default function Profile({ user, onLogout, stats, decks, onUpdateProfile, onMigrateFromProfile }) {
+export default function Profile({ user, onLogout, stats, decks, onUpdateProfile }) {
   const [usernameInput, setUsernameInput] = useState(user.username);
   const [selectedAvatar, setSelectedAvatar] = useState(user.avatar || "👑");
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
-
-  const [recoveryStatus, setRecoveryStatus] = useState(null);
-
-  const getStatsScore = (s) => {
-    if (!s) return 0;
-    const xpVal = s.xp || 0;
-    const learnedCount = Object.keys(s.learnedCards || {}).length;
-    const completedCount = Object.values(s.completedDecks || {}).reduce((a, b) => a + b, 0);
-    const activeCount = (s.activeDeckIds || []).length;
-    return (xpVal * 10) + (learnedCount * 5) + (completedCount * 100) + activeCount;
-  };
-
-  const getLocalProfiles = () => {
-    const profiles = [];
-    try {
-      const keys = Object.keys(localStorage).filter(k => k.startsWith("lingocards_stats_"));
-      for (const k of keys) {
-        const dataStr = localStorage.getItem(k);
-        if (dataStr) {
-          try {
-            const statsObj = JSON.parse(dataStr);
-            const score = getStatsScore(statsObj);
-            const name = k.replace("lingocards_stats_", "");
-            profiles.push({
-              key: k,
-              name: name,
-              xp: statsObj.xp || 0,
-              level: statsObj.level || 1,
-              learned: Object.keys(statsObj.learnedCards || {}).length,
-              score: score,
-              stats: statsObj
-            });
-          } catch (e) {
-            // ignore malformed
-          }
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    }
-    // Sort profiles by score descending
-    return profiles.sort((a, b) => b.score - a.score);
-  };
-
-  const handleMigrateClick = (profileKey, profileName) => {
-    const confirmMsg = `Czy na pewno chcesz przenieść postępy z profilu "${profileName}" do swojego aktualnego konta? Twoje obecne postępy zostaną zastąpione danymi z tamtego konta, a następnie zsynchronizowane z chmurą.`;
-    if (window.confirm(confirmMsg)) {
-      if (onMigrateFromProfile) {
-        const res = onMigrateFromProfile(profileKey);
-        setRecoveryStatus(res);
-        if (res.success) {
-          setTimeout(() => {
-            window.location.reload();
-          }, 1500);
-        }
-      } else {
-        setRecoveryStatus({ success: false, message: "Funkcja migracji jest niedostępna." });
-      }
-    }
-  };
 
   // Photo Cropper States
   const [showCropper, setShowCropper] = useState(false);
@@ -383,10 +323,8 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile,
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto w-full animate-slide-in">
       
-      {/* Left Column wrapper */}
-      <div className="flex flex-col gap-6 h-fit">
-        {/* Profile Info & Avatar Card */}
-        <div className="glass-card p-6 flex flex-col items-center text-center relative overflow-hidden w-full" data-lpignore="true" data-1p-ignore>
+      {/* Profile Info & Avatar Card */}
+      <div className="glass-card p-6 flex flex-col items-center text-center relative overflow-hidden h-fit" data-lpignore="true" data-1p-ignore>
         <div className="absolute -left-20 -top-20 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
         
         {/* User Large Avatar Display */}
@@ -525,87 +463,7 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile,
         </button>
       </div>
 
-      {/* Recovery / Migration Tool */}
-      <div className="glass-card p-6 relative overflow-hidden w-full">
-        <div className="absolute -left-20 -top-20 w-48 h-48 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
-        
-        <h4 className="text-base font-bold text-white flex items-center gap-2 mb-2">
-          <Icons.Database className="text-amber-500" size={18} />
-          Odzyskiwanie profilu
-        </h4>
-        <p className="text-slate-400 text-[11px] leading-relaxed mb-4 text-left">
-          Jeśli grałeś wcześniej w tej przeglądarce i Twoje postępy (XP, poziom) nie zsynchronizowały się automatycznie, możesz ręcznie połączyć dowolny profil z pamięci przeglądarkki ze swoim obecnym kontem.
-        </p>
-
-        {(() => {
-          const profiles = getLocalProfiles();
-          if (profiles.length === 0) {
-            return (
-              <div className="text-center py-4 border border-dashed border-white/5 rounded-xl bg-black/10">
-                <Icons.Search className="text-slate-600 mx-auto mb-1.5" size={24} />
-                <p className="text-[10px] text-slate-500 font-bold">Brak zapisanych profilów</p>
-                <p className="text-[8px] text-slate-600 mt-0.5">Nie znaleziono innych kont w tej przeglądarce.</p>
-              </div>
-            );
-          }
-
-          return (
-            <div className="flex flex-col gap-2.5 max-h-[250px] overflow-y-auto pr-1">
-              {profiles.map(p => {
-                const isActive = p.key.toLowerCase().includes((user.uid || user.username).toLowerCase());
-                return (
-                  <div 
-                    key={p.key} 
-                    className={`p-3 rounded-xl border text-left flex flex-col gap-2 transition-all ${
-                      isActive 
-                        ? "bg-indigo-500/5 border-indigo-500/20 shadow-[0_0_10px_rgba(99,102,241,0.1)]" 
-                        : "bg-black/20 border-white/5 hover:border-white/10"
-                    }`}
-                  >
-                    <div className="flex justify-between items-start gap-1">
-                      <div className="min-w-0">
-                        <span className="text-xs font-bold text-white block truncate">{p.name}</span>
-                        <span className="text-[9px] text-slate-400 font-medium">
-                          Poziom {p.level} • {p.xp} XP • {p.learned} słówek
-                        </span>
-                      </div>
-                      {isActive && (
-                        <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shrink-0">
-                          Aktywny
-                        </span>
-                      )}
-                    </div>
-                    
-                    {!isActive && (
-                      <button
-                        type="button"
-                        onClick={() => handleMigrateClick(p.key, p.name)}
-                        className="w-full btn btn-secondary py-1.5 text-[10px] font-bold flex items-center justify-center gap-1.5 border-amber-500/10 hover:border-amber-500/30 hover:bg-amber-500/5 text-amber-400 hover:text-amber-300 transition-colors"
-                      >
-                        <Icons.Upload size={12} />
-                        Połącz i przywróć postępy
-                      </button>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })()}
-        
-        {recoveryStatus && (
-          <div className={`mt-3 text-[10px] font-bold p-2.5 rounded-lg border text-left leading-normal ${
-            recoveryStatus.success
-              ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-              : "bg-rose-500/10 border-rose-500/20 text-rose-400"
-          }`}>
-            {recoveryStatus.message}
-          </div>
-        )}
-      </div>
-    </div>
-
-    {/* Stats and Achievements Pane */}
+      {/* Stats and Achievements Pane */}
       <div className="lg:col-span-2 flex flex-col gap-6">
         
         {/* Unlocked Achievements progress panel */}

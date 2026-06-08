@@ -775,65 +775,70 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
                     </div>
 
                     <div className="flex gap-2 flex-wrap">
-                      <button 
-                        onClick={() => {
-                          onSelectDeck(deck);
-                          onNavigate("learn");
-                        }}
-                        className="flex-1 min-w-0 btn btn-secondary text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform"
-                      >
-                        <Icons.Play size={12} /> Fiszki
-                      </button>
-                      <button 
-                        onClick={() => {
-                          onSelectDeck(deck);
-                          onNavigate("quiz");
-                        }}
-                        className="flex-1 min-w-0 btn text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform"
-                        style={{ 
-                          background: `${deck.color}12`, 
-                          color: deck.color,
-                          borderColor: `${deck.color}25`
-                        }}
-                      >
-                        <Icons.Award size={12} /> Test
-                      </button>
-                      {onUpdateDeck && systemDeckIds && !systemDeckIds.has(deck.id) && (
-                        <button
-                          onClick={() => setEditorDeck(deck)}
-                          className="btn text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform text-slate-400 hover:text-white"
-                          title="Rejestr słów"
-                        >
-                          <Icons.List size={12} />
-                        </button>
-                      )}
-                      {onDeleteDeck && systemDeckIds && !systemDeckIds.has(deck.id) && (
-                        confirmDeleteId === deck.id ? (
-                          <>
+                      {confirmDeleteId !== deck.id ? (
+                        <>
+                          <button 
+                            onClick={() => {
+                              onSelectDeck(deck);
+                              onNavigate("learn");
+                            }}
+                            className="flex-grow min-w-0 btn btn-secondary text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform"
+                          >
+                            <Icons.Play size={12} /> Fiszki
+                          </button>
+                          <button 
+                            onClick={() => {
+                              onSelectDeck(deck);
+                              onNavigate("quiz");
+                            }}
+                            className="flex-grow min-w-0 btn text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform"
+                            style={{ 
+                              background: `${deck.color}12`, 
+                              color: deck.color,
+                              borderColor: `${deck.color}25`
+                            }}
+                          >
+                            <Icons.Award size={12} /> Test
+                          </button>
+                          {onUpdateDeck && systemDeckIds && !systemDeckIds.has(deck.id) && (
+                            <button
+                              onClick={() => setEditorDeck(deck)}
+                              className="btn text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform text-slate-400 hover:text-white"
+                              title="Rejestr słów"
+                            >
+                              <Icons.List size={12} />
+                            </button>
+                          )}
+                          {onDeleteDeck && systemDeckIds && !systemDeckIds.has(deck.id) && (
+                            <button
+                              onClick={() => setConfirmDeleteId(deck.id)}
+                              className="btn text-xs py-2.5 px-3 flex items-center justify-center font-bold hover:scale-[1.02] transition-transform text-slate-500 hover:text-rose-400 hover:border-rose-500/30"
+                              title="Usuń talię"
+                            >
+                              <Icons.Trash2 size={12} />
+                            </button>
+                          )}
+                        </>
+                      ) : (
+                        <div className="flex items-center justify-between w-full bg-rose-500/5 border border-rose-500/10 p-1.5 rounded-xl gap-2">
+                          <span className="text-[11px] text-rose-400 font-extrabold px-1 truncate">Usunąć talię?</span>
+                          <div className="flex gap-1.5 shrink-0">
                             <button
                               onClick={() => { onDeleteDeck(deck.id); setConfirmDeleteId(null); }}
-                              className="btn text-xs py-2.5 px-3 flex items-center justify-center gap-1 font-bold bg-rose-500/15 border-rose-500/30 text-rose-400 hover:bg-rose-500/25 transition-all"
+                              className="btn text-[10px] py-1.5 px-3 flex items-center justify-center gap-1 font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition-all"
                               title="Potwierdź usunięcie"
                             >
-                              <Icons.Check size={12} /> Usuń
+                              <Icons.Check size={11} /> Tak
                             </button>
                             <button
                               onClick={() => setConfirmDeleteId(null)}
-                              className="btn text-xs py-2.5 px-3 flex items-center justify-center font-bold text-slate-400 hover:text-white transition-all"
+                              className="btn btn-secondary text-[10px] py-1.5 px-3 flex items-center justify-center gap-1 font-bold text-slate-400 hover:text-white rounded-lg transition-all"
                               title="Anuluj"
                             >
-                              <Icons.X size={12} />
+                              <Icons.X size={11} /> Nie
                             </button>
-                          </>
-                        ) : (
-                          <button
-                            onClick={() => setConfirmDeleteId(deck.id)}
-                            className="btn text-xs py-2.5 px-3 flex items-center justify-center font-bold hover:scale-[1.02] transition-transform text-slate-500 hover:text-rose-400 hover:border-rose-500/30"
-                            title="Usuń talię"
-                          >
-                            <Icons.Trash2 size={12} />
-                          </button>
-                        )
+                          </div>
+                        </div>
                       )}
                     </div>
                   </div>
