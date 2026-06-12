@@ -1069,7 +1069,7 @@ export default function App() {
               Twoje konto zostało zawieszone przez administratora.
             </p>
             <p className="text-slate-500 text-xs mt-2">
-              Skontaktuj się z nami pod adresem p.hachula@hiflowsolutions.com w celu wyjaśnienia sprawy.
+              Skontaktuj się z nami pod adresem p.hachula89@wp.pl w celu wyjaśnienia sprawy.
             </p>
           </div>
           <button
