@@ -30,16 +30,16 @@ const DEFAULT_THEMES = [
 ];
 
 const PREMIUM_THEMES = [
-  { id: "sunset", label: "Sunset Glow (Jasny)", levelRequired: 2 },
-  { id: "mint", label: "Midnight Mint", levelRequired: 3 },
-  { id: "nebula", label: "Cosmic Nebula", levelRequired: 4 },
-  { id: "lavender", label: "Lavender Pastel (Jasny)", levelRequired: 5 },
-  { id: "cyberpunk", label: "Cyberpunk Neon", levelRequired: 6 },
-  { id: "ocean", label: "Ocean Breeze (Jasny)", levelRequired: 7 },
-  { id: "volcano", label: "Volcanic Ash", levelRequired: 8 },
-  { id: "glacier", label: "Frosted Glacier (Jasny)", levelRequired: 9 },
-  { id: "emerald", label: "Cyber Emerald", levelRequired: 10 },
-  { id: "gold", label: "Royal Gold", levelRequired: 11 },
+  { id: "sunset", label: "Sunset Glow (Jasny)", levelRequired: 10 },
+  { id: "mint", label: "Midnight Mint", levelRequired: 20 },
+  { id: "nebula", label: "Cosmic Nebula", levelRequired: 30 },
+  { id: "lavender", label: "Lavender Pastel (Jasny)", levelRequired: 40 },
+  { id: "cyberpunk", label: "Cyberpunk Neon", levelRequired: 50 },
+  { id: "ocean", label: "Ocean Breeze (Jasny)", levelRequired: 60 },
+  { id: "volcano", label: "Volcanic Ash", levelRequired: 70 },
+  { id: "glacier", label: "Frosted Glacier (Jasny)", levelRequired: 80 },
+  { id: "emerald", label: "Cyber Emerald", levelRequired: 90 },
+  { id: "gold", label: "Royal Gold", levelRequired: 100 },
 ];
 
 const systemDeckIds = new Set(defaultDecks.map(d => d.id));
@@ -797,17 +797,19 @@ export default function App() {
         studyDates: newStudyDates
       };
       
-      // Check theme unlocks
-      PREMIUM_THEMES.forEach(t => {
-        if (newLevel >= t.levelRequired && currentLevel < t.levelRequired) {
-          setTimeout(() => {
-            playSound("achievement", prev.audioStyle || "synth");
-            setUnlockedThemeToast(t.label);
-            // Hide after 4 seconds
-            setTimeout(() => setUnlockedThemeToast(""), 4000);
-          }, 50);
-        }
-      });
+      // Check theme unlocks (only for PRO users)
+      if (prev.isPro) {
+        PREMIUM_THEMES.forEach(t => {
+          if (newLevel >= t.levelRequired && currentLevel < t.levelRequired) {
+            setTimeout(() => {
+              playSound("achievement", prev.audioStyle || "synth");
+              setUnlockedThemeToast(t.label);
+              // Hide after 4 seconds
+              setTimeout(() => setUnlockedThemeToast(""), 4000);
+            }, 50);
+          }
+        });
+      }
       
       if (newLevel > currentLevel) {
         setTimeout(() => {
@@ -1267,7 +1269,7 @@ export default function App() {
               </optgroup>
               <optgroup label="Motywy premium" className="bg-[var(--bg-main)] text-indigo-400">
                 {PREMIUM_THEMES.map(t => {
-                  const isUnlocked = (stats.level || 1) >= t.levelRequired;
+                  const isUnlocked = !!stats.isPro && (stats.level || 1) >= t.levelRequired;
                   return (
                     <option 
                       key={t.id} 
@@ -1275,7 +1277,7 @@ export default function App() {
                       disabled={!isUnlocked} 
                       className={`bg-[var(--bg-main)] ${isUnlocked ? "text-[var(--text-primary)]" : "text-slate-600 font-normal"}`}
                     >
-                      {isUnlocked ? `✨ ${t.label}` : `🔒 ${t.label} (Poziom ${t.levelRequired})`}
+                      {isUnlocked ? `✨ ${t.label}` : (!stats.isPro ? `🔒 ${t.label} (Premium PRO)` : `🔒 ${t.label} (Poziom ${t.levelRequired})`)}
                     </option>
                   );
                 })}

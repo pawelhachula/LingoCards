@@ -202,7 +202,7 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
               </optgroup>
               <optgroup label="Motywy premium" className="bg-[var(--bg-main)] text-indigo-400">
                 {PREMIUM_THEMES.map(t => {
-                  const isUnlocked = (stats.level || 1) >= t.levelRequired;
+                  const isUnlocked = !!stats.isPro && (stats.level || 1) >= t.levelRequired;
                   return (
                     <option 
                       key={t.id} 
@@ -210,7 +210,7 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
                       disabled={!isUnlocked} 
                       className={`bg-[var(--bg-main)] ${isUnlocked ? "text-[var(--text-primary)]" : "text-slate-600 font-normal"}`}
                     >
-                      {isUnlocked ? `✨ ${t.label}` : `🔒 ${t.label} (Poziom ${t.levelRequired})`}
+                      {isUnlocked ? `✨ ${t.label}` : (!stats.isPro ? `🔒 ${t.label} (Premium PRO)` : `🔒 ${t.label} (Poziom ${t.levelRequired})`)}
                     </option>
                   );
                 })}
