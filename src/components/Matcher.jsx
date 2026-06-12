@@ -2,6 +2,16 @@ import React, { useState, useEffect, useRef } from "react";
 import * as Icons from "lucide-react";
 import { playSound, triggerConfetti } from "../utils/effects";
 
+// Fisher-Yates (Knuth) Shuffle helper for uniform randomness
+const shuffle = (array) => {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
+
 export default function Matcher({ selectedDeck, stats, setStats, onNavigate, onAddXp }) {
   const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -17,9 +27,7 @@ export default function Matcher({ selectedDeck, stats, setStats, onNavigate, onA
   useEffect(() => {
     if (selectedDeck && selectedDeck.cards) {
       const deckCards = [...selectedDeck.cards];
-      const selectedCards = deckCards
-        .sort(() => Math.random() - 0.5)
-        .slice(0, Math.min(6, deckCards.length));
+      const selectedCards = shuffle(deckCards).slice(0, Math.min(6, deckCards.length));
       
       const englishItems = selectedCards.map(c => ({
         id: `en-${c.id}`,
@@ -35,7 +43,7 @@ export default function Matcher({ selectedDeck, stats, setStats, onNavigate, onA
         lang: 'pl'
       }));
 
-      const combined = [...englishItems, ...polishItems].sort(() => Math.random() - 0.5);
+      const combined = shuffle([...englishItems, ...polishItems]);
       
       setItems(combined);
       setSelectedItem(null);
@@ -125,9 +133,7 @@ export default function Matcher({ selectedDeck, stats, setStats, onNavigate, onA
 
   const handleRestart = () => {
     const deckCards = [...selectedDeck.cards];
-    const selectedCards = deckCards
-      .sort(() => Math.random() - 0.5)
-      .slice(0, Math.min(6, deckCards.length));
+    const selectedCards = shuffle(deckCards).slice(0, Math.min(6, deckCards.length));
     
     const englishItems = selectedCards.map(c => ({
       id: `en-${c.id}`,
@@ -143,7 +149,7 @@ export default function Matcher({ selectedDeck, stats, setStats, onNavigate, onA
       lang: 'pl'
     }));
 
-    const combined = [...englishItems, ...polishItems].sort(() => Math.random() - 0.5);
+    const combined = shuffle([...englishItems, ...polishItems]);
     
     setItems(combined);
     setSelectedItem(null);
