@@ -218,16 +218,25 @@ export default function App() {
       loadedDecks = [];
     }
 
-    // Automatyczne uzupełnianie brakujących/przestarzałych talii systemowych
+    // Automatyczne uzupełnianie brakujących/przestarzałych talii systemowych oraz migracja pola 'type'
     if (loadedDecks.length > 0) {
       let shouldSave = false;
       loadedDecks = loadedDecks.map(userDeck => {
         const officialDeck = defaultDecks.find(d => d.id === userDeck.id);
+        let updatedDeck = { ...userDeck };
+        
+        // Zapewnienie pola 'type' dla wszystkich talii (systemowych i własnych)
+        const expectedType = officialDeck ? (officialDeck.type || "vocabulary") : (userDeck.type || "vocabulary");
+        if (userDeck.type !== expectedType) {
+          updatedDeck.type = expectedType;
+          shouldSave = true;
+        }
+
         if (officialDeck && (userDeck.cards?.length || 0) < (officialDeck.cards?.length || 0)) {
           shouldSave = true;
           const userCustomCards = (userDeck.cards || []).filter(c => c.id && c.id.startsWith("custom-card-"));
-          return {
-            ...userDeck,
+          updatedDeck = {
+            ...updatedDeck,
             cards: [...officialDeck.cards, ...userCustomCards],
             category: officialDeck.category || userDeck.category,
             level: officialDeck.level || userDeck.level,
@@ -236,7 +245,7 @@ export default function App() {
             description: officialDeck.description
           };
         }
-        return userDeck;
+        return updatedDeck;
       });
       const loadedIds = new Set(loadedDecks.map(d => d.id));
       const missingDefaultDecks = defaultDecks.filter(d => !loadedIds.has(d.id));
