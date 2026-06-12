@@ -1510,6 +1510,7 @@ export default function App() {
             onNavigate={setView}
             loadAllUsers={loadAllUsers}
             systemConfig={systemConfig}
+            currentUser={currentUser}
           />
         )}
 

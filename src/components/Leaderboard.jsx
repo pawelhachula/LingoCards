@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as Icons from "lucide-react";
 
-export default function Leaderboard({ stats, onNavigate, loadAllUsers, systemConfig }) {
+export default function Leaderboard({ stats, onNavigate, loadAllUsers, systemConfig, currentUser }) {
   const [activeTab, setActiveTab] = useState("xp"); // 'xp' | 'streak' | 'words'
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +41,7 @@ export default function Leaderboard({ stats, onNavigate, loadAllUsers, systemCon
   const userLevel = stats.level || 1;
   const userTitle = userLevel >= 15 ? "Master" : userLevel >= 10 ? "Scholar" : userLevel >= 6 ? "Explorer" : userLevel >= 3 ? "Learner" : "Beginner";
 
-  const currentUsernameLower = (stats.username || "").toLowerCase();
+  const currentUsernameLower = (currentUser?.username || stats.username || "Ty").toLowerCase();
 
   // Map real users from database
   const realCompetitors = users
@@ -71,8 +71,8 @@ export default function Leaderboard({ stats, onNavigate, loadAllUsers, systemCon
   }
 
   const currentUserRow = {
-    username: `${stats.username || "Ty"} (Ja)`,
-    avatar: stats.avatar || "👑",
+    username: `${currentUser?.username || stats.username || "Ty"} (Ja)`,
+    avatar: currentUser?.avatar || stats.avatar || "👑",
     xp: userXp,
     streak: userStreak,
     words: userWords,
