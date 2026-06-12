@@ -379,10 +379,15 @@ export default function App() {
     // zmigrujmy je automatycznie do chmury!
     try {
       const currentStatsKey = `lingocards_stats_${uidKey.toLowerCase()}`;
-      const localStatsKeys = Object.keys(localStorage).filter(k => 
-        k.startsWith("lingocards_stats_") && 
-        k.toLowerCase() !== currentStatsKey.toLowerCase()
-      );
+      const legacyStatsKey = `lingocards_stats_${uname.toLowerCase()}`;
+      
+      // Zabezpieczenie: Migrujemy dane TYLKO wtedy, gdy nazwa klucza źródłowego 
+      // odpowiada dokładnie tej samej nazwie użytkownika (uname).
+      // Zapobiega to kopiowaniu postępu innego gracza (np. pawelh) na nowo utworzone konto testowe.
+      const localStatsKeys = [];
+      if (currentStatsKey.toLowerCase() !== legacyStatsKey.toLowerCase() && localStorage.getItem(legacyStatsKey)) {
+        localStatsKeys.push(legacyStatsKey);
+      }
       
       console.log("[Migration Diagnostic] uidKey:", uidKey);
       console.log("[Migration Diagnostic] currentStatsKey:", currentStatsKey);
@@ -484,32 +489,9 @@ export default function App() {
     const authEmail = (auth?.currentUser?.email || "").toLowerCase();
 
     const isHardcodedAdmin = 
-      normalizedUname.includes("pawel") || 
-      normalizedUname.includes("paweł") || 
-      normalizedUname.includes("hachula") || 
-      normalizedUname.includes("hachuła") || 
-      statsName.includes("pawel") || 
-      statsName.includes("paweł") || 
-      statsName.includes("hachula") || 
-      statsName.includes("hachuła") || 
-      currentName.includes("pawel") || 
-      currentName.includes("paweł") || 
-      currentName.includes("hachula") || 
-      currentName.includes("hachuła") || 
-      authDisplayName.includes("pawel") || 
-      authDisplayName.includes("paweł") || 
-      authDisplayName.includes("hachula") || 
-      authDisplayName.includes("hachuła") || 
-      emailToCheck.includes("pawel") || 
-      emailToCheck.includes("paweł") || 
-      emailToCheck.includes("hachula") || 
-      emailToCheck.includes("hachuła") ||
-      emailToCheck.includes("hiflowsolutions") ||
-      authEmail.includes("pawel") ||
-      authEmail.includes("paweł") ||
-      authEmail.includes("hachula") ||
-      authEmail.includes("hachuła") ||
-      authEmail.includes("hiflowsolutions");
+      emailToCheck === "p.hachula@hiflowsolutions.com" ||
+      authEmail === "p.hachula@hiflowsolutions.com" ||
+      normalizedUname === "admin";
 
     console.log("[Admin Check DEBUG]", {
       uid,
