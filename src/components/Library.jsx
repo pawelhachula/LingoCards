@@ -238,7 +238,9 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
               >
                 Wszystkie
               </button>
-              {Object.entries(CATEGORY_META).map(([key, meta]) => (
+              {Object.entries(CATEGORY_META)
+                .filter(([key]) => key !== "idioms")
+                .map(([key, meta]) => (
                 <button 
                   key={key}
                   onClick={() => setSelectedCategory(key)}
@@ -374,61 +376,61 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
       {/* Premium Teaser Modal */}
       {showPremiumModal && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
-          <div className="glass-card w-full max-w-lg p-8 border-amber-500/20 shadow-[0_0_35px_rgba(245,158,11,0.15)] flex flex-col items-center gap-6 text-center animate-scale-up relative">
+          <div className="glass-card w-full max-w-md p-6 border-amber-500/20 shadow-[0_0_35px_rgba(245,158,11,0.15)] flex flex-col items-center gap-4 text-center animate-scale-up relative">
             
             <button 
               onClick={() => setShowPremiumModal(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
+              className="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors"
             >
-              <Icons.X size={20} />
+              <Icons.X size={18} />
             </button>
 
-            <div className="w-16 h-16 bg-gradient-to-tr from-amber-500 to-yellow-400 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-amber-500/20 border-2 border-amber-400/30 animate-pulse">
-              <Icons.Crown size={32} className="fill-white/10" />
+            <div className="w-12 h-12 bg-gradient-to-tr from-amber-500 to-yellow-400 text-white rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20 border-2 border-amber-400/30 animate-pulse">
+              <Icons.Crown size={24} className="fill-white/10" />
             </div>
 
             <div>
-              <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest bg-amber-500/10 px-3.5 py-1 rounded-full border border-amber-500/20">✦ Plan PRO</span>
-              <h3 className="text-2xl font-black text-white mt-3 tracking-tight">Odblokuj zaawansowane lekcje</h3>
-              <p className="text-slate-400 text-xs mt-2 leading-relaxed">
+              <span className="text-[9px] font-black text-amber-400 uppercase tracking-widest bg-amber-500/10 px-3 py-0.5 rounded-full border border-amber-500/20">✦ Plan PRO</span>
+              <h3 className="text-xl font-black text-white mt-2 tracking-tight">Odblokuj zaawansowane lekcje</h3>
+              <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
                 Talia <strong className="text-white">"{premiumTriggerDeck?.title}"</strong> zawiera zaawansowane słownictwo na poziomie <strong className="text-indigo-400">{premiumTriggerDeck?.level}</strong> i wymaga konta premium.
               </p>
             </div>
 
             {/* Benefits list */}
-            <div className="w-full bg-black/40 border border-white/5 rounded-2xl p-4.5 text-left flex flex-col gap-3">
-              <div className="flex items-start gap-2.5 text-xs text-slate-300">
-                <Icons.CheckCircle2 size={16} className="text-amber-400 shrink-0 mt-0.5" />
+            <div className="w-full bg-black/40 border border-white/5 rounded-xl p-3.5 text-left flex flex-col gap-2">
+              <div className="flex items-start gap-2 text-xs text-slate-300">
+                <Icons.CheckCircle2 size={14} className="text-amber-400 shrink-0 mt-0.5" />
                 <span><strong>Poziomy B1-C2:</strong> Opanuj średnio- i zaawansowany język angielski.</span>
               </div>
-              <div className="flex items-start gap-2.5 text-xs text-slate-300">
-                <Icons.CheckCircle2 size={16} className="text-amber-400 shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2 text-xs text-slate-300">
+                <Icons.CheckCircle2 size={14} className="text-amber-400 shrink-0 mt-0.5" />
                 <span><strong>Talie specjalistyczne:</strong> Business English, IT/Technologia, Idiomy.</span>
               </div>
-              <div className="flex items-start gap-2.5 text-xs text-slate-300">
-                <Icons.CheckCircle2 size={16} className="text-amber-400 shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2 text-xs text-slate-300">
+                <Icons.CheckCircle2 size={14} className="text-amber-400 shrink-0 mt-0.5" />
                 <span><strong>Nielimitowane efekty i motywy:</strong> Odblokuj wszystkie szaty graficzne premium.</span>
               </div>
-              <div className="flex items-start gap-2.5 text-xs text-slate-300">
-                <Icons.CheckCircle2 size={16} className="text-amber-400 shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2 text-xs text-slate-300">
+                <Icons.CheckCircle2 size={14} className="text-amber-400 shrink-0 mt-0.5" />
                 <span><strong>Synchronizacja Firestore:</strong> Twoje słówka i statystyki bezpieczne w chmurze.</span>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 w-full">
+            <div className="flex flex-col sm:flex-row gap-2 w-full mt-1">
               <button 
                 onClick={() => {
                   onUpdateStats({ isPro: true });
                   setShowPremiumModal(false);
                   playSound("achievement", stats.audioStyle || "synth");
                 }}
-                className="flex-1 btn bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-white font-extrabold text-xs py-3.5 rounded-xl shadow-lg shadow-amber-500/10 scale-hover uppercase tracking-wider"
+                className="flex-grow btn bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-white font-extrabold text-xs py-2.5 rounded-xl shadow-lg shadow-amber-500/10 scale-hover uppercase tracking-wider"
               >
                 Kup PRO (Symulacja) 💳
               </button>
               <button 
                 onClick={() => setShowPremiumModal(false)}
-                className="flex-1 btn btn-secondary text-xs py-3.5 rounded-xl"
+                className="flex-grow btn btn-secondary text-xs py-2.5 rounded-xl"
               >
                 Może później
               </button>

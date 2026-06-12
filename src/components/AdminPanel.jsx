@@ -82,8 +82,31 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
   // Helper to determine if a user is online right now (active in last 3 minutes)
   const getIsUserOnline = (user) => {
     if (!user) return false;
+    let lastActiveMs = 0;
     if (user.lastActiveAt) {
-      const diffMs = now - user.lastActiveAt;
+      if (typeof user.lastActiveAt === "number") {
+        lastActiveMs = user.lastActiveAt;
+      } else if (typeof user.lastActiveAt.toMillis === "function") {
+        lastActiveMs = user.lastActiveAt.toMillis();
+      } else if (typeof user.lastActiveAt.toDate === "function") {
+        lastActiveMs = user.lastActiveAt.toDate().getTime();
+      } else if (user.lastActiveAt.seconds) {
+        lastActiveMs = user.lastActiveAt.seconds * 1000;
+      } else {
+        const parsed = Number(user.lastActiveAt);
+        if (!isNaN(parsed)) {
+          lastActiveMs = parsed;
+        } else {
+          const dt = new Date(user.lastActiveAt);
+          if (!isNaN(dt.getTime())) {
+            lastActiveMs = dt.getTime();
+          }
+        }
+      }
+    }
+    
+    if (lastActiveMs > 0) {
+      const diffMs = now - lastActiveMs;
       return diffMs <= 180000; // 3 minuty
     }
     return false;
