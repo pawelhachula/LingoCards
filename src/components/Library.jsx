@@ -29,6 +29,7 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [premiumTriggerDeck, setPremiumTriggerDeck] = useState(null);
+  const [activeTab, setActiveTab] = useState("vocabulary"); // "vocabulary" | "idioms"
 
   const isPro = !!stats.isPro;
 
@@ -47,15 +48,20 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
     setShowPremiumModal(true);
   };
 
-  // Filtruj tylko talie systemowe
-  const filteredDecks = systemDecks.filter(deck => {
+  // Filtruj według aktywnej zakładki (Słownictwo vs Idiomy)
+  const tabDecks = systemDecks.filter(deck => deck.type === activeTab);
+
+  // Filtruj na podstawie wyszukiwania, poziomu i kategorii
+  const filteredDecks = tabDecks.filter(deck => {
     const matchesSearch = 
       deck.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (deck.polishTitle && deck.polishTitle.toLowerCase().includes(searchQuery.toLowerCase())) ||
       deck.description.toLowerCase().includes(searchQuery.toLowerCase());
       
     const matchesCefr = selectedCefr === "all" || deck.level === selectedCefr;
-    const matchesCategory = selectedCategory === "all" || deck.category === selectedCategory;
+    
+    // Dla idiomów nie filtrujemy po kategorii (są zawsze idioms)
+    const matchesCategory = activeTab === "idioms" || selectedCategory === "all" || deck.category === selectedCategory;
 
     return matchesSearch && matchesCefr && matchesCategory;
   });
@@ -88,8 +94,44 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
         </button>
       </div>
 
+      {/* Zakładki: Słownictwo vs Idiomy */}
+      <div className="flex border-b border-white/10 w-full">
+        <button
+          onClick={() => {
+            setActiveTab("vocabulary");
+            playSound("tap", stats.audioStyle || "synth");
+          }}
+          className={`flex-1 py-4 text-center font-black text-xs sm:text-sm uppercase tracking-wider transition-all border-b-2 ${
+            activeTab === "vocabulary"
+              ? "text-indigo-400 border-indigo-500 bg-indigo-500/[0.02]"
+              : "text-slate-400 border-transparent hover:text-white hover:bg-white/[0.01]"
+          }`}
+        >
+          <span className="flex items-center justify-center gap-2">
+            <Icons.BookOpen size={16} />
+            Słownictwo
+          </span>
+        </button>
+        <button
+          onClick={() => {
+            setActiveTab("idioms");
+            playSound("tap", stats.audioStyle || "synth");
+          }}
+          className={`flex-1 py-4 text-center font-black text-xs sm:text-sm uppercase tracking-wider transition-all border-b-2 ${
+            activeTab === "idioms"
+              ? "text-orange-400 border-orange-500 bg-orange-500/[0.02]"
+              : "text-slate-400 border-transparent hover:text-white hover:bg-white/[0.01]"
+          }`}
+        >
+          <span className="flex items-center justify-center gap-2">
+            <Icons.Flame size={16} />
+            Idiomy i Frazale
+          </span>
+        </button>
+      </div>
+
       {/* Sekcja talii użytkownika */}
-      {userDecks.length > 0 && (
+      {userDecks.length > 0 && activeTab === "vocabulary" && (
         <div>
           <h3 className="text-sm font-extrabold text-white uppercase tracking-widest mb-3 flex items-center gap-2">
             <Icons.User size={14} className="text-indigo-400" />
@@ -178,35 +220,37 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
         </div>
 
         {/* Category filters */}
-        <div className="flex flex-col gap-2">
-          <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider">Kategoria tematyczna</span>
-          <div className="flex flex-wrap gap-1.5">
-            <button 
-              onClick={() => setSelectedCategory("all")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
-                selectedCategory === "all"
-                  ? "bg-white/10 text-white border-white/20"
-                  : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
-              }`}
-            >
-              Wszystkie
-            </button>
-            {Object.entries(CATEGORY_META).map(([key, meta]) => (
+        {activeTab === "vocabulary" && (
+          <div className="flex flex-col gap-2">
+            <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider">Kategoria tematyczna</span>
+            <div className="flex flex-wrap gap-1.5">
               <button 
-                key={key}
-                onClick={() => setSelectedCategory(key)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border flex items-center gap-1.5 ${
-                  selectedCategory === key
+                onClick={() => setSelectedCategory("all")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  selectedCategory === "all"
                     ? "bg-white/10 text-white border-white/20"
                     : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
                 }`}
               >
-                {getIconComponent(meta.icon)}
-                <span>{meta.label}</span>
+                Wszystkie
               </button>
-            ))}
+              {Object.entries(CATEGORY_META).map(([key, meta]) => (
+                <button 
+                  key={key}
+                  onClick={() => setSelectedCategory(key)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border flex items-center gap-1.5 ${
+                    selectedCategory === key
+                      ? "bg-white/10 text-white border-white/20"
+                      : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
+                  }`}
+                >
+                  {getIconComponent(meta.icon)}
+                  <span>{meta.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Grid of Decks */}
@@ -220,7 +264,11 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
         ) : (
           filteredDecks.map(deck => {
             const isActive = activeDeckIds.includes(deck.id);
-            const isDeckLocked = !isPro && (deck.level !== "A1" && deck.level !== "A2");
+            const isDeckLocked = !isPro && (
+              deck.type === "idioms"
+                ? deck.id !== "idioms-phrasals-essential"
+                : (deck.level !== "A1" && deck.level !== "A2")
+            );
             const cat = CATEGORY_META[deck.category] || { label: "Ogólny", icon: "BookOpen", style: "bg-slate-500/10 text-slate-400 border-transparent" };
             
             return (

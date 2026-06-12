@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import * as Icons from "lucide-react";
 import { playSound, triggerConfetti, triggerFireworks } from "../utils/effects";
+import { getLocalDateString } from "../utils/date";
 
 const getCardLevel = (card) => {
   if (card.level) return card.level;
@@ -67,7 +68,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     if (selectedDeck && selectedDeck.cards) {
       let filteredCards = [...selectedDeck.cards];
       if (srsOnly) {
-        const todayStr = new Date().toISOString().split("T")[0];
+        const todayStr = getLocalDateString();
         filteredCards = filteredCards.filter(c => {
           const srs = stats.srsData?.[c.id];
           if (!srs) return true;
@@ -308,11 +309,12 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
 
   const handleSrsRate = (rating) => {
     const cardId = currentCard.id;
-    const todayStr = new Date().toISOString().split("T")[0];
+    const todayStr = getLocalDateString();
     const addDays = (dateStr, days) => {
-      const date = new Date(dateStr);
+      const parts = dateStr.split("-");
+      const date = new Date(parts[0], parts[1] - 1, parts[2]);
       date.setDate(date.getDate() + days);
-      return date.toISOString().split("T")[0];
+      return getLocalDateString(date);
     };
 
     setStats(prev => {
@@ -516,7 +518,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     if (selectedDeck && selectedDeck.cards) {
       let filteredCards = [...selectedDeck.cards];
       if (srsOnly) {
-        const todayStr = new Date().toISOString().split("T")[0];
+        const todayStr = getLocalDateString();
         filteredCards = filteredCards.filter(c => {
           const srs = stats.srsData?.[c.id];
           if (!srs) return true;

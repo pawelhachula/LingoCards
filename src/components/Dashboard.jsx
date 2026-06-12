@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import * as Icons from "lucide-react";
 import DeckEditor from "./DeckEditor";
+import { getLocalDateString } from "../utils/date";
 
 export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavigate, onUpdateDeck, onDeleteDeck, systemDeckIds, activeDeckIds }) {
   const [editorDeck, setEditorDeck] = useState(null);
@@ -18,7 +19,7 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
 
   // SRS calculations
   const srsData = stats.srsData || {};
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = getLocalDateString();
   const allCards = realDecks.flatMap(d => d.cards || []);
   const uniqueCards = [];
   const cardIds = new Set();
@@ -45,7 +46,7 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
   const addDaysStr = (days) => {
     const d = new Date();
     d.setDate(d.getDate() + days);
-    return d.toISOString().split("T")[0];
+    return getLocalDateString(d);
   };
 
   const dueTomorrow = uniqueCards.filter(c => srsData[c.id] && srsData[c.id].nextReviewDate === addDaysStr(1)).length;
@@ -54,7 +55,7 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
 
   // Słówko dnia generator
   const getWordOfTheDay = () => {
-    const today = new Date().toISOString().split("T")[0];
+    const today = getLocalDateString();
     const savedDate = localStorage.getItem("lingocards_wod_date");
     const savedWordJson = localStorage.getItem("lingocards_wod_word");
     
@@ -479,17 +480,18 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
           {(() => {
             const days = [];
             const today = new Date();
+            const todayStr = getLocalDateString(today);
             for (let i = 27; i >= 0; i--) {
               const d = new Date();
               d.setDate(today.getDate() - i);
-              const dateStr = d.toISOString().split("T")[0];
+              const dateStr = getLocalDateString(d);
               const hasStudied = (stats.studyDates || []).includes(dateStr);
               
               days.push({
                 date: dateStr,
                 label: d.getDate(),
                 hasStudied,
-                isToday: dateStr === today.toISOString().split("T")[0]
+                isToday: dateStr === todayStr
               });
             }
             return days.map((day, idx) => (
@@ -774,7 +776,7 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
                       />
                     </div>
 
-                    <div className="flex gap-2 flex-wrap">
+                    <div className="flex gap-1.5 items-center w-full">
                       {confirmDeleteId !== deck.id ? (
                         <>
                           <button 
@@ -782,7 +784,7 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
                               onSelectDeck(deck);
                               onNavigate("learn");
                             }}
-                            className="flex-grow min-w-0 btn btn-secondary text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform"
+                            className="flex-grow min-w-0 btn btn-secondary text-xs py-2.5 px-2 flex items-center justify-center gap-1 font-bold hover:scale-[1.02] transition-transform"
                           >
                             <Icons.Play size={12} /> Fiszki
                           </button>
@@ -791,7 +793,7 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
                               onSelectDeck(deck);
                               onNavigate("quiz");
                             }}
-                            className="flex-grow min-w-0 btn text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform"
+                            className="flex-grow min-w-0 btn text-xs py-2.5 px-2 flex items-center justify-center gap-1 font-bold hover:scale-[1.02] transition-transform"
                             style={{ 
                               background: `${deck.color}12`, 
                               color: deck.color,
@@ -803,7 +805,7 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
                           {onUpdateDeck && systemDeckIds && !systemDeckIds.has(deck.id) && (
                             <button
                               onClick={() => setEditorDeck(deck)}
-                              className="btn text-xs py-2.5 px-3 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform text-slate-400 hover:text-white"
+                              className="btn text-xs py-2.5 px-2.5 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform text-slate-400 hover:text-white shrink-0"
                               title="Rejestr słów"
                             >
                               <Icons.List size={12} />
@@ -812,7 +814,7 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
                           {onDeleteDeck && systemDeckIds && !systemDeckIds.has(deck.id) && (
                             <button
                               onClick={() => setConfirmDeleteId(deck.id)}
-                              className="btn text-xs py-2.5 px-3 flex items-center justify-center font-bold hover:scale-[1.02] transition-transform text-slate-500 hover:text-rose-400 hover:border-rose-500/30"
+                              className="btn text-xs py-2.5 px-2.5 flex items-center justify-center font-bold hover:scale-[1.02] transition-transform text-slate-500 hover:text-rose-400 hover:border-rose-500/30 shrink-0"
                               title="Usuń talię"
                             >
                               <Icons.Trash2 size={12} />
@@ -820,22 +822,22 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
                           )}
                         </>
                       ) : (
-                        <div className="flex items-center justify-between w-full bg-rose-500/5 border border-rose-500/10 p-1.5 rounded-xl gap-2">
-                          <span className="text-[11px] text-rose-400 font-extrabold px-1 truncate">Usunąć talię?</span>
-                          <div className="flex gap-1.5 shrink-0">
+                        <div className="flex items-center justify-between w-full gap-2">
+                          <span className="text-xs text-rose-400 font-extrabold truncate">Usunąć talię?</span>
+                          <div className="flex gap-2 shrink-0">
                             <button
                               onClick={() => { onDeleteDeck(deck.id); setConfirmDeleteId(null); }}
-                              className="btn text-[10px] py-1.5 px-3 flex items-center justify-center gap-1 font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition-all"
+                              className="btn text-xs py-2.5 px-4 flex items-center justify-center gap-1.5 font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition-all"
                               title="Potwierdź usunięcie"
                             >
-                              <Icons.Check size={11} /> Tak
+                              <Icons.Check size={12} /> Tak
                             </button>
                             <button
                               onClick={() => setConfirmDeleteId(null)}
-                              className="btn btn-secondary text-[10px] py-1.5 px-3 flex items-center justify-center gap-1 font-bold text-slate-400 hover:text-white rounded-lg transition-all"
+                              className="btn btn-secondary text-xs py-2.5 px-4 flex items-center justify-center gap-1.5 font-bold text-slate-400 hover:text-white rounded-lg transition-all"
                               title="Anuluj"
                             >
-                              <Icons.X size={11} /> Nie
+                              <Icons.X size={12} /> Nie
                             </button>
                           </div>
                         </div>

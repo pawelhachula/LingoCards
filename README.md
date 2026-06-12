@@ -13,11 +13,16 @@ Aplikacja opiera się na metodzie fiszek oraz inteligentnym algorytmie powtórek
 *   **Testy**: Dwa tryby sprawdzania wiedzy – test wyboru (A, B, C, D) lub wpisywanie słówka z klawiatury (trening pisowni).
 *   **Gra w pary**: Szybka gra na czas polegająca na łączeniu angielskich słów z polskimi znaczeniami.
 
-### 2. Moje własne talie (Menedżer)
-*   Możesz stworzyć własną talię, nazwać ją, wybrać dla niej ikonę, kolor akcentujący i samodzielnie dodawać, edytować lub usuwać z niej słówka.
+### 2. Moje własne talie, Menedżer i Import z plików
+*   **Własne zestawy**: Możesz stworzyć własną talię, nazwać ją, wybrać dla niej ikonę, kolor akcentujący i samodzielnie dodawać, edytować lub usuwać z niej słówka.
+*   **Import z plików**: Zaawansowany import słówek z formatów **CSV, TXT, JSON** oraz **PDF** (dynamiczne wyciąganie tekstu po stronie klienta za pomocą PDF.js).
+*   **Podgląd i edycja (Live Preview)**: Po załadowaniu pliku aplikacja wyświetla interaktywną tabelę, w której możesz w locie edytować słówka, definicje, zapis fonetyczny i zdania przykładowe lub usuwać wiersze przed ostatecznym zapisem.
+*   **Wykrywanie duplikatów**: System automatycznie sprawdza unikalność (case-insensitive) i ignoruje zdublowane fiszki.
 
-### 3. Katalog gotowych lekcji
-*   Wbudowana baza zawiera **ponad 1000 słówek** podzielonych na ponad 20 tematycznych talii na różnych poziomach zaawansowania (od A1 do C2) i kategoriach (Biznes, Podróże, Przyroda, Technologia, Kulinaria itp.).
+### 3. Model Hybrydowy (Słownictwo vs Idiomy)
+*   Podział katalogu lekcji na dwie estetyczne zakładki: **Słownictwo (Vocabulary)** oraz **Idiomy i Frazale (Idioms & Phrasals)**.
+*   Rozbudowana baza oficjalnych zestawów o przydatne idiomy oraz phrasal verbs na poziomach B2-C2 (np. *Business Idioms*, *Phrasal Verbs with GET*, *Take & Put*, *Idioms of Emotion* i inne).
+*   **Wersja PRO**: Sekcja idiomatyczna posiada ograniczenia premium (PRO lock) – większość zaawansowanych talii idiomów jest zablokowana kłódką PRO, podczas gdy talia *"Phrasal Verbs z Get (B2)"* pozostaje w pełni darmowa dla każdego użytkownika.
 
 ### 4. Statystyki i Kalendarz Aktywności
 *   Szczegółowy panel statystyk pokazuje, ile słówek już opanowałeś, ile masz łącznie talii, ile czasu spędziłeś na nauce oraz Twoją skuteczność w testach.

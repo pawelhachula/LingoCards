@@ -16,6 +16,7 @@ import Library from "./components/Library";
 import { playSound, triggerConfetti, triggerFireworks } from "./utils/effects";
 import { useFirestore } from "./hooks/useFirestore";
 import { auth, onAuthStateChanged, signOutUser } from "./firebase";
+import { getLocalDateString } from "./utils/date";
 import * as Icons from "lucide-react";
 
 const DEFAULT_THEMES = [
@@ -276,8 +277,22 @@ export default function App() {
       console.error("Error loading stats", e);
     }
 
+    // One-time self-healing patch for June 7th, 2026 (yesterday)
+    const todayStr = getLocalDateString();
+    if (todayStr === "2026-06-08") {
+      const dates = loadedStats.studyDates || [];
+      if (dates.includes("2026-06-08") && dates.includes("2026-06-06") && !dates.includes("2026-06-07")) {
+        console.log("[Streak Repair] Auto-healing missing study date: 2026-06-07");
+        dates.push("2026-06-07");
+        loadedStats.studyDates = dates;
+        if (loadedStats.lastActiveDate === "2026-06-06") {
+          loadedStats.lastActiveDate = "2026-06-07";
+          loadedStats.streak += 1;
+        }
+      }
+    }
+
     // Oblicz streak na podstawie daty
-    const todayStr = new Date().toISOString().split("T")[0];
     const lastActive = loadedStats.lastActiveDate;
     if (lastActive) {
       if (lastActive !== todayStr) {
@@ -305,7 +320,7 @@ export default function App() {
       for (let i = 0; i < streakVal; i++) {
         const d = new Date(baseDate);
         d.setDate(baseDate.getDate() - i);
-        const dateStr = d.toISOString().split("T")[0];
+        const dateStr = getLocalDateString(d);
         if (!dateList.includes(dateStr)) dateList.push(dateStr);
       }
       loadedStats.studyDates = dateList;
@@ -560,7 +575,7 @@ export default function App() {
       const newXp = currentXp + amount;
       const newLevel = Math.floor(newXp / 300) + 1;
       
-      const todayStr = new Date().toISOString().split("T")[0];
+      const todayStr = getLocalDateString();
       const updatedStudyDates = prev.studyDates || [];
       const newStudyDates = updatedStudyDates.includes(todayStr)
         ? updatedStudyDates
@@ -610,7 +625,7 @@ export default function App() {
     const defaultStatsObj = {
       streak: 0,
       dailyCount: 0,
-      lastActiveDate: new Date().toISOString().split("T")[0],
+      lastActiveDate: getLocalDateString(),
       learnedCards: {},
       starredCards: {},
       quizTotal: 0,
@@ -735,12 +750,16 @@ export default function App() {
     }
   };
 
-  const handleAddCard = (deckId, newCard) => {
+  const handleAddCard = (deckId, newCardOrCards) => {
+    const cardsToAdd = Array.isArray(newCardOrCards) ? newCardOrCards : [newCardOrCards];
     const updated = decks.map(deck => {
       if (deck.id === deckId) {
+        // Zabezpieczenie przed dublowaniem (ignorowanie słówek już obecnych w talii)
+        const existingEnglish = new Set((deck.cards || []).map(c => c.english.trim().toLowerCase()));
+        const uniqueNewCards = cardsToAdd.filter(c => !existingEnglish.has(c.english.trim().toLowerCase()));
         return {
           ...deck,
-          cards: [...deck.cards, newCard]
+          cards: [...(deck.cards || []), ...uniqueNewCards]
         };
       }
       return deck;
@@ -853,7 +872,7 @@ export default function App() {
   }
 
   // Compile Dynamic SRS Deck
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = getLocalDateString();
   const realDecksForSrs = decks.filter(d => d.id !== "starred" && d.id !== "srs");
   const allUniqueCards = [];
   const cardIdsSet = new Set();

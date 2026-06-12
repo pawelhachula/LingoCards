@@ -14,8 +14,9 @@ export default function Creator({
   onDeleteCard, 
   onNavigate 
 }) {
-  const [activeTab, setActiveTab] = useState("add-card"); // 'add-card' | 'create-deck' | 'manage-decks'
-  const [selectedDeckId, setSelectedDeckId] = useState(decks[0]?.id || "");
+  const customDecks = decks.filter(d => !systemDeckIds.has(d.id));
+  const [activeTab, setActiveTab] = useState("add-card"); // 'add-card' | 'create-deck' | 'manage-decks' | 'import-file'
+  const [selectedDeckId, setSelectedDeckId] = useState(customDecks[0]?.id || "");
   
   // Card Form
   const [english, setEnglish] = useState("");
@@ -85,6 +86,275 @@ export default function Creator({
     setDeckDesc("");
     setDeckIcon("BookOpen");
     setDeckColor("#6366f1");
+  };
+
+  // File Import Tab States
+  const [importTargetType, setImportTargetType] = useState("new"); // "new" | "existing"
+  const [importSelectedDeckId, setImportSelectedDeckId] = useState(customDecks[0]?.id || "");
+  const [newDeckTitle, setNewDeckTitle] = useState("");
+  const [newDeckPolishTitle, setNewDeckPolishTitle] = useState("");
+  const [parsedCards, setParsedCards] = useState([]);
+  const [importError, setImportError] = useState("");
+  const [importSuccess, setImportSuccess] = useState(false);
+  const [isParsing, setIsParsing] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+
+  // File Import Helper Functions
+  const loadPdfJs = () => {
+    return new Promise((resolve, reject) => {
+      if (window.pdfjsLib) {
+        resolve(window.pdfjsLib);
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js";
+      script.onload = () => {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+        resolve(window.pdfjsLib);
+      };
+      script.onerror = () => reject(new Error("Nie udało się załadować biblioteki PDF.js z CDN."));
+      document.head.appendChild(script);
+    });
+  };
+
+  const cleanField = (str) => {
+    return str.trim().replace(/^["']|["']$/g, "").trim();
+  };
+
+  const parseLines = (lines) => {
+    const cards = [];
+    let idCounter = 0;
+
+    for (let line of lines) {
+      line = line.trim();
+      if (!line) continue;
+
+      let separator = null;
+      const separators = [";", ",", " - ", " : ", "\t", "–", "—"];
+      
+      let bestSplit = [];
+      let bestSep = null;
+
+      for (const sep of separators) {
+        const parts = line.split(sep);
+        if (parts.length >= 2 && parts[0].trim() && parts[1].trim()) {
+          if (!bestSep || (sep !== "," && bestSep === ",")) {
+            bestSep = sep;
+            bestSplit = parts;
+          }
+        }
+      }
+
+      if (!bestSep) {
+        for (const sep of ["-", ":"]) {
+          const parts = line.split(sep);
+          if (parts.length >= 2 && parts[0].trim() && parts[1].trim()) {
+            bestSep = sep;
+            bestSplit = parts;
+            break;
+          }
+        }
+      }
+
+      if (bestSep && bestSplit.length >= 2) {
+        const english = cleanField(bestSplit[0]);
+        const polish = cleanField(bestSplit[1]);
+        
+        const pronunciation = bestSplit[2] ? cleanField(bestSplit[2]) : "";
+        const exampleEnglish = bestSplit[3] ? cleanField(bestSplit[3]) : "";
+        const examplePolish = bestSplit[4] ? cleanField(bestSplit[4]) : "";
+
+        if (english && polish) {
+          cards.push({
+            id: `parsed-${Date.now()}-${idCounter++}`,
+            english,
+            polish,
+            pronunciation,
+            partOfSpeech: "word",
+            level: "B2",
+            exampleEnglish,
+            examplePolish
+          });
+        }
+      }
+    }
+
+    return cards;
+  };
+
+  const parseFile = async (file) => {
+    setIsParsing(true);
+    setImportError("");
+    setParsedCards([]);
+    
+    const fileNameWithoutExt = file.name.substring(0, file.name.lastIndexOf("."));
+    const formattedTitle = fileNameWithoutExt
+      .replace(/[-_]+/g, " ")
+      .replace(/\b\w/g, c => c.toUpperCase());
+    setNewDeckTitle(formattedTitle);
+    setNewDeckPolishTitle(formattedTitle + " (Import)");
+
+    const extension = file.name.split(".").pop().toLowerCase();
+
+    try {
+      if (extension === "json") {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        let cards = [];
+        if (Array.isArray(data)) {
+          cards = data;
+        } else if (data.cards && Array.isArray(data.cards)) {
+          cards = data.cards;
+          if (data.title) setNewDeckTitle(data.title);
+          if (data.polishTitle) setNewDeckPolishTitle(data.polishTitle);
+        } else {
+          throw new Error("Nieprawidłowy format JSON. Powinien to być spis fiszek.");
+        }
+        
+        const mapped = cards.map((c, index) => ({
+          id: `parsed-${Date.now()}-${index}`,
+          english: c.english || "",
+          polish: c.polish || "",
+          pronunciation: c.pronunciation || "",
+          partOfSpeech: c.partOfSpeech || "word",
+          level: c.level || "B2",
+          exampleEnglish: c.exampleEnglish || "",
+          examplePolish: c.examplePolish || ""
+        }));
+        setParsedCards(mapped);
+      } else if (extension === "pdf") {
+        const pdfjs = await loadPdfJs();
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
+        let fullText = "";
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          let lastY;
+          let text = "";
+          for (let item of textContent.items) {
+            if (lastY !== undefined && Math.abs(item.transform[5] - lastY) > 5) {
+              text += "\n";
+            }
+            text += item.str + " ";
+            lastY = item.transform[5];
+          }
+          fullText += text + "\n";
+        }
+
+        const lines = fullText.split("\n");
+        const cards = parseLines(lines);
+        if (cards.length === 0) {
+          throw new Error("Nie znaleziono żadnych par słówek w pliku PDF. Upewnij się, że tekst jest poprawnie rozdzielony myślnikiem lub dwukropkiem.");
+        }
+        setParsedCards(cards);
+      } else {
+        const text = await file.text();
+        const lines = text.split(/\r?\n/);
+        const cards = parseLines(lines);
+        if (cards.length === 0) {
+          throw new Error("Nie znaleziono żadnych par słówek. Upewnij się, że są rozdzielone przecinkiem, średnikiem, myślnikiem lub dwukropkiem.");
+        }
+        setParsedCards(cards);
+      }
+    } catch (err) {
+      setImportError(err.message || "Błąd podczas parsowania pliku.");
+    } finally {
+      setIsParsing(false);
+    }
+  };
+
+  const updateCardField = (cardId, fieldName, value) => {
+    setParsedCards(prev => prev.map(c => c.id === cardId ? { ...c, [fieldName]: value } : c));
+  };
+
+  const removeParsedCard = (cardId) => {
+    setParsedCards(prev => prev.filter(c => c.id !== cardId));
+  };
+
+  const handleSaveImport = () => {
+    setImportError("");
+    setImportSuccess(false);
+
+    const validCards = parsedCards.filter(c => c.english.trim() && c.polish.trim());
+    if (validCards.length === 0) {
+      setImportError("Brak poprawnych fiszek do zaimportowania. Upewnij się, że kolumny Angielski i Polski nie są puste.");
+      return;
+    }
+
+    const cardsToSave = validCards.map((c, index) => ({
+      id: `custom-card-${Date.now()}-${index}`,
+      english: c.english.trim(),
+      polish: c.polish.trim(),
+      pronunciation: c.pronunciation.trim() || undefined,
+      partOfSpeech: c.partOfSpeech || "word",
+      level: c.level || "B2",
+      exampleEnglish: c.exampleEnglish.trim() || undefined,
+      examplePolish: c.examplePolish.trim() || undefined
+    }));
+
+    if (importTargetType === "new") {
+      if (!newDeckTitle.trim() || !newDeckPolishTitle.trim()) {
+        setImportError("Nazwa nowej talii i polski podtytuł są wymagane.");
+        return;
+      }
+
+      const newDeckId = `custom-deck-${Date.now()}`;
+      const newDeck = {
+        id: newDeckId,
+        title: newDeckTitle.trim(),
+        polishTitle: newDeckPolishTitle.trim(),
+        description: "Zestaw zaimportowany z pliku.",
+        icon: "FileUp",
+        color: "#6366f1",
+        cards: cardsToSave
+      };
+
+      onCreateDeck(newDeck);
+      setSelectedDeckId(newDeckId);
+    } else {
+      if (!importSelectedDeckId) {
+        setImportError("Wybierz talię, do której chcesz zaimportować fiszki.");
+        return;
+      }
+
+      onAddCard(importSelectedDeckId, cardsToSave);
+      setSelectedDeckId(importSelectedDeckId);
+    }
+
+    setImportSuccess(true);
+    setParsedCards([]);
+    setTimeout(() => {
+      setImportSuccess(false);
+      setActiveTab("add-card");
+    }, 2000);
+  };
+
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      parseFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleFileInput = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      parseFile(e.target.files[0]);
+    }
   };
 
   const handleCardSubmit = (e) => {
@@ -202,7 +472,7 @@ export default function Creator({
       </div>
 
       {/* Selector Tabs */}
-      <div className="flex bg-black/40 p-1.5 rounded-2xl border border-white/5 gap-2 max-w-lg">
+      <div className="flex bg-black/40 p-1.5 rounded-2xl border border-white/5 gap-2 max-w-2xl flex-wrap">
         <button
           onClick={() => {
             setActiveTab("add-card");
@@ -230,6 +500,21 @@ export default function Creator({
         >
           <Icons.FolderPlus size={14} />
           Nowa talia
+        </button>
+        <button
+          onClick={() => {
+            setActiveTab("import-file");
+            handleCancelEditCard();
+            handleCancelEditDeck();
+          }}
+          className={`flex-1 btn text-xs font-bold py-2.5 rounded-xl transition-all ${
+            activeTab === "import-file"
+              ? "bg-indigo-500/10 text-indigo-300 border border-indigo-500/25 shadow-sm" 
+              : "bg-transparent text-slate-400 hover:text-white border-transparent"
+          }`}
+        >
+          <Icons.FileUp size={14} />
+          Import z pliku
         </button>
         <button
           onClick={() => {
@@ -267,155 +552,166 @@ export default function Creator({
                 <span>{editingCardId ? "Zmiany zostały zapisane!" : "Fiszka została pomyślnie dodana!"}</span>
               </div>
             )}
-
-            <form onSubmit={handleCardSubmit} className="flex flex-col gap-5">
-              {/* Deck selector */}
-              <div>
-                <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
-                  Wybierz talię docelową
-                </label>
-                <select
-                  value={selectedDeckId}
-                  onChange={(e) => setSelectedDeckId(e.target.value)}
-                  disabled={!!editingCardId}
-                  className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <option value="" disabled>Zaznacz talię...</option>
-                  {decks.map(deck => (
-                    <option key={deck.id} value={deck.id}>{deck.title} ({deck.polishTitle})</option>
-                  ))}
-                </select>
+            {customDecks.length === 0 ? (
+              <div className="bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs p-4.5 rounded-xl flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <Icons.AlertCircle className="text-amber-400" size={16} />
+                  <span className="font-extrabold uppercase tracking-wider">Brak własnych talii</span>
+                </div>
+                <p className="leading-relaxed">
+                  Aby dodać nową fiszkę, musisz najpierw stworzyć talię. Przejdź do zakładki <strong className="text-indigo-400 cursor-pointer hover:underline" onClick={() => setActiveTab("create-deck")}>Nowa talia</strong> lub skorzystaj z zakładki <strong className="text-indigo-400 cursor-pointer hover:underline" onClick={() => setActiveTab("import-file")}>Import z pliku</strong>.
+                </p>
               </div>
-
-              {/* English & Polish Inputs */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            ) : (
+              <form onSubmit={handleCardSubmit} className="flex flex-col gap-5">
+                {/* Deck selector */}
                 <div>
                   <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
-                    Słówko / fraza (angielski) *
-                  </label>
-                  <input
-                    type="text"
-                    value={english}
-                    onChange={(e) => setEnglish(e.target.value)}
-                    placeholder="np. Resilience"
-                    className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
-                    Tłumaczenie (polski) *
-                  </label>
-                  <input
-                    type="text"
-                    value={polish}
-                    onChange={(e) => setPolish(e.target.value)}
-                    placeholder="np. Odporność, elastyczność"
-                    className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
-                  />
-                </div>
-              </div>
-
-              {/* Phonetics, Category & CEFR Level */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
-                    Zapis fonetyczny (opcjonalnie)
-                  </label>
-                  <input
-                    type="text"
-                    value={pronunciation}
-                    onChange={(e) => setPronunciation(e.target.value)}
-                    placeholder="np. /rɪˈzɪl.jəns/"
-                    className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
-                    Część mowy
+                    Wybierz talię docelową
                   </label>
                   <select
-                    value={partOfSpeech}
-                    onChange={(e) => setPartOfSpeech(e.target.value)}
-                    className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold"
+                    value={selectedDeckId}
+                    onChange={(e) => setSelectedDeckId(e.target.value)}
+                    disabled={!!editingCardId}
+                    className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <option value="word">Słówko (Word)</option>
-                    <option value="noun">Rzeczownik (Noun)</option>
-                    <option value="verb">Czasownik (Verb)</option>
-                    <option value="adjective">Przymiotnik (Adjective)</option>
-                    <option value="idiom">Idiom (Idiom)</option>
-                    <option value="phrase">Zwrot (Phrase)</option>
-                    <option value="phrasal verb">Czasownik frazowy</option>
+                    <option value="" disabled>Zaznacz talię...</option>
+                    {customDecks.map(deck => (
+                      <option key={deck.id} value={deck.id}>{deck.title} ({deck.polishTitle})</option>
+                    ))}
                   </select>
                 </div>
+
+                {/* English & Polish Inputs */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                      Słówko / fraza (angielski) *
+                    </label>
+                    <input
+                      type="text"
+                      value={english}
+                      onChange={(e) => setEnglish(e.target.value)}
+                      placeholder="np. Resilience"
+                      className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                      Tłumaczenie (polski) *
+                    </label>
+                    <input
+                      type="text"
+                      value={polish}
+                      onChange={(e) => setPolish(e.target.value)}
+                      placeholder="np. Odporność, elastyczność"
+                      className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
+                    />
+                  </div>
+                </div>
+
+                {/* Phonetics, Category & CEFR Level */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                      Zapis fonetyczny (opcjonalnie)
+                    </label>
+                    <input
+                      type="text"
+                      value={pronunciation}
+                      onChange={(e) => setPronunciation(e.target.value)}
+                      placeholder="np. /rɪˈzɪl.jəns/"
+                      className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                      Część mowy
+                    </label>
+                    <select
+                      value={partOfSpeech}
+                      onChange={(e) => setPartOfSpeech(e.target.value)}
+                      className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold"
+                    >
+                      <option value="word">Słówko (Word)</option>
+                      <option value="noun">Rzeczownik (Noun)</option>
+                      <option value="verb">Czasownik (Verb)</option>
+                      <option value="adjective">Przymiotnik (Adjective)</option>
+                      <option value="idiom">Idiom (Idiom)</option>
+                      <option value="phrase">Zwrot (Phrase)</option>
+                      <option value="phrasal verb">Czasownik frazowy</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                      Poziom trudności (CEFR)
+                    </label>
+                    <select
+                      value={level}
+                      onChange={(e) => setLevel(e.target.value)}
+                      className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold"
+                    >
+                      <option value="A1">A1 (Początkujący)</option>
+                      <option value="A2">A2 (Podstawowy)</option>
+                      <option value="B1">B1 (Średnio zaawansowany)</option>
+                      <option value="B2">B2 (Wyższy średni)</option>
+                      <option value="C1">C1 (Zaawansowany)</option>
+                      <option value="C2">C2 (Biegły)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Context example sentences */}
                 <div>
                   <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
-                    Poziom trudności (CEFR)
+                    Zdanie przykładowe (angielski - opcjonalnie)
                   </label>
-                  <select
-                    value={level}
-                    onChange={(e) => setLevel(e.target.value)}
-                    className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold"
-                  >
-                    <option value="A1">A1 (Początkujący)</option>
-                    <option value="A2">A2 (Podstawowy)</option>
-                    <option value="B1">B1 (Średnio zaawansowany)</option>
-                    <option value="B2">B2 (Wyższy średni)</option>
-                    <option value="C1">C1 (Zaawansowany)</option>
-                    <option value="C2">C2 (Biegły)</option>
-                  </select>
+                  <textarea
+                    value={exampleEnglish}
+                    onChange={(e) => setExampleEnglish(e.target.value)}
+                    placeholder="np. The team showed great resilience during the crisis."
+                    rows={2}
+                    className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700 resize-none animate-none"
+                  />
                 </div>
-              </div>
 
-              {/* Context example sentences */}
-              <div>
-                <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
-                  Zdanie przykładowe (angielski - opcjonalnie)
-                </label>
-                <textarea
-                  value={exampleEnglish}
-                  onChange={(e) => setExampleEnglish(e.target.value)}
-                  placeholder="np. The team showed great resilience during the crisis."
-                  rows={2}
-                  className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700 resize-none animate-none"
-                />
-              </div>
+                <div>
+                  <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                    Tłumaczenie zdania (polski - opcjonalnie)
+                  </label>
+                  <textarea
+                    value={examplePolish}
+                    onChange={(e) => setExamplePolish(e.target.value)}
+                    placeholder="np. Zespół wykazał się ogromną odpornością w czasie kryzysu."
+                    rows={2}
+                    className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700 resize-none animate-none"
+                  />
+                </div>
 
-              <div>
-                <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
-                  Tłumaczenie zdania (polski - opcjonalnie)
-                </label>
-                <textarea
-                  value={examplePolish}
-                  onChange={(e) => setExamplePolish(e.target.value)}
-                  placeholder="np. Zespół wykazał się ogromną odpornością w czasie kryzysu."
-                  rows={2}
-                  className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700 resize-none animate-none"
-                />
-              </div>
-
-              <div className="flex gap-3 mt-2">
-                <button type="submit" className="btn btn-primary px-8">
-                  {editingCardId ? (
-                    <>
-                      <Icons.Save size={16} /> Zapisz zmiany
-                    </>
-                  ) : (
-                    <>
-                      <Icons.Plus size={16} /> Dodaj Fiszkę
-                    </>
-                  )}
-                </button>
-                {editingCardId && (
-                  <button 
-                    type="button" 
-                    onClick={handleCancelEditCard} 
-                    className="btn btn-secondary px-6"
-                  >
-                    Anuluj edycję
+                <div className="flex gap-3 mt-2">
+                  <button type="submit" className="btn btn-primary px-8">
+                    {editingCardId ? (
+                      <>
+                        <Icons.Save size={16} /> Zapisz zmiany
+                      </>
+                    ) : (
+                      <>
+                        <Icons.Plus size={16} /> Dodaj Fiszkę
+                      </>
+                    )}
                   </button>
-                )}
-              </div>
-            </form>
+                  {editingCardId && (
+                    <button 
+                      type="button" 
+                      onClick={handleCancelEditCard} 
+                      className="btn btn-secondary px-6"
+                    >
+                      Anuluj edycję
+                    </button>
+                  )}
+                </div>
+              </form>
+            )}
           </div>
 
           {/* Sidebar - Deck content summary */}
@@ -632,13 +928,272 @@ export default function Creator({
             </div>
           </form>
         </div>
+      ) : activeTab === "import-file" ? (
+        /* File Import Section */
+        <div className="flex flex-col gap-6">
+          <div className="glass-card p-6 md:p-8">
+            <h3 className="text-lg font-bold text-white mb-5 flex items-center gap-2">
+              <Icons.FileUp className="text-indigo-400" size={20} />
+              Importuj fiszki z pliku
+            </h3>
+
+            {importError && (
+              <div className="mb-4 bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs p-3 rounded-xl flex items-center gap-2">
+                <Icons.AlertCircle size={16} />
+                <span>{importError}</span>
+              </div>
+            )}
+            {importSuccess && (
+              <div className="mb-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs p-3 rounded-xl flex items-center gap-2">
+                <Icons.CheckCircle2 size={16} />
+                <span>Import zakończony sukcesem! Trwa przekierowanie...</span>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-6">
+              {/* Target options */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black/20 p-4 rounded-xl border border-white/5">
+                <div>
+                  <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">Cel importu</label>
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2 text-xs text-white font-semibold cursor-pointer">
+                      <input
+                        type="radio"
+                        name="importTarget"
+                        value="new"
+                        checked={importTargetType === "new"}
+                        onChange={() => setImportTargetType("new")}
+                        className="accent-indigo-500"
+                      />
+                      Utwórz nową talię
+                    </label>
+                    {customDecks.length > 0 && (
+                      <label className="flex items-center gap-2 text-xs text-white font-semibold cursor-pointer">
+                        <input
+                          type="radio"
+                          name="importTarget"
+                          value="existing"
+                          checked={importTargetType === "existing"}
+                          onChange={() => setImportTargetType("existing")}
+                          className="accent-indigo-500"
+                        />
+                        Dodaj do istniejącej
+                      </label>
+                    )}
+                  </div>
+                </div>
+
+                {importTargetType === "new" ? (
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-1">Nazwa talii *</label>
+                      <input
+                        type="text"
+                        value={newDeckTitle}
+                        onChange={(e) => setNewDeckTitle(e.target.value)}
+                        placeholder="Nazwa talii"
+                        className="w-full bg-black/40 border border-white/8 rounded-lg px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:border-indigo-500/60"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-1">Polski podtytuł *</label>
+                      <input
+                        type="text"
+                        value={newDeckPolishTitle}
+                        onChange={(e) => setNewDeckPolishTitle(e.target.value)}
+                        placeholder="Polski podtytuł"
+                        className="w-full bg-black/40 border border-white/8 rounded-lg px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:border-indigo-500/60"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-1">Wybierz talię</label>
+                    <select
+                      value={importSelectedDeckId}
+                      onChange={(e) => setImportSelectedDeckId(e.target.value)}
+                      className="w-full bg-black/40 border border-white/8 rounded-lg px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:border-indigo-500/60"
+                    >
+                      <option value="" disabled>Wybierz talię...</option>
+                      {customDecks.map(deck => (
+                        <option key={deck.id} value={deck.id}>{deck.title} ({deck.polishTitle})</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+
+              {/* Drag & Drop zone */}
+              <div
+                onDragEnter={handleDrag}
+                onDragOver={handleDrag}
+                onDragLeave={handleDrag}
+                onDrop={handleDrop}
+                className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center gap-3 transition-all cursor-pointer ${
+                  dragActive
+                    ? "border-indigo-500 bg-indigo-500/5 text-indigo-300"
+                    : "border-white/10 hover:border-indigo-500/30 text-slate-400 hover:text-slate-200"
+                }`}
+                onClick={() => document.getElementById("file-upload").click()}
+              >
+                <input
+                  id="file-upload"
+                  type="file"
+                  onChange={handleFileInput}
+                  accept=".csv,.txt,.pdf,.json"
+                  className="hidden"
+                />
+                
+                {isParsing ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <Icons.Loader className="animate-spin text-indigo-500" size={32} />
+                    <p className="text-sm font-bold text-white">Parsowanie pliku...</p>
+                  </div>
+                ) : (
+                  <>
+                    <Icons.Upload size={36} className="text-indigo-400/80 mb-1" />
+                    <p className="text-sm font-bold text-white">Przeciągnij i upuść plik tutaj lub kliknij, aby wybrać</p>
+                    <p className="text-[11px] text-slate-500">Obsługiwane formaty: <strong>CSV, TXT, PDF, JSON</strong>. Maksymalnie 5MB.</p>
+                  </>
+                )}
+              </div>
+
+              {/* Tip / Formatting help */}
+              <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4.5 text-xs text-slate-400 flex flex-col gap-2">
+                <span className="font-extrabold text-white uppercase text-[10px] tracking-wider flex items-center gap-1.5">
+                  <Icons.Info size={14} className="text-indigo-400" />
+                  Wskazówka dotycząca formatu plików
+                </span>
+                <p className="leading-relaxed">
+                  Dla plików **TXT / CSV / PDF** upewnij się, że słówka są zapisane w osobnych liniach, np.:
+                  <br />
+                  <code className="text-indigo-300 font-mono text-[10px] bg-black/30 px-1 py-0.5 rounded inline-block mt-1">resilience - odporność</code> lub
+                  <code className="text-indigo-300 font-mono text-[10px] bg-black/30 px-1 py-0.5 rounded inline-block mt-1 ml-2">hello, cześć</code>
+                  <br />
+                  Parser automatycznie wykryje separatory i wyciągnie poprawne pary słówek.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Parsed Cards Preview Table */}
+          {parsedCards.length > 0 && (
+            <div className="glass-card p-6 overflow-hidden flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h4 className="text-md font-bold text-white flex items-center gap-2">
+                    <Icons.Table size={18} className="text-indigo-400" />
+                    Podgląd i edycja zaimportowanych fiszek ({parsedCards.length})
+                  </h4>
+                  <p className="text-slate-400 text-xs mt-1">Przejrzyj zaimportowane dane. Możesz kliknąć w dowolne pole, aby je zmodyfikować przed zapisem.</p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setParsedCards([]);
+                      setImportError("");
+                    }}
+                    className="px-3.5 py-2 border border-rose-500/20 text-rose-400 bg-rose-500/5 hover:bg-rose-500/10 text-xs font-bold rounded-xl transition-all"
+                  >
+                    Usuń wszystkie
+                  </button>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto max-h-[400px] border border-white/5 rounded-xl">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="bg-black/45 text-slate-400 font-extrabold uppercase border-b border-white/5">
+                      <th className="p-3.5 w-12 text-center">#</th>
+                      <th className="p-3.5 w-1/4">Angielski *</th>
+                      <th className="p-3.5 w-1/4">Polski *</th>
+                      <th className="p-3.5 w-1/6">Wymowa</th>
+                      <th className="p-3.5 w-1/4">Przykład EN</th>
+                      <th className="p-3.5 w-1/4">Przykład PL</th>
+                      <th className="p-3.5 w-12 text-center">Akcja</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {parsedCards.map((card, idx) => (
+                      <tr key={card.id} className="hover:bg-white/[0.01] transition-colors">
+                        <td className="p-3 text-slate-500 font-bold text-center">{idx + 1}</td>
+                        <td className="p-2">
+                          <input
+                            type="text"
+                            value={card.english}
+                            onChange={(e) => updateCardField(card.id, "english", e.target.value)}
+                            className="w-full bg-transparent border border-transparent hover:border-white/10 focus:border-indigo-500 focus:bg-black/30 rounded px-2 py-1 text-white font-semibold outline-none"
+                          />
+                        </td>
+                        <td className="p-2">
+                          <input
+                            type="text"
+                            value={card.polish}
+                            onChange={(e) => updateCardField(card.id, "polish", e.target.value)}
+                            className="w-full bg-transparent border border-transparent hover:border-white/10 focus:border-indigo-500 focus:bg-black/30 rounded px-2 py-1 text-white font-semibold outline-none"
+                          />
+                        </td>
+                        <td className="p-2">
+                          <input
+                            type="text"
+                            value={card.pronunciation}
+                            onChange={(e) => updateCardField(card.id, "pronunciation", e.target.value)}
+                            className="w-full bg-transparent border border-transparent hover:border-white/10 focus:border-indigo-500 focus:bg-black/30 rounded px-2 py-1 text-slate-300 font-mono outline-none"
+                            placeholder="/.../"
+                          />
+                        </td>
+                        <td className="p-2">
+                          <input
+                            type="text"
+                            value={card.exampleEnglish}
+                            onChange={(e) => updateCardField(card.id, "exampleEnglish", e.target.value)}
+                            className="w-full bg-transparent border border-transparent hover:border-white/10 focus:border-indigo-500 focus:bg-black/30 rounded px-2 py-1 text-slate-300 outline-none"
+                            placeholder="Zdanie po angielsku"
+                          />
+                        </td>
+                        <td className="p-2">
+                          <input
+                            type="text"
+                            value={card.examplePolish}
+                            onChange={(e) => updateCardField(card.id, "examplePolish", e.target.value)}
+                            className="w-full bg-transparent border border-transparent hover:border-white/10 focus:border-indigo-500 focus:bg-black/30 rounded px-2 py-1 text-slate-300 outline-none"
+                            placeholder="Tłumaczenie zdania"
+                          />
+                        </td>
+                        <td className="p-2 text-center">
+                          <button
+                            onClick={() => removeParsedCard(card.id)}
+                            className="p-1.5 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all"
+                            title="Usuń wiersz"
+                          >
+                            <Icons.Trash2 size={14} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="flex justify-end gap-3 mt-2">
+                <button
+                  onClick={handleSaveImport}
+                  className="btn btn-primary px-8 flex items-center gap-1.5"
+                  disabled={parsedCards.length === 0}
+                >
+                  <Icons.CheckCircle2 size={16} />
+                  Importuj {parsedCards.length} fiszek
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       ) : (
         /* Manage Decks Section (activeTab === "manage-decks" && !editingDeckId) */
         <div className="glass-card p-6 md:p-8 flex flex-col gap-5">
           <h3 className="text-lg font-bold text-white">Zarządzaj własnymi taliami</h3>
           
           {(() => {
-            const customDecks = decks.filter(d => !systemDeckIds.has(d.id));
             if (customDecks.length === 0) {
               return (
                 <div className="text-center py-12 text-slate-500 text-xs font-medium leading-relaxed">

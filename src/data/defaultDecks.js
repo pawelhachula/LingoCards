@@ -1,4 +1,4 @@
-export const defaultDecks = [
+const rawDefaultDecks = [
   {
     "id": "everyday-a1",
     "title": "Survival English (A1)",
@@ -9702,3 +9702,626 @@ export const defaultDecks = [
     ]
   }
 ];
+
+const extraIdiomDecks = [
+  {
+    "id": "idioms-business",
+    "title": "Business Idioms (B2)",
+    "polishTitle": "Idiomy w biznesie",
+    "category": "idioms",
+    "level": "B2",
+    "description": "Idiomy i wyrażenia przydatne w pracy, negocjacjach i biznesie.",
+    "icon": "Briefcase",
+    "color": "#f59e0b",
+    "cards": [
+      {
+        "id": "idioms-business-1",
+        "english": "Touch base",
+        "polish": "Skontaktować się / omówić sprawę krótko",
+        "pronunciation": "/tʌtʃ beɪs/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Let's touch base next week to discuss the project details.",
+        "examplePolish": "Skontaktujmy się w przyszłym tygodniu, aby omówić szczegóły projektu."
+      },
+      {
+        "id": "idioms-business-2",
+        "english": "Get the ball rolling",
+        "polish": "Rozpocząć działania / ruszyć z kopyta",
+        "pronunciation": "/ɡet ðə bɔːl ˈroʊ.lɪŋ/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "We need to get the ball rolling on this marketing campaign.",
+        "examplePolish": "Musimy ruszyć z kopyta z tą kampanią marketingową."
+      },
+      {
+        "id": "idioms-business-3",
+        "english": "In the loop",
+        "polish": "Na bieżąco / w kręgu informacji",
+        "pronunciation": "/ɪn ðə luːp/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Please keep me in the loop regarding any changes.",
+        "examplePolish": "Proszę, trzymaj mnie na bieżąco w kwestii jakichkolwiek zmian."
+      },
+      {
+        "id": "idioms-business-4",
+        "english": "Cut corners",
+        "polish": "Iść na skróty / robić coś po łebkach",
+        "pronunciation": "/kʌt ˈkɔːr.nərz/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "We cannot cut corners when it comes to software security.",
+        "examplePolish": "Nie możemy iść na skróty, jeśli chodzi o bezpieczeństwo oprogramowania."
+      },
+      {
+        "id": "idioms-business-5",
+        "english": "Back to the drawing board",
+        "polish": "Zacząć od nowa (od deski kreślarskiej)",
+        "pronunciation": "/bæk tuː ðə ˈdrɔː.ɪŋ bɔːrd/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "The client rejected our proposal, so it is back to the drawing board.",
+        "examplePolish": "Klient odrzucił naszą propozycję, więc musimy zacząć od nowa."
+      },
+      {
+        "id": "idioms-business-6",
+        "english": "Think outside the box",
+        "polish": "Myśleć nieszablonowo / kreatywnie",
+        "pronunciation": "/θɪŋk ˌaʊtˈsaɪd ðə bɑːks/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "To solve this problem, we need to think outside the box.",
+        "examplePolish": "Aby rozwiązać ten problem, musimy myśleć nieszablonowo."
+      },
+      {
+        "id": "idioms-business-7",
+        "english": "Call it a day",
+        "polish": "Zakończyć pracę (na dany dzień)",
+        "pronunciation": "/kɔːl ɪt ə deɪ/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "We have been working for ten hours, let's call it a day.",
+        "examplePolish": "Pracujemy już dziesięć godzin, zakończmy na dzisiaj."
+      },
+      {
+        "id": "idioms-business-8",
+        "english": "On the same page",
+        "polish": "Zgadzać się / nadawać na tych samych falach",
+        "pronunciation": "/ɑːn ðə seɪm peɪdʒ/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Before the client meeting, we need to make sure we are on the same page.",
+        "examplePolish": "Przed spotkaniem z klientem musimy upewnić się, że się zgadzamy."
+      },
+      {
+        "id": "idioms-business-9",
+        "english": "By the book",
+        "polish": "Zgodnie z przepisami / jak w podręczniku",
+        "pronunciation": "/baɪ ðə bʊk/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "The auditor will check if we did everything by the book.",
+        "examplePolish": "Audytor sprawdzi, czy zrobiliśmy wszystko zgodnie z przepisami."
+      },
+      {
+        "id": "idioms-business-10",
+        "english": "Ahead of the curve",
+        "polish": "Przed szeregiem / innowacyjny",
+        "pronunciation": "/əˈhed əv ðə kɜːrv/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Our R&D team works hard to keep our products ahead of the curve.",
+        "examplePolish": "Nasz zespół badawczo-rozwojowy ciężko pracuje, aby nasze produkty były innowacyjne."
+      }
+    ]
+  },
+  {
+    "id": "idioms-phrasals-essential",
+    "title": "Phrasal Verbs with 'Get' (B2)",
+    "polishTitle": "Czasowniki frazowe z 'Get'",
+    "category": "idioms",
+    "level": "B2",
+    "description": "Kluczowe phrasal verbs z czasownikiem 'get' w codziennej komunikacji.",
+    "icon": "GraduationCap",
+    "color": "#ec4899",
+    "cards": [
+      {
+        "id": "idioms-get-1",
+        "english": "Get along with",
+        "polish": "Mieć dobre stosunki / dogadywać się z kimś",
+        "pronunciation": "/ɡet əˈlɔːŋ wɪð/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Do you get along with your new co-workers?",
+        "examplePolish": "Czy dogadujesz się ze swoimi nowymi współpracownikami?"
+      },
+      {
+        "id": "idioms-get-2",
+        "english": "Get over",
+        "polish": "Przeboleć / dojść do siebie po czymś",
+        "pronunciation": "/ɡet ˈoʊ.vər/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "It took her months to get over the breakup.",
+        "examplePolish": "Zajęło jej miesiące dojście do siebie po rozstaniu."
+      },
+      {
+        "id": "idioms-get-3",
+        "english": "Get by",
+        "polish": "Radzić sobie finansowo / dawać sobie radę",
+        "pronunciation": "/ɡet baɪ/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "My English is not perfect, but I can get by.",
+        "examplePolish": "Mój angielski nie jest idealny, ale potrafię sobie poradzić."
+      },
+      {
+        "id": "idioms-get-4",
+        "english": "Get away with",
+        "polish": "Ujść na sucho / uniknąć kary",
+        "pronunciation": "/ɡet əˈweɪ wɪð/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "He thought he could get away with cheating on the exam.",
+        "examplePolish": "Myślał, że ujdzie mu na sucho ściąganie na egzaminie."
+      },
+      {
+        "id": "idioms-get-5",
+        "english": "Get through to",
+        "polish": "Dodzwonić się / dotrzeć do kogoś (przekonać go)",
+        "pronunciation": "/ɡet θruː tuː/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "I tried to call him, but I couldn't get through.",
+        "examplePolish": "Próbowałem do niego zadzwonić, ale nie mogłem się połączyć."
+      },
+      {
+        "id": "idioms-get-6",
+        "english": "Get down to",
+        "polish": "Zabrać się do czegoś (np. do pracy)",
+        "pronunciation": "/ɡet daʊn tuː/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Enough talking, let's get down to business.",
+        "examplePolish": "Dość gadania, zabierzmy się do interesów."
+      },
+      {
+        "id": "idioms-get-7",
+        "english": "Get across",
+        "polish": "Przekazać / jasno wytłumaczyć",
+        "pronunciation": "/ɡet əˈkrɔːs/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "The teacher struggled to get the concept across to the students.",
+        "examplePolish": "Nauczyciel miał trudności z jasnym przekazaniem tego pojęcia uczniom."
+      },
+      {
+        "id": "idioms-get-8",
+        "english": "Get behind",
+        "polish": "Mieć zaległości (np. z pracą, płatnościami)",
+        "pronunciation": "/ɡet bɪˈhaɪnd/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "If you miss classes, you will quickly get behind.",
+        "examplePolish": "Jeśli opuścisz zajęcia, szybko narobisz sobie zaległości."
+      },
+      {
+        "id": "idioms-get-9",
+        "english": "Get rid of",
+        "polish": "Pozbyć się czegoś/kogoś",
+        "pronunciation": "/ɡet rɪd ɒv/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "I need to get rid of these old newspapers.",
+        "examplePolish": "Muszę pozbyć się tych starych gazet."
+      },
+      {
+        "id": "idioms-get-10",
+        "english": "Get wind of",
+        "polish": "Dowiedzieć się o czymś pocztą pantoflową / zwietrzyć coś",
+        "pronunciation": "/ɡet wɪnd ɒv/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "The media got wind of the secret merger before the announcement.",
+        "examplePolish": "Media dowiedziały się o tajnej fuzji przed oficjalnym ogłoszeniem."
+      }
+    ]
+  },
+  {
+    "id": "idioms-take-put",
+    "title": "Phrasal Verbs: Take & Put (B2)",
+    "polishTitle": "Phrasal Verbs: Take i Put",
+    "category": "idioms",
+    "level": "B2",
+    "description": "Kluczowe czasowniki frazowe z 'take' oraz 'put' wraz z przykładowymi zdaniami.",
+    "icon": "GraduationCap",
+    "color": "#ec4899",
+    "cards": [
+      {
+        "id": "idioms-take-1",
+        "english": "Take on",
+        "polish": "Podjąć się czegoś / zatrudnić kogoś",
+        "pronunciation": "/teɪk ɒn/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "She decided to take on the new project despite her busy schedule.",
+        "examplePolish": "Zdecydowała się podjąć nowego projektu pomimo napiętego grafiku."
+      },
+      {
+        "id": "idioms-take-2",
+        "english": "Take off",
+        "polish": "Wystartować (o samolocie) / zacząć odnosić nagły sukces",
+        "pronunciation": "/teɪk ɒf/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "The plane took off on time despite the bad weather.",
+        "examplePolish": "Samolot wystartował o czasie pomimo złej pogody."
+      },
+      {
+        "id": "idioms-take-3",
+        "english": "Take over",
+        "polish": "Przejąć kontrolę / przejąć obowiązki",
+        "pronunciation": "/teɪk ˈoʊ.vər/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "The deputy manager will take over while the director is away.",
+        "examplePolish": "Zastępca kierownika przejmie obowiązki podczas nieobecności dyrektora."
+      },
+      {
+        "id": "idioms-take-4",
+        "english": "Take up",
+        "polish": "Zacząć uprawiać (hobby) / zajmować (czas, miejsce)",
+        "pronunciation": "/teɪk ʌp/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "I decided to take up swimming to improve my fitness.",
+        "examplePolish": "Zdecydowałem się zacząć pływać, aby poprawić kondycję."
+      },
+      {
+        "id": "idioms-put-1",
+        "english": "Put off",
+        "polish": "Odłożyć na później / zniechęcać",
+        "pronunciation": "/pʊt ɒf/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Never put off until tomorrow what you can do today.",
+        "examplePolish": "Nigdy nie odkładaj na jutro tego, co możesz zrobić dzisiaj."
+      },
+      {
+        "id": "idioms-put-2",
+        "english": "Put up with",
+        "polish": "Znosić / tolerować kogoś lub coś",
+        "pronunciation": "/pʊt ʌp wɪð/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "I don't know how she puts up with his constant complaining.",
+        "examplePolish": "Nie wiem, jak ona znosi jego ciągłe narzekanie."
+      },
+      {
+        "id": "idioms-put-3",
+        "english": "Put out",
+        "polish": "Ugasić (ogień) / sprawić kłopot komuś",
+        "pronunciation": "/pʊt aʊt/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "It took the firefighters three hours to put out the blaze.",
+        "examplePolish": "Ugaszenie pożaru zajęło strażakom trzy godziny."
+      },
+      {
+        "id": "idioms-put-4",
+        "english": "Put through",
+        "polish": "Połączyć telefonicznie / narazić na trudne doświadczenie",
+        "pronunciation": "/pʊt θruː/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Hold on a moment, please, I will put you through to the manager.",
+        "examplePolish": "Proszę chwilę poczekać, połączę pana z kierownikiem."
+      },
+      {
+        "id": "idioms-take-5",
+        "english": "Take after",
+        "polish": "Być podobnym do kogoś (z rodziny)",
+        "pronunciation": "/teɪk ˈæf.tər/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "He really takes after his father in both looks and character.",
+        "examplePolish": "On naprawdę wrodził się w swojego ojca, zarówno z wyglądu, jak i z charakteru."
+      },
+      {
+        "id": "idioms-put-5",
+        "english": "Put forward",
+        "polish": "Proponować / przedstawiać (np. pomysł, kandydaturę)",
+        "pronunciation": "/pʊt ˈfɔːr.wərd/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "The committee put forward several interesting proposals.",
+        "examplePolish": "Komitet przedstawił kilka ciekawych propozycji."
+      }
+    ]
+  },
+  {
+    "id": "idioms-emotion",
+    "title": "Idioms of Emotion (C1)",
+    "polishTitle": "Idiomy opisujące emocje",
+    "category": "idioms",
+    "level": "C1",
+    "description": "Kolorowe wyrażenia idiomatyczne służące do opisywania skrajnych emocji, radości, złości i smutku.",
+    "icon": "Smile",
+    "color": "#f59e0b",
+    "cards": [
+      {
+        "id": "idioms-em-1",
+        "english": "Over the moon",
+        "polish": "Wniebowzięty / niezwykle szczęśliwy",
+        "pronunciation": "/ˈoʊ.vər ðə muːn/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "She was over the moon when she passed her driving test.",
+        "examplePolish": "Była wniebowzięta, kiedy zdała egzamin na prawo jazdy."
+      },
+      {
+        "id": "idioms-em-2",
+        "english": "Down in the dumps",
+        "polish": "Zdołowany / w kiepskim nastroju",
+        "pronunciation": "/daʊn ɪn ðə dʌmps/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "He has been a bit down in the dumps since he lost his job.",
+        "examplePolish": "Jest trochę zdołowany odkąd stracił pracę."
+      },
+      {
+        "id": "idioms-em-3",
+        "english": "Fly off the handle",
+        "polish": "Wpaść w szał / łatwo się wściec",
+        "pronunciation": "/flaɪ ɒf ðə ˈhæn.dəl/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "He is normally calm, but he flew off the handle when he heard the news.",
+        "examplePolish": "Zazwyczaj jest spokojny, ale wpadł w szał, kiedy usłyszał te wieści."
+      },
+      {
+        "id": "idioms-em-4",
+        "english": "On cloud nine",
+        "polish": "W siódmym niebie",
+        "pronunciation": "/ɑːn klaʊd naɪn/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "After winning the gold medal, the athlete was on cloud nine.",
+        "examplePolish": "Po zdobyciu złotego medalu lekkoatleta był w siódmym niebie."
+      },
+      {
+        "id": "idioms-em-5",
+        "english": "Make someone's blood boil",
+        "polish": "Doprowadzać kogoś do szewskiej pasji / sprawiać, że krew w żyłach wrze",
+        "pronunciation": "/meɪk ˈsʌm.wʌnz blʌd bɔɪl/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "The way they treat animals makes my blood boil.",
+        "examplePolish": "Sposób, w jaki traktują zwierzęta, doprowadza mnie do szewskiej pasji."
+      },
+      {
+        "id": "idioms-em-6",
+        "english": "Grin and bear it",
+        "polish": "Robić dobrą minę do złej gry / zacisnąć zęby",
+        "pronunciation": "/ɡrɪn ænd ber ɪt/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "We don't like the new rules, but we just have to grin and bear it.",
+        "examplePolish": "Nie podobają nam się nowe zasady, ale musimy po prostu robić dobrą minę do złej gry."
+      },
+      {
+        "id": "idioms-em-7",
+        "english": "On pins and needles",
+        "polish": "Jak na szpilkach",
+        "pronunciation": "/ɑːn pɪnz ænd ˈniː.dəlz/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "We were on pins and needles waiting for the exam results.",
+        "examplePolish": "Czekaliśmy na wyniki egzaminów jak na szpilkach."
+      },
+      {
+        "id": "idioms-em-8",
+        "english": "Green with envy",
+        "polish": "Zielony z zazdrości",
+        "pronunciation": "/ɡriːn wɪð ˈen.vi/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "She was green with envy when she saw my new car.",
+        "examplePolish": "Była zielona z zazdrości, kiedy zobaczyła mój nowy samochód."
+      },
+      {
+        "id": "idioms-em-9",
+        "english": "Keep one's chin up",
+        "polish": "Głowa do góry / trzymać fason",
+        "pronunciation": "/kiːp wʌnz tʃɪn ʌp/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Keep your chin up, things will get better soon.",
+        "examplePolish": "Głowa do góry, wkrótce wszystko się ułoży."
+      },
+      {
+        "id": "idioms-em-10",
+        "english": "Drive someone up the wall",
+        "polish": "Doprowadzać kogoś do szału / wkurzać",
+        "pronunciation": "/draɪv ˈsʌm.wʌn ʌp ðə wɔːl/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "That constant dripping noise is driving me up the wall.",
+        "examplePolish": "Ten ciągły dźwięk kapiącej wody doprowadza mnie do szału."
+      }
+    ]
+  },
+  {
+    "id": "idioms-body",
+    "title": "Idioms with Body Parts (C1)",
+    "polishTitle": "Idiomy z częściami ciała",
+    "category": "idioms",
+    "level": "C1",
+    "description": "Najważniejsze idiomy angielskie zawierające części ciała (oczy, uszy, ręce, nogi).",
+    "icon": "Flame",
+    "color": "#10b981",
+    "cards": [
+      {
+        "id": "idioms-bd-1",
+        "english": "Cost an arm and a leg",
+        "polish": "Kosztować fortunę / słono kosztować",
+        "pronunciation": "/kɒst ən ɑːm ænd ə leɡ/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "The new laptop is great, but it cost an arm and a leg.",
+        "examplePolish": "Nowy laptop jest świetny, ale kosztował fortunę."
+      },
+      {
+        "id": "idioms-bd-2",
+        "english": "Pull someone's leg",
+        "polish": "Naciągać kogoś / robić sobie z kogoś żarty",
+        "pronunciation": "/pʊl ˈsʌm.wʌnz leɡ/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Don't be angry, I was only pulling your leg.",
+        "examplePolish": "Nie gniewaj się, tylko sobie z ciebie żartowałem."
+      },
+      {
+        "id": "idioms-bd-3",
+        "english": "Play it by ear",
+        "polish": "Improwizować / decydować na bieżąco",
+        "pronunciation": "/pleɪ ɪt baɪ ɪər/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "We don't have a plan for tonight, let's just play it by ear.",
+        "examplePolish": "Nie mamy planów na dzisiejszy wieczór, po prostu będziemy improwizować."
+      },
+      {
+        "id": "idioms-bd-4",
+        "english": "See eye to eye",
+        "polish": "Zgadzać się w pełni / mieć takie samo zdanie",
+        "pronunciation": "/siː aɪ tuː aɪ/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "My business partner and I don't always see eye to eye.",
+        "examplePolish": "Mój partner biznesowy i ja nie zawsze zgadzamy się w pełni."
+      },
+      {
+        "id": "idioms-bd-5",
+        "english": "Keep an eye on",
+        "polish": "Mieć oko na coś / pilnować",
+        "pronunciation": "/kiːp ən aɪ ɒn/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Could you please keep an eye on my bags for a minute?",
+        "examplePolish": "Czy mógłbyś rzucić okiem na moje torby przez minutę?"
+      },
+      {
+        "id": "idioms-bd-6",
+        "english": "Give someone the cold shoulder",
+        "polish": "Traktować kogoś ozięble / ignorować",
+        "pronunciation": "/ɡɪv ˈsʌm.wʌn ðə koʊld ˈʃoʊl.dər/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "I don't know what I did wrong, but she is giving me the cold shoulder.",
+        "examplePolish": "Nie wiem, co zrobiłem źle, ale ona mnie ignoruje."
+      },
+      {
+        "id": "idioms-bd-7",
+        "english": "Let one's hair down",
+        "polish": "Wyluzować się / pójść w tango",
+        "pronunciation": "/let wʌnz her daʊn/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "After a hard week of work, it is good to let your hair down.",
+        "examplePolish": "Po ciężkim tygodniu pracy dobrze jest wyluzować się."
+      },
+      {
+        "id": "idioms-bd-8",
+        "english": "Face the music",
+        "polish": "Wypić piwo, które się nawarzyło / stawić czoła konsekwencjom",
+        "pronunciation": "/feɪs ðə ˈmjuː.zɪk/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "The student had to face the music after cheating on the test.",
+        "examplePolish": "Uczeń musiał stawić czoła konsekwencjom po ściąganiu na teście."
+      },
+      {
+        "id": "idioms-bd-9",
+        "english": "All ears",
+        "polish": "Zamieniać się w słuch",
+        "pronunciation": "/ɔːl ɪərz/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Tell me what happened, I am all ears.",
+        "examplePolish": "Powiedz mi, co się stało, zamieniam się w słuch."
+      },
+      {
+        "id": "idioms-bd-10",
+        "english": "Get cold feet",
+        "polish": "Stchórzyć / przestraszyć się w ostatniej chwili",
+        "pronunciation": "/ɡet koʊld fiːt/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "He wanted to do a skydive, but got cold feet at the last minute.",
+        "examplePolish": "Chciał skoczyć ze spadochronem, ale stchórzył w ostatniej chwili."
+      }
+    ]
+  },
+  {
+    "id": "idioms-conversational",
+    "title": "Slang & Colloquial English (C2)",
+    "polishTitle": "Slang i zwroty potoczne",
+    "category": "idioms",
+    "level": "C2",
+    "description": "Najbardziej zaawansowane wyrażenia idiomatyczne i potoczne stosowane przez native speakerów.",
+    "icon": "Flame",
+    "color": "#ec4899",
+    "cards": [
+      {
+        "id": "idioms-sl-1",
+        "english": "Spill the beans",
+        "polish": "Puścić farbę / wygadać się",
+        "pronunciation": "/spɪl ðə biːnz/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "We wanted it to be a surprise party, but Mark spilled the beans.",
+        "examplePolish": "Chcieliśmy, żeby to było przyjęcie niespodzianka, ale Mark się wygadał."
+      },
+      {
+        "id": "idioms-sl-2",
+        "english": "Under the weather",
+        "polish": "Czuć się kiepsko / niewyraźnie (chorym)",
+        "pronunciation": "/ˈʌn.dər ðə ˈweð.ər/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "I won't come to work today, I am feeling a bit under the weather.",
+        "examplePolish": "Nie przyjdę dzisiaj do pracy, czuję się trochę niewyraźnie."
+      },
+      {
+        "id": "idioms-sl-3",
+        "english": "Piece of cake",
+        "polish": "Bułka z masłem / łatwizna",
+        "pronunciation": "/piːs əv keɪk/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Don't worry about the exam, it's going to be a piece of cake.",
+        "examplePolish": "Nie martw się egzaminem, to będzie bułka z masłem."
+      },
+      {
+        "id": "idioms-sl-4",
+        "english": "Hit the sack",
+        "polish": "Iść w kimonko / iść spać",
+        "pronunciation": "/hɪt ðə sæk/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "I am exhausted, it is time for me to hit the sack.",
+        "examplePolish": "Jestem wykończony, czas iść w kimonko."
+      },
+      {
+        "id": "idioms-sl-5",
+        "english": "Once in a blue moon",
+        "polish": "Raz na ruski rok / od wielkiego dzwonu",
+        "pronunciation": "/wʌns ɪn ə bluː muːn/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "We go to the theater once in a blue moon.",
+        "examplePolish": "Chodzimy do teatru raz na ruski rok."
+      },
+      {
+        "id": "idioms-sl-6",
+        "english": "Burn the midnight oil",
+        "polish": "Pracować po nocach / zarywać nockę",
+        "pronunciation": "/bɜːn ðə ˈmɪd.naɪt ɔɪl/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "She had to burn the midnight oil to submit her thesis on time.",
+        "examplePolish": "Musiała zarywać nockę, aby oddać pracę dyplomową na czas."
+      },
+      {
+        "id": "idioms-sl-7",
+        "english": "Break a leg",
+        "polish": "Połamania nóg! / Powodzenia!",
+        "pronunciation": "/breɪk ə leɡ/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "You are going on stage next, break a leg!",
+        "examplePolish": "Wychodzisz za chwilę na scenę, połamania nóg!"
+      },
+      {
+        "id": "idioms-sl-8",
+        "english": "Bite the dust",
+        "polish": "Gryźć ziemię / zepsuć się",
+        "pronunciation": "/baɪt ðə dʌst/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "My old phone finally bit the dust yesterday.",
+        "examplePolish": "Mój stary telefon wczoraj ostatecznie wyzionął ducha."
+      },
+      {
+        "id": "idioms-sl-9",
+        "english": "Rule of thumb",
+        "polish": "Złota zasada / reguła oparta na doświadczeniu",
+        "pronunciation": "/ruːl əv θʌm/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "As a rule of thumb, one cup of rice needs two cups of water.",
+        "examplePolish": "Złota zasada mówi, że na jedną szklankę ryżu potrzeba dwóch szklanek wody."
+      },
+      {
+        "id": "idioms-sl-10",
+        "english": "A blessing in disguise",
+        "polish": "Szczęście w nieszczęściu",
+        "pronunciation": "/ə ˈbles.ɪŋ ɪn dɪsˈɡaɪz/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Losing that job was a blessing in disguise because I found a much better one.",
+        "examplePolish": "Utrata tamtej pracy była szczęściem w nieszczęściu, bo znalazłem znacznie lepszą."
+      }
+    ]
+  }
+];
+
+export const defaultDecks = [...rawDefaultDecks, ...extraIdiomDecks].map(deck => {
+  const isIdiomsDeck = deck.id === "idioms-c2" || deck.id.startsWith("idioms");
+  return {
+    ...deck,
+    type: isIdiomsDeck ? "idioms" : "vocabulary"
+  };
+});
