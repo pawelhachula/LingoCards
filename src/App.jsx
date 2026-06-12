@@ -441,7 +441,9 @@ export default function App() {
     localStorage.setItem(activeDecksKey, JSON.stringify(activeDeckIdsToSet));
     
     const activeDecks = loadedDecks.filter(d => activeDeckIdsToSet.includes(d.id) || !systemDeckIds.has(d.id));
-    if (activeDecks.length > 0) setSelectedDeck(activeDecks[0]);
+    const lastDeck = loadedStats.lastDeckId ? loadedDecks.find(d => d.id === loadedStats.lastDeckId) : null;
+    if (lastDeck) setSelectedDeck(lastDeck);
+    else if (activeDecks.length > 0) setSelectedDeck(activeDecks[0]);
     else if (loadedDecks.length > 0) setSelectedDeck(loadedDecks[0]);
 
     // Zsynchronizuj motyw graficzny z wczytanych statystyk (defaults to navy)
@@ -575,6 +577,14 @@ export default function App() {
       return updatedStats;
     });
   };
+
+  const handleSelectDeck = (deck) => {
+    setSelectedDeck(deck);
+    if (deck) {
+      handleSetStats({ lastDeckId: deck.id });
+    }
+  };
+
 
   const handleAddXp = (amount) => {
     if (!currentUser) return;
@@ -1181,7 +1191,7 @@ export default function App() {
             decks={displayedDecks} 
             stats={stats} 
             setStats={handleSetStats}
-            onSelectDeck={setSelectedDeck} 
+            onSelectDeck={handleSelectDeck} 
             onNavigate={setView}
             onUpdateDeck={handleUpdateDeck}
             onDeleteDeck={handleDeleteDeck}
@@ -1196,7 +1206,7 @@ export default function App() {
             systemDeckIds={systemDeckIds}
             activeDeckIds={activeDeckIds} 
             onToggleActiveDeck={handleToggleActiveDeck} 
-            onSelectDeck={setSelectedDeck} 
+            onSelectDeck={handleSelectDeck} 
             onNavigate={setView} 
             stats={stats} 
             onUpdateStats={handleSetStats} 
@@ -1344,7 +1354,7 @@ export default function App() {
           stats={stats}
           setStats={handleSetStats}
           onNavigate={setView}
-          onSelectDeck={setSelectedDeck}
+          onSelectDeck={handleSelectDeck}
           onClose={() => setShowSearch(false)}
         />
       )}

@@ -10,8 +10,9 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
   // Liczba słówek: talie użytkownika zawsze + talie systemowe tylko aktywne
   const activeDecks = realDecks.filter(d => !systemDeckIds?.has(d.id) || activeDeckIds?.includes(d.id));
   const totalCards = activeDecks.reduce((sum, deck) => sum + deck.cards.length, 0);
-  const learnedCount = Object.keys(stats.learnedCards || {}).length;
-  const progressPercent = totalCards > 0 ? Math.round((learnedCount / totalCards) * 100) : 0;
+  const activeCardIds = new Set(activeDecks.flatMap(d => (d.cards || []).map(c => c.id)));
+  const learnedCount = Object.keys(stats.learnedCards || {}).filter(cardId => activeCardIds.has(cardId)).length;
+  const progressPercent = totalCards > 0 ? Math.min(Math.round((learnedCount / totalCards) * 100), 100) : 0;
   
   const dailyTarget = stats.dailyTarget || 10;
   const dailyProgress = Math.min(stats.dailyCount || 0, dailyTarget);
@@ -155,11 +156,17 @@ export default function Dashboard({ decks, stats, setStats, onSelectDeck, onNavi
           
           <button 
             onClick={() => {
-              const realDecksOnly = decks.filter(d => d.id !== "srs" && d.id !== "starred");
-              if (realDecksOnly.length > 0) {
-                onSelectDeck(realDecksOnly[0]);
-              } else if (decks.length > 0) {
-                onSelectDeck(decks[0]);
+              const lastDeckId = stats.lastDeckId;
+              const lastDeck = lastDeckId ? decks.find(d => d.id === lastDeckId) : null;
+              if (lastDeck) {
+                onSelectDeck(lastDeck);
+              } else {
+                const realDecksOnly = decks.filter(d => d.id !== "srs" && d.id !== "starred");
+                if (realDecksOnly.length > 0) {
+                  onSelectDeck(realDecksOnly[0]);
+                } else if (decks.length > 0) {
+                  onSelectDeck(decks[0]);
+                }
               }
               onNavigate("learn");
             }}

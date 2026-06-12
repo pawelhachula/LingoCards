@@ -10315,6 +10315,126 @@ const extraIdiomDecks = [
         "examplePolish": "Utrata tamtej pracy była szczęściem w nieszczęściu, bo znalazłem znacznie lepszą."
       }
     ]
+  },
+  {
+    "id": "idioms-business-p1",
+    "title": "Business Idioms - Part 1 (B2)",
+    "polishTitle": "Idiomy w biznesie – Część 1",
+    "category": "idioms",
+    "level": "B2",
+    "description": "Kluczowe idiomy i zwroty przydatne w pracy, negocjacjach i codziennej komunikacji biznesowej.",
+    "icon": "Briefcase",
+    "color": "#f59e0b",
+    "cards": [
+      {
+        "id": "idioms-bus1-1",
+        "english": "Go back to the drawing board",
+        "polish": "Wrócić do punktu wyjścia / zacząć od nowa",
+        "pronunciation": "/ɡoʊ bæk tuː ðə ˈdrɔː.ɪŋ bɔːrd/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Our initial design failed the safety test, so we had to go back to the drawing board.",
+        "examplePolish": "Nasz początkowy projekt nie przeszedł testu bezpieczeństwa, więc musieliśmy zacząć od nowa."
+      },
+      {
+        "id": "idioms-bus1-2",
+        "english": "Way off the mark",
+        "polish": "Bardzo nietrafiony / bardzo błędny",
+        "pronunciation": "/weɪ ɔːf ðə mɑːrk/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Her sales forecast for the last quarter was way off the mark.",
+        "examplePolish": "Jej prognoza sprzedaży na ostatni kwartał była bardzo nietrafiona."
+      },
+      {
+        "id": "idioms-bus1-3",
+        "english": "Tweak",
+        "polish": "Wprowadzić drobne poprawki",
+        "pronunciation": "/twiːk/",
+        "partOfSpeech": "verb",
+        "exampleEnglish": "We just need to tweak the settings a bit to make the system run faster.",
+        "examplePolish": "Musimy tylko trochę zmodyfikować ustawienia, aby system działał szybciej."
+      },
+      {
+        "id": "idioms-bus1-4",
+        "english": "In the loop",
+        "polish": "Być na bieżąco / być poinformowanym",
+        "pronunciation": "/ɪn ðə luːp/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Please keep me in the loop regarding any updates on the new project.",
+        "examplePolish": "Proszę, trzymaj mnie na bieżąco w kwestii wszelkich aktualizacji dotyczących nowego projektu."
+      },
+      {
+        "id": "idioms-bus1-5",
+        "english": "A lot on your plate",
+        "polish": "Mieć dużo na głowie / mieć wiele spraw do załatwienia",
+        "pronunciation": "/ə lɑːt ɑːn jɔːr pleɪt/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "I won't assign you any more tasks since you already have a lot on your plate.",
+        "examplePolish": "Nie przypiszę ci więcej zadań, skoro masz już dużo na głowie."
+      },
+      {
+        "id": "idioms-bus1-6",
+        "english": "Rule of thumb",
+        "polish": "Ogólna zasada / praktyczna reguła",
+        "pronunciation": "/ruːl əv θʌm/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "As a rule of thumb, you should save at least ten percent of your monthly income.",
+        "examplePolish": "Ogólna zasada mówi, że powinieneś oszczędzać co najmniej dziesięć procent swoich miesięcznych dochodów."
+      },
+      {
+        "id": "idioms-bus1-7",
+        "english": "Set the record straight",
+        "polish": "Wyjaśnić nieporozumienie / przedstawić fakty",
+        "pronunciation": "/set ðə ˈrek.ɚd streɪt/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Let me set the record straight: we did not lose any client data during the migration.",
+        "examplePolish": "Pozwólcie, że wyjaśnię nieporozumienie: nie straciliśmy żadnych danych klientów podczas migracji."
+      },
+      {
+        "id": "idioms-bus1-8",
+        "english": "Put something on the back burner",
+        "polish": "Odłożyć coś na później / nadać niski priorytet",
+        "pronunciation": "/pʊt ˈsʌm.θɪŋ ɑːn ðə bæk ˈbɜːr.nər/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "We decided to put the website redesign on the back burner until next year.",
+        "examplePolish": "Zdecydowaliśmy się odłożyć redesign strony na później, aż do przyszłego roku."
+      },
+      {
+        "id": "idioms-bus1-9",
+        "english": "Pull the plug",
+        "polish": "Zakończyć projekt / wstrzymać działanie",
+        "pronunciation": "/pʊl ðə plʌɡ/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "The board decided to pull the plug on the project due to a lack of funding.",
+        "examplePolish": "Zarząd zdecydował o zakończeniu projektu z powodu braku funduszy."
+      },
+      {
+        "id": "idioms-bus1-10",
+        "english": "In a nutshell",
+        "polish": "W skrócie / krótko mówiąc",
+        "pronunciation": "/ɪn ə ˈnʌt.ʃel/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "To put it in a nutshell, the deal fell through because we couldn't agree on a price.",
+        "examplePolish": "Mówiąc w skrócie, transakcja nie doszła do skutku, ponieważ nie mogliśmy uzgodnić ceny."
+      },
+      {
+        "id": "idioms-bus1-11",
+        "english": "Bring someone up to speed",
+        "polish": "Wdrożyć kogoś / przekazać najnowsze informacje",
+        "pronunciation": "/brɪŋ ˈsʌm.wʌn ʌp tuː spiːd/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Take some time to bring the new team members up to speed on our workflow.",
+        "examplePolish": "Poświęć trochę czasu, aby wdrożyć nowych członków zespołu w nasz przepływ pracy."
+      },
+      {
+        "id": "idioms-bus1-12",
+        "english": "Call the shots",
+        "polish": "Podejmować kluczowe decyzje / rozdawać karty",
+        "pronunciation": "/kɔːl ðə ʃɑːts/",
+        "partOfSpeech": "phrase",
+        "exampleEnglish": "Since she is the project manager, she is the one who calls the shots here.",
+        "examplePolish": "Skoro jest kierownikiem projektu, to ona podejmuje tutaj kluczowe decyzje."
+      }
+    ]
   }
 ];
 

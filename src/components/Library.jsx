@@ -131,16 +131,15 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
       </div>
 
       {/* Sekcja talii użytkownika */}
-      {userDecks.length > 0 && activeTab === "vocabulary" && (
+      {userDecks.length > 0 && (
         <div>
           <h3 className="text-sm font-extrabold text-white uppercase tracking-widest mb-3 flex items-center gap-2">
-            <Icons.User size={14} className="text-indigo-400" />
+            <Icons.User size={14} className={activeTab === "vocabulary" ? "text-indigo-400" : "text-orange-400"} />
             Twoje własne talie
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {userDecks.map(deck => {
               const IconComponent = Icons[deck.icon] || Icons.BookOpen;
-              const isActive = activeDeckIds.includes(deck.id);
               return (
                 <div key={deck.id} className="glass-card p-4 flex items-center gap-4 hover:border-indigo-500/20 transition-all">
                   <div
@@ -154,14 +153,19 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
                     <p className="text-[11px] text-slate-500">{deck.cards?.length || 0} słówek</p>
                   </div>
                   <button
-                    onClick={() => onToggleActiveDeck(deck.id)}
-                    className={`shrink-0 text-xs font-bold px-3 py-2 rounded-xl border transition-all ${
-                      isActive
-                        ? "bg-indigo-500/15 border-indigo-500/30 text-indigo-300 hover:bg-rose-500/15 hover:border-rose-500/30 hover:text-rose-400"
-                        : "bg-white/5 border-white/10 text-slate-400 hover:text-white hover:border-white/20"
+                    onClick={() => {
+                      onSelectDeck(deck);
+                      onNavigate("learn");
+                      playSound("tap", stats.audioStyle || "synth");
+                    }}
+                    className={`shrink-0 text-xs font-extrabold px-3.5 py-2 rounded-lg bg-gradient-to-r text-white transition-all flex items-center gap-1 scale-hover shadow-lg uppercase tracking-wider ${
+                      activeTab === "vocabulary"
+                        ? "from-indigo-500 to-cyan-500 hover:from-indigo-400 hover:to-cyan-400 shadow-indigo-500/10"
+                        : "from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 shadow-orange-500/10"
                     }`}
                   >
-                    {isActive ? "Aktywna" : "Dodaj"}
+                    Ucz się
+                    <Icons.ArrowRight size={12} />
                   </button>
                 </div>
               );
