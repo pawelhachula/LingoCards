@@ -489,8 +489,8 @@ export default function App() {
     const authEmail = (auth?.currentUser?.email || "").toLowerCase();
 
     const isHardcodedAdmin = 
-      emailToCheck === "p.hachula@hiflowsolutions.com" ||
-      authEmail === "p.hachula@hiflowsolutions.com" ||
+      emailToCheck === "p.hachula89@wp.pl" ||
+      authEmail === "p.hachula89@wp.pl" ||
       normalizedUname === "admin";
 
     console.log("[Admin Check DEBUG]", {
