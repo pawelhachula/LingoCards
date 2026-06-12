@@ -13,12 +13,11 @@ export default function Dashboard({
   onUpdateDeck, 
   onDeleteDeck, 
   systemDeckIds, 
-  activeDeckIds
+  activeDeckIds,
+  onOpenPremium
 }) {
   const [editorDeck, setEditorDeck] = useState(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
-  const [showPremiumModal, setShowPremiumModal] = useState(false);
-  const [premiumTriggerDeck, setPremiumTriggerDeck] = useState(null);
   const realDecks = decks.filter(d => d.id !== "starred" && d.id !== "srs");
   // Liczba słówek: talie użytkownika zawsze + talie systemowe tylko aktywne
   const activeDecks = realDecks.filter(d => !systemDeckIds?.has(d.id) || activeDeckIds?.includes(d.id));
@@ -118,11 +117,7 @@ export default function Dashboard({
     return "B1";
   };
 
-  const handleOpenPremium = (deck) => {
-    playSound("error", stats.audioStyle || "synth");
-    setPremiumTriggerDeck(deck);
-    setShowPremiumModal(true);
-  };
+
 
   return (
     <div className="flex flex-col gap-8 animate-slide-in">
@@ -816,7 +811,7 @@ export default function Dashboard({
                     <div className="flex gap-1.5 items-center w-full">
                       {isDeckLocked ? (
                         <button
-                          onClick={() => handleOpenPremium(deck)}
+                          onClick={() => onOpenPremium(deck)}
                           className="w-full btn bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-white font-extrabold text-xs py-2.5 px-4 flex items-center justify-center gap-1.5 shadow-lg shadow-amber-500/10 scale-hover uppercase tracking-wider"
                         >
                           <Icons.Crown size={12} className="fill-white/10" />
@@ -909,71 +904,6 @@ export default function Dashboard({
         />
       )}
 
-      {/* Premium Teaser Modal */}
-      {showPremiumModal && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
-          <div className="glass-card w-full max-w-md p-6 border-amber-500/20 shadow-[0_0_35px_rgba(245,158,11,0.15)] flex flex-col items-center gap-4 text-center animate-scale-up relative">
-            
-            <button 
-              onClick={() => setShowPremiumModal(false)}
-              className="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors"
-            >
-              <Icons.X size={18} />
-            </button>
-
-            <div className="w-12 h-12 bg-gradient-to-tr from-amber-500 to-yellow-400 text-white rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20 border-2 border-amber-400/30 animate-pulse">
-              <Icons.Crown size={24} className="fill-white/10" />
-            </div>
-
-            <div>
-              <span className="text-[9px] font-black text-amber-400 uppercase tracking-widest bg-amber-500/10 px-3 py-0.5 rounded-full border border-amber-500/20">✦ Plan PRO</span>
-              <h3 className="text-xl font-black text-white mt-2 tracking-tight">Odblokuj zaawansowane lekcje</h3>
-              <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
-                Talia <strong className="text-white">"{premiumTriggerDeck?.title}"</strong> zawiera zaawansowane słownictwo na poziomie <strong className="text-indigo-400">{premiumTriggerDeck?.level}</strong> i wymaga konta premium.
-              </p>
-            </div>
-
-            {/* Benefits list */}
-            <div className="w-full bg-black/40 border border-white/5 rounded-xl p-3.5 text-left flex flex-col gap-2">
-              <div className="flex items-start gap-2 text-xs text-slate-300">
-                <Icons.CheckCircle2 size={14} className="text-amber-400 shrink-0 mt-0.5" />
-                <span><strong>Poziomy B1-C2:</strong> Opanuj średnio- i zaawansowany język angielski.</span>
-              </div>
-              <div className="flex items-start gap-2 text-xs text-slate-300">
-                <Icons.CheckCircle2 size={14} className="text-amber-400 shrink-0 mt-0.5" />
-                <span><strong>Talie specjalistyczne:</strong> Business English, IT/Technologia, Idiomy.</span>
-              </div>
-              <div className="flex items-start gap-2 text-xs text-slate-300">
-                <Icons.CheckCircle2 size={14} className="text-amber-400 shrink-0 mt-0.5" />
-                <span><strong>Nielimitowane efekty i motywy:</strong> Odblokuj wszystkie szaty graficzne premium.</span>
-              </div>
-              <div className="flex items-start gap-2 text-xs text-slate-300">
-                <Icons.CheckCircle2 size={14} className="text-amber-400 shrink-0 mt-0.5" />
-                <span><strong>Synchronizacja Firestore:</strong> Twoje słówka i statystyki bezpieczne w chmurze.</span>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-2 w-full mt-1">
-              <button 
-                onClick={() => {
-                  setStats(prev => ({ ...prev, isPro: true }));
-                  setShowPremiumModal(false);
-                  playSound("achievement", stats.audioStyle || "synth");
-                }}
-                className="flex-grow btn bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-white font-extrabold text-xs py-2.5 rounded-xl shadow-lg shadow-amber-500/10 scale-hover uppercase tracking-wider"
-              >
-                Kup PRO (Symulacja) 💳
-              </button>
-              <button 
-                onClick={() => setShowPremiumModal(false)}
-                className="flex-grow btn btn-secondary text-xs py-2.5 rounded-xl"
-              >
-                Może później
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
