@@ -513,14 +513,28 @@ export default function App() {
       console.warn("Failed to load notifications:", e.message);
     }
 
+    // Ustal datę utworzenia konta (createdAt) jeśli jej nie ma
+    if (!loadedStats.createdAt) {
+      let resolvedCreatedAt = Date.now();
+      if (auth?.currentUser?.uid === uidKey && auth?.currentUser?.metadata?.creationTime) {
+        resolvedCreatedAt = new Date(auth.currentUser.metadata.creationTime).getTime();
+      } else if (loadedStats.studyDates && loadedStats.studyDates.length > 0) {
+        const sortedDates = [...loadedStats.studyDates].sort();
+        resolvedCreatedAt = new Date(sortedDates[0]).getTime();
+      }
+      loadedStats.createdAt = resolvedCreatedAt;
+      saveStats(uidKey, loadedStats);
+    }
+
     // --- 7. Synchronizacja metadanych do users/{uid} ---
     try {
+      const emailToSync = userEmail || currentUser?.email || auth?.currentUser?.email || "";
       const metaRecord = {
         uid: uidKey,
         username: loadedStats.customUsername || uname,
-        email: currentUser?.email || "",
+        email: emailToSync,
         avatar: loadedStats.avatarData || "👑",
-        createdAt: loadedStats.createdAt || Date.now(),
+        createdAt: loadedStats.createdAt,
         lastActiveDate: todayStr,
         xp: loadedStats.xp || 0,
         level: loadedStats.level || 1,
