@@ -133,12 +133,29 @@ export default function App() {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
         const savedAvatar = localStorage.getItem(`lingocards_avatar_${firebaseUser.uid}`) || "👑";
+        
+        // Zabezpieczenie przed miganiem (flash) roli/nazwy użytkownika:
+        // Pobierz dotychczasowy stan z localStorage, jeśli UID się zgadza.
+        let cachedRole = undefined;
+        let cachedUsername = undefined;
+        try {
+          const savedStr = localStorage.getItem("lingocards_current_user");
+          if (savedStr) {
+            const savedObj = JSON.parse(savedStr);
+            if (savedObj && savedObj.uid === firebaseUser.uid) {
+              cachedRole = savedObj.role;
+              cachedUsername = savedObj.username;
+            }
+          }
+        } catch (e) {}
+
         const user = {
           uid: firebaseUser.uid,
-          username: firebaseUser.displayName || firebaseUser.email.split("@")[0],
+          username: cachedUsername || firebaseUser.displayName || firebaseUser.email.split("@")[0],
           email: firebaseUser.email,
           avatar: savedAvatar,
-          isGoogle: firebaseUser.providerData?.[0]?.providerId === "google.com"
+          isGoogle: firebaseUser.providerData?.[0]?.providerId === "google.com",
+          role: cachedRole
         };
         setCurrentUser(user);
         localStorage.setItem("lingocards_current_user", JSON.stringify(user));
@@ -401,8 +418,9 @@ export default function App() {
         const migratedStats = {
           ...loadedStats,
           ...bestLocalStats,
-          avatarData: loadedStats.avatarData || bestLocalStats.avatarData,
-          customUsername: loadedStats.customUsername || bestLocalStats.customUsername
+          // Do NOT copy personal profile fields (avatar, username) from another local user account:
+          avatarData: loadedStats.avatarData || "👑",
+          customUsername: loadedStats.customUsername || ""
         };
         
         loadedStats = migratedStats;
