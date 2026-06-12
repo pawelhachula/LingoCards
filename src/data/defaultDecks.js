@@ -14797,10 +14797,26 @@ const brandNewDecks = [
   }
 ];
 
+const counts = {};
 export const defaultDecks = [...rawDefaultDecks, ...extraIdiomDecks, ...brandNewDecks].map(deck => {
   const isIdiomsDeck = deck.id === "idioms-c2" || deck.id.startsWith("idioms");
+  const type = isIdiomsDeck ? "idioms" : "vocabulary";
+  const level = deck.level;
+  
+  let isPremium = false;
+  if (level === "C1" || level === "C2") {
+    isPremium = true;
+  } else if (level === "B1" || level === "B2") {
+    const key = `${level}-${type}`;
+    counts[key] = (counts[key] || 0) + 1;
+    if (counts[key] > 2) {
+      isPremium = true;
+    }
+  }
+
   return {
     ...deck,
-    type: isIdiomsDeck ? "idioms" : "vocabulary"
+    type,
+    isPremium
   };
 });

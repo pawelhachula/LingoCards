@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import * as Icons from "lucide-react";
 import DeckEditor from "./DeckEditor";
 import { getLocalDateString } from "../utils/date";
+import { playSound } from "../utils/effects";
 
 export default function Dashboard({ 
   decks, 
@@ -16,6 +17,8 @@ export default function Dashboard({
 }) {
   const [editorDeck, setEditorDeck] = useState(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [premiumTriggerDeck, setPremiumTriggerDeck] = useState(null);
   const realDecks = decks.filter(d => d.id !== "starred" && d.id !== "srs");
   // Liczba słówek: talie użytkownika zawsze + talie systemowe tylko aktywne
   const activeDecks = realDecks.filter(d => !systemDeckIds?.has(d.id) || activeDeckIds?.includes(d.id));
@@ -113,6 +116,12 @@ export default function Dashboard({
     if (id.startsWith("advanced")) return "C1";
     if (id.startsWith("idioms")) return "C2";
     return "B1";
+  };
+
+  const handleOpenPremium = (deck) => {
+    playSound("error", stats.audioStyle || "synth");
+    setPremiumTriggerDeck(deck);
+    setShowPremiumModal(true);
   };
 
   return (
@@ -709,6 +718,7 @@ export default function Dashboard({
           ) : (
             realDecks.map((deck) => {
               const IconComponent = Icons[deck.icon] || Icons.BookOpen;
+              const isDeckLocked = !stats.isPro && deck.isPremium;
               
               const deckCardsList = deck.cards || [];
               const deckCardsCount = deckCardsList.length;
@@ -727,15 +737,17 @@ export default function Dashboard({
               return (
                 <div 
                   key={deck.id} 
-                  className={`glass-card p-6 flex flex-col justify-between hover:-translate-y-1 scale-hover border-t-4 transition-all duration-300 ${
-                    isCompleted100 
-                      ? "gold-deck-outline" 
-                      : stats.deckMedals?.[deck.id] === 'gold' 
-                        ? "border-yellow-500/30 shadow-[0_0_20px_rgba(234,179,8,0.12)] ring-1 ring-yellow-500/20" 
-                        : ""
+                  className={`glass-card p-6 flex flex-col justify-between border-t-4 transition-all duration-300 ${
+                    isDeckLocked
+                      ? "border-white/5 opacity-40 grayscale-[60%] hover:opacity-50 transition-opacity"
+                      : "hover:-translate-y-1 scale-hover " + (isCompleted100 
+                        ? "gold-deck-outline" 
+                        : stats.deckMedals?.[deck.id] === 'gold' 
+                          ? "border-yellow-500/30 shadow-[0_0_20px_rgba(234,179,8,0.12)] ring-1 ring-yellow-500/20" 
+                          : "")
                   }`}
                   style={{
-                    borderTopColor: isCompleted100 ? '#eab308' : stats.deckMedals?.[deck.id] === 'gold' ? '#eab308' : (deck.color || '#6366f1')
+                    borderTopColor: isDeckLocked ? '#334155' : isCompleted100 ? '#eab308' : stats.deckMedals?.[deck.id] === 'gold' ? '#eab308' : (deck.color || '#6366f1')
                   }}
                 >
                   <div>
@@ -754,6 +766,12 @@ export default function Dashboard({
                         <span className="text-[10px] bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full font-bold text-slate-400 uppercase tracking-wider">
                           {deckCardsCount} fiszek
                         </span>
+                        {isDeckLocked && (
+                          <span className="text-[9px] bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 rounded-full font-black text-amber-400 uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                            <Icons.Crown size={10} className="fill-amber-400/20" />
+                            Premium PRO
+                          </span>
+                        )}
                         {deckDueCount > 0 && (
                           <span className="text-[9px] bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 rounded-full font-black text-pink-400 uppercase tracking-wider animate-pulse">
                             Powtórka: {deckDueCount}
@@ -796,7 +814,15 @@ export default function Dashboard({
                     </div>
 
                     <div className="flex gap-1.5 items-center w-full">
-                      {confirmDeleteId !== deck.id ? (
+                      {isDeckLocked ? (
+                        <button
+                          onClick={() => handleOpenPremium(deck)}
+                          className="w-full btn bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-white font-extrabold text-xs py-2.5 px-4 flex items-center justify-center gap-1.5 shadow-lg shadow-amber-500/10 scale-hover uppercase tracking-wider"
+                        >
+                          <Icons.Crown size={12} className="fill-white/10" />
+                          Odblokuj PRO
+                        </button>
+                      ) : confirmDeleteId !== deck.id ? (
                         <>
                           <button 
                             onClick={() => {
@@ -881,6 +907,72 @@ export default function Dashboard({
             setEditorDeck(prev => prev ? { ...prev, ...updated } : null);
           }}
         />
+      )}
+
+      {/* Premium Teaser Modal */}
+      {showPremiumModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+          <div className="glass-card w-full max-w-lg p-8 border-amber-500/20 shadow-[0_0_35px_rgba(245,158,11,0.15)] flex flex-col items-center gap-6 text-center animate-scale-up relative">
+            
+            <button 
+              onClick={() => setShowPremiumModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
+            >
+              <Icons.X size={20} />
+            </button>
+
+            <div className="w-16 h-16 bg-gradient-to-tr from-amber-500 to-yellow-400 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-amber-500/20 border-2 border-amber-400/30 animate-pulse">
+              <Icons.Crown size={32} className="fill-white/10" />
+            </div>
+
+            <div>
+              <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest bg-amber-500/10 px-3.5 py-1 rounded-full border border-amber-500/20">✦ Plan PRO</span>
+              <h3 className="text-2xl font-black text-white mt-3 tracking-tight">Odblokuj zaawansowane lekcje</h3>
+              <p className="text-slate-400 text-xs mt-2 leading-relaxed">
+                Talia <strong className="text-white">"{premiumTriggerDeck?.title}"</strong> zawiera zaawansowane słownictwo na poziomie <strong className="text-indigo-400">{premiumTriggerDeck?.level}</strong> i wymaga konta premium.
+              </p>
+            </div>
+
+            {/* Benefits list */}
+            <div className="w-full bg-black/40 border border-white/5 rounded-2xl p-4.5 text-left flex flex-col gap-3">
+              <div className="flex items-start gap-2.5 text-xs text-slate-300">
+                <Icons.CheckCircle2 size={16} className="text-amber-400 shrink-0 mt-0.5" />
+                <span><strong>Poziomy B1-C2:</strong> Opanuj średnio- i zaawansowany język angielski.</span>
+              </div>
+              <div className="flex items-start gap-2.5 text-xs text-slate-300">
+                <Icons.CheckCircle2 size={16} className="text-amber-400 shrink-0 mt-0.5" />
+                <span><strong>Talie specjalistyczne:</strong> Business English, IT/Technologia, Idiomy.</span>
+              </div>
+              <div className="flex items-start gap-2.5 text-xs text-slate-300">
+                <Icons.CheckCircle2 size={16} className="text-amber-400 shrink-0 mt-0.5" />
+                <span><strong>Nielimitowane efekty i motywy:</strong> Odblokuj wszystkie szaty graficzne premium.</span>
+              </div>
+              <div className="flex items-start gap-2.5 text-xs text-slate-300">
+                <Icons.CheckCircle2 size={16} className="text-amber-400 shrink-0 mt-0.5" />
+                <span><strong>Synchronizacja Firestore:</strong> Twoje słówka i statystyki bezpieczne w chmurze.</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 w-full">
+              <button 
+                onClick={() => {
+                  setStats(prev => ({ ...prev, isPro: true }));
+                  setShowPremiumModal(false);
+                  playSound("achievement", stats.audioStyle || "synth");
+                }}
+                className="flex-1 btn bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-white font-extrabold text-xs py-3.5 rounded-xl shadow-lg shadow-amber-500/10 scale-hover uppercase tracking-wider"
+              >
+                Kup PRO (Symulacja) 💳
+              </button>
+              <button 
+                onClick={() => setShowPremiumModal(false)}
+                className="flex-1 btn btn-secondary text-xs py-3.5 rounded-xl"
+              >
+                Może później
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

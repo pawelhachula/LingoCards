@@ -268,11 +268,7 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
         ) : (
           filteredDecks.map(deck => {
             const isActive = activeDeckIds.includes(deck.id);
-            const isDeckLocked = !isPro && (
-              deck.type === "idioms"
-                ? deck.id !== "idioms-phrasals-essential"
-                : (deck.level !== "A1" && deck.level !== "A2")
-            );
+            const isDeckLocked = !isPro && deck.isPremium;
             const cat = CATEGORY_META[deck.category] || { label: "Ogólny", icon: "BookOpen", style: "bg-slate-500/10 text-slate-400 border-transparent" };
             
             return (
@@ -280,7 +276,7 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
                 key={deck.id}
                 className={`glass-card p-5 flex flex-col justify-between gap-4 border transition-all relative overflow-hidden group ${
                   isDeckLocked 
-                    ? "border-white/5 opacity-80" 
+                    ? "border-white/5 opacity-40 grayscale-[60%] hover:opacity-50 transition-opacity" 
                     : isActive 
                       ? "border-indigo-500/20 shadow-[0_4px_20px_rgba(99,102,241,0.05)] bg-gradient-to-b from-indigo-500/[0.02] to-transparent" 
                       : "border-white/10 hover:border-white/20 hover:bg-white/[0.01]"

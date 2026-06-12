@@ -249,6 +249,13 @@ export default function App() {
     return () => clearInterval(interval);
   }, [currentUser]);
 
+  // Safety check to prevent free users from accessing premium decks through direct navigation/URL
+  useEffect(() => {
+    if ((view === "learn" || view === "quiz" || view === "match") && !stats.isPro && selectedDeck?.isPremium) {
+      setView("dashboard");
+    }
+  }, [view, selectedDeck, stats.isPro]);
+
   const getStatsScore = (s) => {
     if (!s) return 0;
     const xpVal = s.xp || 0;
@@ -1238,7 +1245,7 @@ export default function App() {
                 className="bg-transparent text-white focus:outline-none cursor-pointer font-bold border-none p-0 pr-6 max-w-[110px] sm:max-w-[140px] md:max-w-[160px] truncate"
               >
                 {[srsDeck, starredDeck, ...decks].map(d => {
-                  const isLocked = !stats.isPro && (d.level && d.level !== "A1" && d.level !== "A2");
+                  const isLocked = !stats.isPro && d.isPremium;
                   return (
                     <option 
                       key={d.id} 
