@@ -287,32 +287,57 @@ export default function App() {
       loadedDecks = [];
     }
 
-    // Automatyczne uzupełnianie brakujących/przestarzałych talii systemowych oraz migracja pola 'type'
+    // Automatyczne uzupełnianie brakujących/przestarzałych talii systemowych oraz migracja pól (type, isPremium, level itp.)
     if (loadedDecks.length > 0) {
       let shouldSave = false;
       loadedDecks = loadedDecks.map(userDeck => {
         const officialDeck = defaultDecks.find(d => d.id === userDeck.id);
         let updatedDeck = { ...userDeck };
         
-        // Zapewnienie pola 'type' dla wszystkich talii (systemowych i własnych)
-        const expectedType = officialDeck ? (officialDeck.type || "vocabulary") : (userDeck.type || "vocabulary");
-        if (userDeck.type !== expectedType) {
-          updatedDeck.type = expectedType;
-          shouldSave = true;
-        }
+        if (officialDeck) {
+          // Zapewnienie poprawności typu i statusu premium (isPremium) z oficjalnej talii
+          const expectedType = officialDeck.type || "vocabulary";
+          if (userDeck.type !== expectedType) {
+            updatedDeck.type = expectedType;
+            shouldSave = true;
+          }
 
-        if (officialDeck && (userDeck.cards?.length || 0) < (officialDeck.cards?.length || 0)) {
-          shouldSave = true;
-          const userCustomCards = (userDeck.cards || []).filter(c => c.id && c.id.startsWith("custom-card-"));
-          updatedDeck = {
-            ...updatedDeck,
-            cards: [...officialDeck.cards, ...userCustomCards],
-            category: officialDeck.category || userDeck.category,
-            level: officialDeck.level || userDeck.level,
-            title: officialDeck.title,
-            polishTitle: officialDeck.polishTitle,
-            description: officialDeck.description
-          };
+          const expectedIsPremium = !!officialDeck.isPremium;
+          if (userDeck.isPremium !== expectedIsPremium) {
+            updatedDeck.isPremium = expectedIsPremium;
+            shouldSave = true;
+          }
+
+          // Zapewnienie poprawności pozostałych metadanych (category, level, title, description itp.)
+          if (userDeck.category !== officialDeck.category ||
+              userDeck.level !== officialDeck.level ||
+              userDeck.title !== officialDeck.title ||
+              userDeck.polishTitle !== officialDeck.polishTitle ||
+              userDeck.description !== officialDeck.description) {
+            updatedDeck.category = officialDeck.category;
+            updatedDeck.level = officialDeck.level;
+            updatedDeck.title = officialDeck.title;
+            updatedDeck.polishTitle = officialDeck.polishTitle;
+            updatedDeck.description = officialDeck.description;
+            shouldSave = true;
+          }
+
+          // Zabezpieczenie przed brakującymi/nowymi słówkami w oficjalnej talii
+          if ((userDeck.cards?.length || 0) < (officialDeck.cards?.length || 0)) {
+            shouldSave = true;
+            const userCustomCards = (userDeck.cards || []).filter(c => c.id && c.id.startsWith("custom-card-"));
+            updatedDeck.cards = [...officialDeck.cards, ...userCustomCards];
+          }
+        } else {
+          // Dla talii użytkownika (własnych) zapewniamy tylko domyślne typy i isPremium = false
+          if (!updatedDeck.type) {
+            updatedDeck.type = "vocabulary";
+            shouldSave = true;
+          }
+          if (updatedDeck.isPremium) {
+            updatedDeck.isPremium = false;
+            shouldSave = true;
+          }
         }
         return updatedDeck;
       });
