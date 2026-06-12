@@ -168,6 +168,100 @@ export function useFirestore() {
     // Saved locally via currentUser in localStorage
   }, []);
 
+  /**
+   * Synchronizuje metadane użytkownika na poziomie głównym users/{uid}
+   */
+  const syncUserMeta = useCallback(async (uid, meta) => {
+    if (isFirebaseConfigured && db) {
+      try {
+        const { doc, setDoc } = await import("firebase/firestore");
+        await setDoc(doc(db, "users", uid), meta, { merge: true });
+      } catch (e) {
+        console.warn("[Firestore] syncUserMeta failed:", e.message);
+      }
+    }
+  }, []);
+
+  /**
+   * Pobiera wszystkich użytkowników z kolekcji głównej users (tylko dla admina)
+   */
+  const loadAllUsers = useCallback(async () => {
+    if (isFirebaseConfigured && db) {
+      try {
+        const { collection, getDocs } = await import("firebase/firestore");
+        const snap = await getDocs(collection(db, "users"));
+        return snap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+      } catch (e) {
+        console.warn("[Firestore] loadAllUsers failed:", e.message);
+      }
+    }
+    return [];
+  }, []);
+
+  /**
+   * Aktualizuje pola w dokumencie głównym users/{uid}
+   */
+  const updateUserField = useCallback(async (uid, fields) => {
+    if (isFirebaseConfigured && db) {
+      try {
+        const { doc, updateDoc } = await import("firebase/firestore");
+        await updateDoc(doc(db, "users", uid), fields);
+      } catch (e) {
+        console.warn("[Firestore] updateUserField failed:", e.message);
+      }
+    }
+  }, []);
+
+  /**
+   * Wysyła powiadomienie systemowe do wybranego użytkownika
+   */
+  const sendSystemNotification = useCallback(async (uid, notification) => {
+    if (isFirebaseConfigured && db) {
+      try {
+        const { collection, addDoc } = await import("firebase/firestore");
+        await addDoc(collection(db, "users", uid, "notifications"), {
+          ...notification,
+          createdAt: Date.now(),
+          read: false
+        });
+      } catch (e) {
+        console.warn("[Firestore] sendSystemNotification failed:", e.message);
+      }
+    }
+  }, []);
+
+  /**
+   * Pobiera wszystkie powiadomienia dla zalogowanego użytkownika
+   */
+  const loadNotifications = useCallback(async (uid) => {
+    if (isFirebaseConfigured && db) {
+      try {
+        const { collection, getDocs, query, orderBy } = await import("firebase/firestore");
+        const ref = collection(db, "users", uid, "notifications");
+        const q = query(ref, orderBy("createdAt", "desc"));
+        const snap = await getDocs(q);
+        return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      } catch (e) {
+        console.warn("[Firestore] loadNotifications failed:", e.message);
+      }
+    }
+    return [];
+  }, []);
+
+  /**
+   * Oznacza powiadomienie jako przeczytane
+   */
+  const markNotificationAsRead = useCallback(async (uid, notificationId) => {
+    if (isFirebaseConfigured && db) {
+      try {
+        const { doc, updateDoc } = await import("firebase/firestore");
+        await updateDoc(doc(db, "users", uid, "notifications", notificationId), { read: true });
+      } catch (e) {
+        console.warn("[Firestore] markNotificationAsRead failed:", e.message);
+      }
+    }
+  }, []);
+
   return {
     saveStats,
     loadStats,
@@ -176,5 +270,11 @@ export function useFirestore() {
     saveSettings,
     loadSettings,
     saveProfile,
+    syncUserMeta,
+    loadAllUsers,
+    updateUserField,
+    sendSystemNotification,
+    loadNotifications,
+    markNotificationAsRead
   };
 }

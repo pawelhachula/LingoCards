@@ -784,6 +784,21 @@ input:focus, textarea:focus, select:focus {
   animation: scaleUp 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  15% { transform: rotate(10deg); }
+  30% { transform: rotate(-10deg); }
+  45% { transform: rotate(5deg); }
+  60% { transform: rotate(-5deg); }
+  75% { transform: rotate(2deg); }
+  85% { transform: rotate(-2deg); }
+}
+
+.animate-wiggle {
+  animation: wiggle 1.5s ease-in-out infinite;
+  transform-origin: top center;
+}
+
 /* Progress ring transition */
 .progress-ring-circle {
   transition: stroke-dashoffset 0.4s cubic-bezier(0.4, 0, 0.2, 1);

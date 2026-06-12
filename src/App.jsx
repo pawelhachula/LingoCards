@@ -13,9 +13,10 @@ import Leaderboard from "./components/Leaderboard";
 import StatsView from "./components/StatsView";
 import SearchModal from "./components/SearchModal";
 import Library from "./components/Library";
+import AdminPanel from "./components/AdminPanel";
 import { playSound, triggerConfetti, triggerFireworks } from "./utils/effects";
 import { useFirestore } from "./hooks/useFirestore";
-import { auth, onAuthStateChanged, signOutUser } from "./firebase";
+import { auth, db, onAuthStateChanged, signOutUser, isFirebaseConfigured } from "./firebase";
 import { getLocalDateString } from "./utils/date";
 import * as Icons from "lucide-react";
 
@@ -56,9 +57,15 @@ export default function App() {
   const [activeDeckIds, setActiveDeckIds] = useState([]);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const moreMenuRef = useRef(null);
+  const [notifications, setNotifications] = useState([]);
+  const [isBlocked, setIsBlocked] = useState(false);
 
   // Firestore sync hook — działa zarówno gdy Firebase jest skonfigurowany, jak i bez niego
-  const { saveStats, loadStats, saveDecks, loadDecks } = useFirestore();
+  const { 
+    saveStats, loadStats, saveDecks, loadDecks,
+    syncUserMeta, loadAllUsers, updateUserField,
+    sendSystemNotification, loadNotifications, markNotificationAsRead
+  } = useFirestore();
   
   const [stats, setStats] = useState({
     streak: 0,
@@ -98,8 +105,8 @@ export default function App() {
         try {
           const sessionUser = JSON.parse(sessionUserStr);
           setCurrentUser(sessionUser);
-          const uid = sessionUser.uid || sessionUser.username;
-          loadUserData(uid, sessionUser.username);
+            const uid = sessionUser.uid || sessionUser.username;
+            loadUserData(uid, sessionUser.username, sessionUser.email);
         } catch (e) {
           console.error("Error loading session", e);
         }
@@ -120,7 +127,7 @@ export default function App() {
         };
         setCurrentUser(user);
         localStorage.setItem("lingocards_current_user", JSON.stringify(user));
-        loadUserData(user.uid, user.username);
+        loadUserData(user.uid, user.username, user.email);
       } else {
         // Wylogowany
         setCurrentUser(null);
@@ -197,7 +204,7 @@ export default function App() {
   };
 
   // Helper to load user specific data — uid = Firebase UID lub username dla kont lokalnych
-  const loadUserData = async (uid, username) => {
+  const loadUserData = async (uid, username, userEmail = "") => {
     // Jeśli nie podano username, użyj uid jako username (dla kont lokalnych)
     const uname = username || uid;
     const uidKey = getFirestoreUidKey(uid);
@@ -418,23 +425,128 @@ export default function App() {
     setStats(loadedStats);
     saveStats(uidKey, loadedStats);
 
-    // --- 5. Synchronizacja stanów pobocznych UI ---
-    
-    // Zsynchronizuj profil użytkownika (avatar i nazwa użytkownika z Firestore)
-    if (loadedStats.avatarData || loadedStats.customUsername) {
-      setCurrentUser(prev => {
-        if (!prev) return prev;
-        const updated = {
-          ...prev,
-          avatar: loadedStats.avatarData || prev.avatar,
-          username: loadedStats.customUsername || prev.username
-        };
-        localStorage.setItem("lingocards_current_user", JSON.stringify(updated));
-        return updated;
-      });
+    // --- 5. Załaduj metadane użytkownika (Rola i Status) z Firestore ---
+    let userRole = "user";
+    let userStatus = "active";
+    if (isFirebaseConfigured && db) {
+      try {
+        const { doc, getDoc } = await import("firebase/firestore");
+        const metaSnap = await getDoc(doc(db, "users", uidKey));
+        if (metaSnap.exists()) {
+          const metaData = metaSnap.data();
+          userRole = metaData.role || "user";
+          userStatus = metaData.status || "active";
+        }
+      } catch (e) {
+        console.warn("Failed to load user metadata:", e.message);
+      }
     }
 
-    // Zsynchronizuj aktywne talie z wczytanych statystyk (defaults to [] if empty/new)
+    // Zabezpieczenie: admin dla wyznaczonych kont
+    const normalizedUname = uname.toLowerCase();
+    const emailToCheck = (userEmail || currentUser?.email || auth?.currentUser?.email || "").toLowerCase();
+    const statsName = (loadedStats?.customUsername || "").toLowerCase();
+    const currentName = (currentUser?.username || "").toLowerCase();
+    const authDisplayName = (auth?.currentUser?.displayName || "").toLowerCase();
+    const authEmail = (auth?.currentUser?.email || "").toLowerCase();
+
+    const isHardcodedAdmin = 
+      normalizedUname.includes("pawel") || 
+      normalizedUname.includes("paweł") || 
+      normalizedUname.includes("hachula") || 
+      normalizedUname.includes("hachuła") || 
+      statsName.includes("pawel") || 
+      statsName.includes("paweł") || 
+      statsName.includes("hachula") || 
+      statsName.includes("hachuła") || 
+      currentName.includes("pawel") || 
+      currentName.includes("paweł") || 
+      currentName.includes("hachula") || 
+      currentName.includes("hachuła") || 
+      authDisplayName.includes("pawel") || 
+      authDisplayName.includes("paweł") || 
+      authDisplayName.includes("hachula") || 
+      authDisplayName.includes("hachuła") || 
+      emailToCheck.includes("pawel") || 
+      emailToCheck.includes("paweł") || 
+      emailToCheck.includes("hachula") || 
+      emailToCheck.includes("hachuła") ||
+      emailToCheck.includes("hiflowsolutions") ||
+      authEmail.includes("pawel") ||
+      authEmail.includes("paweł") ||
+      authEmail.includes("hachula") ||
+      authEmail.includes("hachuła") ||
+      authEmail.includes("hiflowsolutions");
+
+    console.log("[Admin Check DEBUG]", {
+      uid,
+      username,
+      userEmail,
+      uname,
+      normalizedUname,
+      emailToCheck,
+      statsName,
+      currentName,
+      authDisplayName,
+      authEmail,
+      isHardcodedAdmin,
+      userRoleBeforeCheck: userRole
+    });
+
+    if (isHardcodedAdmin) {
+      userRole = "admin";
+    }
+
+    // Blokada konta
+    if (userStatus === "blocked") {
+      setIsBlocked(true);
+      return;
+    } else {
+      setIsBlocked(false);
+    }
+
+    // --- 6. Załaduj powiadomienia systemowe ---
+    try {
+      const loadedNotifs = await loadNotifications(uidKey);
+      setNotifications(loadedNotifs);
+    } catch (e) {
+      console.warn("Failed to load notifications:", e.message);
+    }
+
+    // --- 7. Synchronizacja metadanych do users/{uid} ---
+    try {
+      const metaRecord = {
+        uid: uidKey,
+        username: loadedStats.customUsername || uname,
+        email: currentUser?.email || "",
+        avatar: loadedStats.avatarData || "👑",
+        createdAt: loadedStats.createdAt || Date.now(),
+        lastActiveDate: todayStr,
+        xp: loadedStats.xp || 0,
+        level: loadedStats.level || 1,
+        role: userRole,
+        status: userStatus,
+        isPro: !!loadedStats.isPro
+      };
+      await syncUserMeta(uidKey, metaRecord);
+    } catch (e) {
+      console.warn("Failed to sync user metadata record:", e.message);
+    }
+
+    // --- 8. Synchronizacja stanów pobocznych UI ---
+    setCurrentUser(prev => {
+      if (!prev) return prev;
+      const updated = {
+        ...prev,
+        avatar: loadedStats.avatarData || prev.avatar,
+        username: loadedStats.customUsername || prev.username,
+        role: userRole
+      };
+      localStorage.setItem("lingocards_current_user", JSON.stringify(updated));
+      return updated;
+    });
+
+    // Zsynchronizuj aktywne talie z wczytanych statystyk
     const activeDeckIdsToSet = loadedStats.activeDeckIds || [];
     setActiveDeckIds(activeDeckIdsToSet);
     const activeDecksKey = `lingocards_active_decks_${uname.toLowerCase()}`;
@@ -446,7 +558,7 @@ export default function App() {
     else if (activeDecks.length > 0) setSelectedDeck(activeDecks[0]);
     else if (loadedDecks.length > 0) setSelectedDeck(loadedDecks[0]);
 
-    // Zsynchronizuj motyw graficzny z wczytanych statystyk (defaults to navy)
+    // Zsynchronizuj motyw graficzny z wczytanych statystyk
     const themeToSet = loadedStats.theme || "navy";
     setTheme(themeToSet);
     localStorage.setItem("lingocards_theme", themeToSet);
@@ -457,7 +569,7 @@ export default function App() {
     localStorage.setItem("lingocards_current_user", JSON.stringify(user));
     // Użyj uid (Google) lub username (lokalny) jako klucz Firestore
     const uid = user.uid || user.username;
-    loadUserData(uid, user.username);
+    loadUserData(uid, user.username, user.email);
     setView("dashboard");
   };
 
@@ -556,7 +668,7 @@ export default function App() {
     
     // If username changed, reload states with the new namespace
     if (cleanNewUsername.toLowerCase() !== oldUsername.toLowerCase()) {
-      loadUserData(currentUser.uid || cleanNewUsername, cleanNewUsername);
+      loadUserData(currentUser.uid || cleanNewUsername, cleanNewUsername, currentUser.email);
     }
 
     return { success: true, message: "Profil został zaktualizowany!" };
@@ -584,6 +696,18 @@ export default function App() {
       handleSetStats({ lastDeckId: deck.id });
     }
   };
+
+  const handleMarkNotificationAsRead = async (notificationId) => {
+    if (!currentUser) return;
+    try {
+      const uidKey = getFirestoreUidKey(currentUser.uid);
+      await markNotificationAsRead(uidKey, notificationId);
+      setNotifications(prev => prev.map(n => n.id === notificationId ? { ...n, read: true } : n));
+    } catch (e) {
+      console.warn("Failed to mark notification as read:", e.message);
+    }
+  };
+
 
 
   const handleAddXp = (amount) => {
@@ -890,6 +1014,34 @@ export default function App() {
     return <Auth onLogin={handleLogin} />;
   }
 
+  // If account is blocked, show blocked screen
+  if (isBlocked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--bg-main)]">
+        <div className="glass-card w-full max-w-md p-8 text-center flex flex-col items-center gap-6 border-red-500/20 shadow-[0_0_35px_rgba(239,68,68,0.1)]">
+          <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-400 flex items-center justify-center border border-red-500/20">
+            <Icons.ShieldAlert size={32} />
+          </div>
+          <div>
+            <h2 className="text-2xl font-black text-white tracking-tight">Konto Zablokowane</h2>
+            <p className="text-slate-400 text-sm mt-3 leading-relaxed">
+              Twoje konto zostało zawieszone przez administratora.
+            </p>
+            <p className="text-slate-500 text-xs mt-2">
+              Skontaktuj się z nami pod adresem p.hachula@hiflowsolutions.com w celu wyjaśnienia sprawy.
+            </p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="w-full btn btn-secondary text-xs py-3 rounded-xl hover:bg-white/10"
+          >
+            Wyloguj się
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   // Compile Dynamic SRS Deck
   const todayStr = getLocalDateString();
   const realDecksForSrs = decks.filter(d => d.id !== "starred" && d.id !== "srs");
@@ -968,33 +1120,39 @@ export default function App() {
 
         {/* Tab Actions — wszystkie zakładki obok siebie */}
         <div className="hidden lg:flex items-center gap-0.5 text-[10px] font-bold uppercase tracking-wider shrink-0 overflow-x-auto no-scrollbar">
-          {[
-            { id: "dashboard", label: "Pulpit", icon: null },
-            { id: "library",   label: "Katalog", icon: "Compass" },
-            { id: "learn",     label: "Fiszki",  icon: null },
-            { id: "quiz",      label: "Testy",   icon: null },
-            { id: "match",     label: "Gra",     icon: "Zap" },
-            { id: "creator",   label: "Menedżer",icon: "PlusCircle" },
-            { id: "stats",     label: "Statyst.",icon: "BarChart2" },
-            { id: "referrals", label: "Polecenia",icon: "Users" },
-          ].map(({ id, label, icon }) => {
-            const IconEl = icon ? Icons[icon] : null;
-            const active = view === id;
-            return (
-              <button
-                key={id}
-                onClick={() => setView(id)}
-                className={`px-2 xl:px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${
-                  active
-                    ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm"
-                    : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
-                }`}
-              >
-                {IconEl && <IconEl size={12} className="shrink-0" />}
-                {label}
-              </button>
-            );
-          })}
+          {(() => {
+            const tabs = [
+              { id: "dashboard", label: "Pulpit", icon: null },
+              { id: "library",   label: "Katalog", icon: "Compass" },
+              { id: "learn",     label: "Fiszki",  icon: null },
+              { id: "quiz",      label: "Testy",   icon: null },
+              { id: "match",     label: "Gra",     icon: "Zap" },
+              { id: "creator",   label: "Menedżer",icon: "PlusCircle" },
+              { id: "stats",     label: "Statyst.",icon: "BarChart2" },
+              { id: "referrals", label: "Polecenia",icon: "Users" },
+            ];
+            if (currentUser?.role === "admin") {
+              tabs.push({ id: "admin", label: "Admin Panel", icon: "ShieldAlert" });
+            }
+            return tabs.map(({ id, label, icon }) => {
+              const IconEl = icon ? Icons[icon] : null;
+              const active = view === id;
+              return (
+                <button
+                  key={id}
+                  onClick={() => setView(id)}
+                  className={`px-2 xl:px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${
+                    active
+                      ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm"
+                      : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
+                  }`}
+                >
+                  {IconEl && <IconEl size={12} className="shrink-0" />}
+                  {label}
+                </button>
+              );
+            });
+          })()}
         </div>
 
         {/* Global Streak / Theme Selector / User Profile */}
@@ -1111,7 +1269,9 @@ export default function App() {
             ) : (
               <span className="text-base shrink-0">{currentUser.avatar || "👑"}</span>
             )}
-            <span className="hidden xl:inline text-xs font-bold whitespace-nowrap shrink-0">{currentUser.username}</span>
+            <span className="hidden xl:inline text-xs font-bold whitespace-nowrap shrink-0">
+              {currentUser.username} <span className="text-[10px] opacity-60 font-medium">({currentUser.role === "admin" ? "Admin" : "User"})</span>
+            </span>
           </button>
 
           {/* Daily streak indicator */}
@@ -1169,6 +1329,17 @@ export default function App() {
           <Icons.Zap size={20} />
           <span>Gry</span>
         </button>
+        {currentUser?.role === "admin" && (
+          <button 
+            onClick={() => setView("admin")} 
+            className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
+              view === "admin" ? "text-rose-400 font-extrabold" : "text-slate-500 hover:text-slate-300"
+            }`}
+          >
+            <Icons.ShieldAlert size={20} />
+            <span>Admin</span>
+          </button>
+        )}
         <button 
           onClick={() => setView("profile")} 
           className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
@@ -1197,6 +1368,8 @@ export default function App() {
             onDeleteDeck={handleDeleteDeck}
             systemDeckIds={systemDeckIds}
             activeDeckIds={activeDeckIds}
+            notifications={notifications}
+            onMarkNotificationAsRead={handleMarkNotificationAsRead}
           />
         )}
 
@@ -1301,6 +1474,16 @@ export default function App() {
           <Leaderboard 
             stats={stats}
             onNavigate={setView}
+          />
+        )}
+
+        {view === "admin" && currentUser?.role === "admin" && (
+          <AdminPanel 
+            loadAllUsers={loadAllUsers} 
+            updateUserField={updateUserField}
+            sendSystemNotification={sendSystemNotification}
+            currentUser={currentUser}
+            stats={stats}
           />
         )}
       </main>
