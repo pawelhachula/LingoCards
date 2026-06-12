@@ -66,6 +66,7 @@ export default function App() {
   const moreMenuRef = useRef(null);
   const [notifications, setNotifications] = useState([]);
   const [isBlocked, setIsBlocked] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   // Firestore sync hook — działa zarówno gdy Firebase jest skonfigurowany, jak i bez niego
   const { 
@@ -222,8 +223,11 @@ export default function App() {
 
   const getFirestoreUidKey = (uid = currentUser?.uid || currentUser?.username) => {
     if (!uid) return null;
-    const isFirebaseUser = auth && auth.currentUser && auth.currentUser.uid === uid;
-    return isFirebaseUser ? uid : uid.toLowerCase();
+    if (isFirebaseConfigured) {
+      // W trybie Firebase, UID jest case-sensitive i nie powinien być zmieniany na małe litery
+      return uid;
+    }
+    return uid.toLowerCase();
   };
 
   const getStatsScore = (s) => {
@@ -1297,6 +1301,30 @@ export default function App() {
             <Icons.Settings size={16} className="shrink-0" />
           </button>
 
+          {/* Notifications Bell */}
+          <button 
+            onClick={() => setShowNotifications(true)}
+            className={`relative flex items-center justify-center p-2.5 rounded-xl border scale-hover shrink-0 ${
+              showNotifications 
+                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
+                : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
+            }`}
+            title="Powiadomienia"
+          >
+            <Icons.Bell size={16} className={notifications.filter(n => !n.read).length > 0 ? "animate-wiggle" : ""} />
+            {notifications.filter(n => !n.read).length > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-rose-500 text-[8px] font-black text-white shadow-md animate-pulse">
+                {notifications.filter(n => !n.read).length}
+              </span>
+            )}
+          </button>
+
+          {/* Daily streak indicator */}
+          <div className="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 text-amber-500 px-3 py-1.5 rounded-xl font-mono text-xs font-bold shadow-sm whitespace-nowrap shrink-0" title="Twój codzienny streak nauki!">
+            <Icons.Flame size={14} className="fill-amber-500/15 shrink-0" />
+            <span className="whitespace-nowrap shrink-0">{stats.streak || 0} dni</span>
+          </div>
+
           <button 
             onClick={() => setView("profile")}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border scale-hover whitespace-nowrap shrink-0 ${
@@ -1315,11 +1343,14 @@ export default function App() {
             </span>
           </button>
 
-          {/* Daily streak indicator */}
-          <div className="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 text-amber-500 px-3.5 py-1.5 rounded-xl font-mono text-xs font-bold shadow-sm whitespace-nowrap shrink-0" title="Twój codzienny streak nauki!">
-            <Icons.Flame size={15} className="fill-amber-500/15 shrink-0" />
-            <span className="whitespace-nowrap shrink-0">{stats.streak || 0} dni</span>
-          </div>
+          {/* Logout button */}
+          <button 
+            onClick={handleLogout}
+            className="flex items-center justify-center p-2.5 rounded-xl border bg-rose-500/10 border-rose-500/20 text-rose-400 hover:text-rose-300 hover:bg-rose-500/20 scale-hover shrink-0"
+            title="Wyloguj się"
+          >
+            <Icons.LogOut size={16} className="shrink-0" />
+          </button>
         </div>
       </nav>
 
@@ -1409,8 +1440,6 @@ export default function App() {
             onDeleteDeck={handleDeleteDeck}
             systemDeckIds={systemDeckIds}
             activeDeckIds={activeDeckIds}
-            notifications={notifications}
-            onMarkNotificationAsRead={handleMarkNotificationAsRead}
           />
         )}
 
@@ -1589,6 +1618,131 @@ export default function App() {
           onSelectDeck={handleSelectDeck}
           onClose={() => setShowSearch(false)}
         />
+      )}
+
+      {/* Notifications Panel (Drawer) */}
+      {showNotifications && (
+        <div className="fixed inset-0 z-[150] flex justify-end">
+          {/* Soft Backdrop */}
+          <div 
+            onClick={() => setShowNotifications(false)}
+            className="fixed inset-0 bg-slate-950/45 backdrop-blur-xs animate-fade-in cursor-pointer"
+          />
+          {/* Drawer Body */}
+          <div className="glass-card rounded-l-[32px] rounded-r-none fixed inset-y-0 right-0 z-[150] w-full sm:w-[440px] border-y-0 border-r-0 border-l border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] flex flex-col animate-slide-left h-full overflow-hidden">
+            <div className="p-6 md:p-8 flex flex-col gap-6 h-full">
+              
+              {/* Header */}
+              <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
+                    <Icons.Bell size={22} className="animate-pulse" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-extrabold text-white">Wiadomości i Ogłoszenia</h3>
+                    <p className="text-slate-400 text-xs mt-0.5">Komunikaty od administratora aplikacji</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setShowNotifications(false)}
+                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition-all"
+                >
+                  <Icons.X size={18} />
+                </button>
+              </div>
+
+              {/* Notification List */}
+              <div className="flex-grow overflow-y-auto space-y-4 pr-1 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+                {notifications.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
+                    <div className="p-4 rounded-full bg-white/5 text-slate-500">
+                      <Icons.MailOpen size={36} />
+                    </div>
+                    <div>
+                      <h4 className="text-slate-300 font-bold">Brak powiadomień</h4>
+                      <p className="text-slate-500 text-xs mt-1 max-w-xs">Brak wiadomości od administratora. Gdy się pojawią, zobaczysz je tutaj!</p>
+                    </div>
+                  </div>
+                ) : (
+                  notifications.map((notif) => {
+                    const dateStr = notif.createdAt ? new Date(notif.createdAt).toLocaleString("pl-PL", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit"
+                    }) : "";
+                    
+                    return (
+                      <div 
+                        key={notif.id}
+                        className={`p-4 rounded-xl border transition-all duration-300 relative group overflow-hidden ${
+                          notif.read 
+                            ? "bg-white/[0.02] border-white/5 opacity-70" 
+                            : "bg-gradient-to-r from-indigo-500/5 to-cyan-500/5 border-indigo-500/20 shadow-[0_4px_20px_rgba(99,102,241,0.05)]"
+                        }`}
+                      >
+                        {/* Read status dot */}
+                        {!notif.read && (
+                          <div className="absolute top-4 right-4 h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
+                        )}
+
+                        <div className="flex flex-col gap-2">
+                          <div className="flex justify-between items-start gap-4">
+                            <h4 className={`font-bold ${notif.read ? "text-slate-300" : "text-white text-base"}`}>
+                              {notif.title || "Ogłoszenie systemowe"}
+                            </h4>
+                          </div>
+                          
+                          <p className="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">
+                            {notif.message}
+                          </p>
+                          
+                          <div className="flex justify-between items-center mt-2 pt-2 border-t border-white/5 text-slate-500 text-[11px] font-medium">
+                            <span className="flex items-center gap-1">
+                              <Icons.Calendar size={12} />
+                              {dateStr}
+                            </span>
+
+                            {!notif.read && (
+                              <button
+                                onClick={() => handleMarkNotificationAsRead(notif.id)}
+                                className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-300 hover:text-white transition-all text-xs font-bold"
+                              >
+                                <Icons.Check size={12} />
+                                Oznacz jako przeczytane
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+              
+              {/* Footer */}
+              <div className="border-t border-white/10 pt-4 flex justify-between items-center text-xs text-slate-500 font-medium">
+                <span>Wszystkich wiadomości: {notifications.length}</span>
+                {notifications.filter(n => !n.read).length > 0 && (
+                  <button
+                    onClick={() => {
+                      notifications.forEach(notif => {
+                        if (!notif.read) {
+                          handleMarkNotificationAsRead(notif.id);
+                        }
+                      });
+                    }}
+                    className="text-indigo-400 hover:text-indigo-300 font-bold transition-colors"
+                  >
+                    Oznacz wszystkie jako przeczytane
+                  </button>
+                )}
+              </div>
+
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -168,6 +168,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     forest: '/sounds/mixkit-forest-with-birds-and-insect-flying-hum-1223.wav',
     cafe:   '/sounds/mixkit-restaurant-crowd-talking-ambience-444.wav',
     lofi:   '/sounds/mirostar-lofi-lofi-music-531487.mp3',
+    ocean:  '/sounds/ocean.mp3',
   };
 
   const stopAmbientSound = useCallback(() => {
@@ -636,6 +637,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                   { id: 'forest', label: '🌲 Las' },
                   { id: 'lofi', label: '🎵 Lofi' },
                   { id: 'cafe', label: '☕ Kawiarnia' },
+                  { id: 'ocean', label: '🌊 Szum morza' },
                 ].map(item => (
                   <button
                     key={item.id}

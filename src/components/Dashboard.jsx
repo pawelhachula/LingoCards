@@ -12,14 +12,10 @@ export default function Dashboard({
   onUpdateDeck, 
   onDeleteDeck, 
   systemDeckIds, 
-  activeDeckIds,
-  notifications = [],
-  onMarkNotificationAsRead
+  activeDeckIds
 }) {
   const [editorDeck, setEditorDeck] = useState(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
-  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
-  const unreadCount = notifications.filter(n => !n.read).length;
   const realDecks = decks.filter(d => d.id !== "starred" && d.id !== "srs");
   // Liczba słówek: talie użytkownika zawsze + talie systemowe tylko aktywne
   const activeDecks = realDecks.filter(d => !systemDeckIds?.has(d.id) || activeDeckIds?.includes(d.id));
@@ -129,21 +125,7 @@ export default function Dashboard({
           {/* Subtle decoration blur */}
           <div className="absolute -right-20 -bottom-20 w-60 h-60 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
           
-          {/* Notification Bell */}
-          <div className="absolute top-6 right-6 z-10">
-            <button
-              onClick={() => setIsNotificationModalOpen(true)}
-              className="relative p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition-all duration-300 hover:scale-110 shadow-lg"
-              title="Powiadomienia"
-            >
-              <Icons.Bell size={20} className={unreadCount > 0 ? "animate-wiggle" : ""} />
-              {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-[10px] font-black text-white shadow-md animate-pulse">
-                  {unreadCount}
-                </span>
-              )}
-            </button>
-          </div>
+
           
           <div>
             <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest block">LingoCards Premium</span>
@@ -899,123 +881,6 @@ export default function Dashboard({
             setEditorDeck(prev => prev ? { ...prev, ...updated } : null);
           }}
         />
-      )}
-
-      {/* Notifications Modal */}
-      {isNotificationModalOpen && (
-        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-          <div className="glass-card w-full max-w-xl p-6 md:p-8 border-white/10 shadow-[0_0_50px_rgba(99,102,241,0.15)] flex flex-col gap-6 animate-scale-up relative max-h-[85vh]">
-            
-            {/* Header */}
-            <div className="flex justify-between items-center border-b border-white/10 pb-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
-                  <Icons.Bell size={22} className="animate-pulse" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-extrabold text-white">Wiadomości i Ogłoszenia</h3>
-                  <p className="text-slate-400 text-xs mt-0.5">Komunikaty od administratora aplikacji</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setIsNotificationModalOpen(false)}
-                className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition-all"
-              >
-                <Icons.X size={18} />
-              </button>
-            </div>
-
-            {/* Notification List */}
-            <div className="flex-grow overflow-y-auto space-y-4 pr-1 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-              {notifications.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
-                  <div className="p-4 rounded-full bg-white/5 text-slate-500">
-                    <Icons.MailOpen size={36} />
-                  </div>
-                  <div>
-                    <h4 className="text-slate-300 font-bold">Brak powiadomień</h4>
-                    <p className="text-slate-500 text-xs mt-1 max-w-xs">Brak wiadomości od administratora. Gdy się pojawią, zobaczysz je tutaj!</p>
-                  </div>
-                </div>
-              ) : (
-                notifications.map((notif) => {
-                  const dateStr = notif.createdAt ? new Date(notif.createdAt).toLocaleString("pl-PL", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit"
-                  }) : "";
-                  
-                  return (
-                    <div 
-                      key={notif.id}
-                      className={`p-4 rounded-xl border transition-all duration-300 relative group overflow-hidden ${
-                        notif.read 
-                          ? "bg-white/[0.02] border-white/5 opacity-70" 
-                          : "bg-gradient-to-r from-indigo-500/5 to-cyan-500/5 border-indigo-500/20 shadow-[0_4px_20px_rgba(99,102,241,0.05)]"
-                      }`}
-                    >
-                      {/* Read status dot */}
-                      {!notif.read && (
-                        <div className="absolute top-4 right-4 h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
-                      )}
-
-                      <div className="flex flex-col gap-2">
-                        <div className="flex justify-between items-start gap-4">
-                          <h4 className={`font-bold ${notif.read ? "text-slate-300" : "text-white text-base"}`}>
-                            {notif.title || "Ogłoszenie systemowe"}
-                          </h4>
-                        </div>
-                        
-                        <p className="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">
-                          {notif.message}
-                        </p>
-                        
-                        <div className="flex justify-between items-center mt-2 pt-2 border-t border-white/5 text-slate-500 text-[11px] font-medium">
-                          <span className="flex items-center gap-1">
-                            <Icons.Calendar size={12} />
-                            {dateStr}
-                          </span>
-
-                          {!notif.read && (
-                            <button
-                              onClick={() => onMarkNotificationAsRead(notif.id)}
-                              className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-300 hover:text-white transition-all text-xs font-bold"
-                            >
-                              <Icons.Check size={12} />
-                              Oznacz jako przeczytane
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-            
-            {/* Footer */}
-            <div className="border-t border-white/10 pt-4 flex justify-between items-center text-xs text-slate-500 font-medium">
-              <span>Wszystkich wiadomości: {notifications.length}</span>
-              {unreadCount > 0 && (
-                <button
-                  onClick={() => {
-                    notifications.forEach(notif => {
-                      if (!notif.read) {
-                        onMarkNotificationAsRead(notif.id);
-                      }
-                    });
-                  }}
-                  className="text-indigo-400 hover:text-indigo-300 font-bold transition-colors"
-                >
-                  Oznacz wszystkie jako przeczytane
-                </button>
-              )}
-            </div>
-
-          </div>
-        </div>
       )}
     </div>
   );
