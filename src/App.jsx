@@ -230,6 +230,25 @@ export default function App() {
     return uid.toLowerCase();
   };
 
+  // Periodically update lastActiveAt timestamp in Firestore (every 60 seconds)
+  useEffect(() => {
+    if (!currentUser) return;
+    const updateActivity = async () => {
+      const uidKey = getFirestoreUidKey();
+      if (uidKey && isFirebaseConfigured) {
+        try {
+          await updateUserField(uidKey, { lastActiveAt: Date.now() });
+        } catch (e) {
+          // ignore
+        }
+      }
+    };
+    // Update immediately on mount/login
+    updateActivity();
+    const interval = setInterval(updateActivity, 60000);
+    return () => clearInterval(interval);
+  }, [currentUser]);
+
   const getStatsScore = (s) => {
     if (!s) return 0;
     const xpVal = s.xp || 0;
@@ -555,6 +574,7 @@ export default function App() {
         avatar: loadedStats.avatarData || "👑",
         createdAt: loadedStats.createdAt,
         lastActiveDate: todayStr,
+        lastActiveAt: Date.now(),
         xp: loadedStats.xp || 0,
         level: loadedStats.level || 1,
         streak: loadedStats.streak || 0,
@@ -727,7 +747,8 @@ export default function App() {
             streak: updatedStats.streak || 0,
             wordsCount: Object.keys(updatedStats.learnedCards || {}).length,
             avatar: updatedStats.avatarData || currentUser?.avatar || "👑",
-            username: updatedStats.customUsername || currentUser?.username || ""
+            username: updatedStats.customUsername || currentUser?.username || "",
+            lastActiveAt: Date.now()
           }).catch(err => console.warn("Failed to sync leaderboard stats to users collection:", err.message));
         }
       }

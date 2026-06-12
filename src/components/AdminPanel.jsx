@@ -26,6 +26,16 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
   // Feedback toast state
   const [toast, setToast] = useState(null);
 
+  // Time tracker for live status update
+  const [now, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(Date.now());
+    }, 15000); // refresh time every 15s to keep it accurate
+    return () => clearInterval(timer);
+  }, []);
+
   // Fetch users on mount
   const fetchUsers = async () => {
     setLoading(true);
@@ -69,14 +79,25 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
     return false;
   };
 
+  // Helper to determine if a user is online right now (active in last 3 minutes)
+  const getIsUserOnline = (user) => {
+    if (!user) return false;
+    if (user.lastActiveAt) {
+      const diffMs = now - user.lastActiveAt;
+      return diffMs <= 180000; // 3 minuty
+    }
+    return false;
+  };
+
   // Computations for KPI dashboard stats
   const kpis = useMemo(() => {
     const total = users.length;
     const active = users.filter(u => getIsActiveRecently(u.lastActiveDate)).length;
+    const online = users.filter(u => getIsUserOnline(u)).length;
     const blocked = users.filter(u => u.status === "blocked").length;
     const pro = users.filter(u => u.isPro).length;
-    return { total, active, blocked, pro };
-  }, [users]);
+    return { total, active, online, blocked, pro };
+  }, [users, now]);
 
   // Filter & Sort logic
   const filteredUsers = useMemo(() => {
@@ -306,15 +327,18 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
           </div>
         </div>
 
-        {/* Active Users */}
+        {/* Active Users (Online Now) */}
         <div className="glass-card p-6 flex items-center justify-between relative overflow-hidden group">
           <div className="absolute -right-6 -bottom-6 w-20 h-20 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all duration-500 pointer-events-none" />
           <div className="flex flex-col">
-            <span className="text-slate-400 text-xs font-bold uppercase tracking-wider">Aktywni (3 dni)</span>
-            <span className="text-3xl font-black text-white mt-1.5">{loading ? "..." : kpis.active}</span>
+            <span className="text-slate-400 text-xs font-bold uppercase tracking-wider">Online teraz</span>
+            <span className="text-3xl font-black text-white mt-1.5">{loading ? "..." : kpis.online}</span>
           </div>
-          <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
-            <Icons.Zap size={24} />
+          <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20 relative">
+            <Icons.Zap size={24} className={kpis.online > 0 ? "animate-pulse text-emerald-400" : "text-slate-500"} />
+            {kpis.online > 0 && (
+              <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping" />
+            )}
           </div>
         </div>
 
@@ -473,7 +497,7 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
                     ? new Date(user.createdAt).toLocaleDateString("pl-PL") 
                     : "brak danych";
                   
-                  const isUserActive = getIsActiveRecently(user.lastActiveDate);
+                  const isUserOnline = getIsUserOnline(user);
                   
                   const isSelf = user.uid === currentUser?.uid || user.email === currentUser?.email;
 
@@ -491,8 +515,8 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
                             </div>
                           )}
                           <span className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[var(--bg-main)] ${
-                            isUserActive ? "bg-emerald-500" : "bg-slate-600"
-                          }`} title={isUserActive ? "Online w ciągu ostatnich 3 dni" : "Offline"} />
+                            isUserOnline ? "bg-emerald-500 shadow-[0_0_10px_#10b981]" : "bg-rose-500"
+                          }`} title={isUserOnline ? "Online (aktywny teraz)" : "Offline (nieobecny)"} />
                         </div>
                         <div className="flex flex-col max-w-[150px] md:max-w-xs overflow-hidden">
                           <span className="text-white text-sm font-bold truncate flex items-center gap-1.5">
@@ -512,8 +536,8 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
 
                       {/* Last Active Date */}
                       <td className="py-4 px-4 hidden lg:table-cell">
-                        <span className={`text-xs font-medium ${isUserActive ? "text-emerald-400" : "text-slate-500"}`}>
-                          {user.lastActiveDate || "brak aktywności"}
+                        <span className={`text-xs font-medium ${isUserOnline ? "text-emerald-400 font-extrabold" : "text-slate-500"}`}>
+                          {isUserOnline ? "Online teraz" : (user.lastActiveDate || "brak aktywności")}
                         </span>
                       </td>
 
