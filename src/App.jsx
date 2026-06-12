@@ -64,8 +64,11 @@ export default function App() {
   const { 
     saveStats, loadStats, saveDecks, loadDecks,
     syncUserMeta, loadAllUsers, updateUserField,
-    sendSystemNotification, loadNotifications, markNotificationAsRead
+    sendSystemNotification, loadNotifications, markNotificationAsRead,
+    loadSystemConfig, updateSystemConfig
   } = useFirestore();
+
+  const [systemConfig, setSystemConfig] = useState({ showMocks: true });
   
   const [stats, setStats] = useState({
     streak: 0,
@@ -97,6 +100,11 @@ export default function App() {
     // Wczytaj motyw
     const savedTheme = localStorage.getItem("lingocards_theme") || "navy";
     setTheme(savedTheme);
+
+    // Wczytaj konfigurację systemową
+    loadSystemConfig().then(cfg => {
+      if (cfg) setSystemConfig(cfg);
+    }).catch(e => console.warn("Failed to load system config:", e.message));
 
     if (!auth) {
       // Firebase nie skonfigurowany — fallback na localStorage
@@ -1501,6 +1509,7 @@ export default function App() {
             stats={stats}
             onNavigate={setView}
             loadAllUsers={loadAllUsers}
+            systemConfig={systemConfig}
           />
         )}
 
@@ -1511,6 +1520,11 @@ export default function App() {
             sendSystemNotification={sendSystemNotification}
             currentUser={currentUser}
             stats={stats}
+            systemConfig={systemConfig}
+            updateSystemConfig={(newCfg) => {
+              setSystemConfig(newCfg);
+              updateSystemConfig(newCfg);
+            }}
           />
         )}
       </main>

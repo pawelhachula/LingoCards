@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as Icons from "lucide-react";
 
-export default function Leaderboard({ stats, onNavigate, loadAllUsers }) {
+export default function Leaderboard({ stats, onNavigate, loadAllUsers, systemConfig }) {
   const [activeTab, setActiveTab] = useState("xp"); // 'xp' | 'streak' | 'words'
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,11 +61,14 @@ export default function Leaderboard({ stats, onNavigate, loadAllUsers }) {
 
   // Combine real and mock, avoiding duplicate usernames
   const combinedCompetitors = [...realCompetitors];
-  mockCompetitors.forEach(mock => {
-    if (!combinedCompetitors.some(c => c.username.toLowerCase() === mock.username.toLowerCase())) {
-      combinedCompetitors.push(mock);
-    }
-  });
+  const showMocks = systemConfig?.showMocks !== false;
+  if (showMocks) {
+    mockCompetitors.forEach(mock => {
+      if (!combinedCompetitors.some(c => c.username.toLowerCase() === mock.username.toLowerCase())) {
+        combinedCompetitors.push(mock);
+      }
+    });
+  }
 
   const currentUserRow = {
     username: `${stats.username || "Ty"} (Ja)`,

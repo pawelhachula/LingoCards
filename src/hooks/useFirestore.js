@@ -262,6 +262,41 @@ export function useFirestore() {
     }
   }, []);
 
+  /**
+   * Pobiera konfigurację globalną systemu
+   */
+  const loadSystemConfig = useCallback(async () => {
+    if (isFirebaseConfigured && db) {
+      try {
+        const { doc, getDoc } = await import("firebase/firestore");
+        const snap = await getDoc(doc(db, "config", "system"));
+        if (snap.exists()) {
+          return snap.data();
+        }
+      } catch (e) {
+        console.warn("[Firestore] loadSystemConfig failed:", e.message);
+      }
+    }
+    // Domyślna lokalna konfiguracja
+    const saved = localStorage.getItem("lingocards_system_config");
+    return saved ? JSON.parse(saved) : { showMocks: true };
+  }, []);
+
+  /**
+   * Aktualizuje konfigurację globalną systemu
+   */
+  const updateSystemConfig = useCallback(async (newConfig) => {
+    localStorage.setItem("lingocards_system_config", JSON.stringify(newConfig));
+    if (isFirebaseConfigured && db) {
+      try {
+        const { doc, setDoc } = await import("firebase/firestore");
+        await setDoc(doc(db, "config", "system"), newConfig, { merge: true });
+      } catch (e) {
+        console.warn("[Firestore] updateSystemConfig failed:", e.message);
+      }
+    }
+  }, []);
+
   return {
     saveStats,
     loadStats,
@@ -275,6 +310,8 @@ export function useFirestore() {
     updateUserField,
     sendSystemNotification,
     loadNotifications,
-    markNotificationAsRead
+    markNotificationAsRead,
+    loadSystemConfig,
+    updateSystemConfig
   };
 }

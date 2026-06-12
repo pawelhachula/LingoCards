@@ -3,7 +3,7 @@ import * as Icons from "lucide-react";
 import { auth, db, isFirebaseConfigured } from "../firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
 
-export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNotification, currentUser }) {
+export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNotification, currentUser, systemConfig, updateSystemConfig }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   
@@ -268,14 +268,28 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
           <span className="text-xs font-bold text-rose-400 uppercase tracking-widest block">Strefa Administratora</span>
           <h2 className="text-3xl font-extrabold mt-1 text-white">Panel Administracyjny</h2>
         </div>
-        <button 
-          onClick={fetchUsers} 
-          disabled={loading}
-          className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition-all disabled:opacity-50"
-          title="Odśwież dane"
-        >
-          <Icons.RefreshCw size={20} className={loading ? "animate-spin" : ""} />
-        </button>
+        <div className="flex items-center gap-3.5">
+          <label className="flex items-center gap-3 cursor-pointer select-none bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/[0.07] transition-all">
+            <span className="text-xs font-bold text-slate-300">Pokazuj boty w rankingu</span>
+            <div className="relative flex items-center">
+              <input
+                type="checkbox"
+                checked={systemConfig?.showMocks !== false}
+                onChange={(e) => updateSystemConfig({ ...systemConfig, showMocks: e.target.checked })}
+                className="sr-only peer"
+              />
+              <div className="w-9 h-5 bg-black/40 rounded-full peer peer-checked:bg-indigo-500/20 border border-white/10 transition-colors duration-200 after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-slate-400 after:rounded-full after:h-3.5 after:w-3.5 after:transition-transform after:duration-200 peer-checked:after:translate-x-4 peer-checked:after:bg-indigo-400"></div>
+            </div>
+          </label>
+          <button 
+            onClick={fetchUsers} 
+            disabled={loading}
+            className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition-all disabled:opacity-50"
+            title="Odśwież dane"
+          >
+            <Icons.RefreshCw size={20} className={loading ? "animate-spin" : ""} />
+          </button>
+        </div>
       </div>
 
       {/* KPI Cards Grid */}
