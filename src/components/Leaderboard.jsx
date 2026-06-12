@@ -1,8 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as Icons from "lucide-react";
 
-export default function Leaderboard({ stats, onNavigate }) {
+export default function Leaderboard({ stats, onNavigate, loadAllUsers }) {
   const [activeTab, setActiveTab] = useState("xp"); // 'xp' | 'streak' | 'words'
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch all users on mount
+  useEffect(() => {
+    let active = true;
+    if (loadAllUsers) {
+      loadAllUsers().then(data => {
+        if (active) {
+          setUsers(data || []);
+          setLoading(false);
+        }
+      }).catch(err => {
+        console.warn("Failed to load users for leaderboard:", err);
+        if (active) setLoading(false);
+      });
+    } else {
+      setLoading(false);
+    }
+    return () => { active = false; };
+  }, [loadAllUsers]);
 
   // Competitors Mock Database
   const mockCompetitors = [
@@ -20,6 +41,32 @@ export default function Leaderboard({ stats, onNavigate }) {
   const userLevel = stats.level || 1;
   const userTitle = userLevel >= 15 ? "Master" : userLevel >= 10 ? "Scholar" : userLevel >= 6 ? "Explorer" : userLevel >= 3 ? "Learner" : "Beginner";
 
+  const currentUsernameLower = (stats.username || "").toLowerCase();
+
+  // Map real users from database
+  const realCompetitors = users
+    .filter(u => {
+      const uname = (u.username || "").toLowerCase();
+      return uname !== "" && uname !== currentUsernameLower;
+    })
+    .map(u => ({
+      username: u.username,
+      avatar: u.avatar || "👑",
+      xp: u.xp || 0,
+      streak: u.streak || 0,
+      words: u.wordsCount || 0,
+      level: u.level || 1,
+      title: u.level >= 15 ? "Master" : u.level >= 10 ? "Scholar" : u.level >= 6 ? "Explorer" : u.level >= 3 ? "Learner" : "Beginner"
+    }));
+
+  // Combine real and mock, avoiding duplicate usernames
+  const combinedCompetitors = [...realCompetitors];
+  mockCompetitors.forEach(mock => {
+    if (!combinedCompetitors.some(c => c.username.toLowerCase() === mock.username.toLowerCase())) {
+      combinedCompetitors.push(mock);
+    }
+  });
+
   const currentUserRow = {
     username: `${stats.username || "Ty"} (Ja)`,
     avatar: stats.avatar || "👑",
@@ -32,7 +79,7 @@ export default function Leaderboard({ stats, onNavigate }) {
   };
 
   // Combine and sort dynamically based on tab
-  const allPlayers = [...mockCompetitors, currentUserRow];
+  const allPlayers = [...combinedCompetitors, currentUserRow];
 
   let sortedPlayers = [];
   if (activeTab === "xp") {

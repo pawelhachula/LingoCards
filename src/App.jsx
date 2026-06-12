@@ -538,6 +538,8 @@ export default function App() {
         lastActiveDate: todayStr,
         xp: loadedStats.xp || 0,
         level: loadedStats.level || 1,
+        streak: loadedStats.streak || 0,
+        wordsCount: Object.keys(loadedStats.learnedCards || {}).length,
         role: userRole,
         status: userStatus,
         isPro: !!loadedStats.isPro
@@ -698,7 +700,17 @@ export default function App() {
       if (currentUser) {
         // Zapisz do Firestore (z localStorage fallback)
         const uidKey = getFirestoreUidKey();
-        if (uidKey) saveStats(uidKey, updatedStats);
+        if (uidKey) {
+          saveStats(uidKey, updatedStats);
+          updateUserField(uidKey, {
+            xp: updatedStats.xp || 0,
+            level: updatedStats.level || 1,
+            streak: updatedStats.streak || 0,
+            wordsCount: Object.keys(updatedStats.learnedCards || {}).length,
+            avatar: updatedStats.avatarData || currentUser?.avatar || "👑",
+            username: updatedStats.customUsername || currentUser?.username || ""
+          }).catch(err => console.warn("Failed to sync leaderboard stats to users collection:", err.message));
+        }
       }
       return updatedStats;
     });
@@ -1488,6 +1500,7 @@ export default function App() {
           <Leaderboard 
             stats={stats}
             onNavigate={setView}
+            loadAllUsers={loadAllUsers}
           />
         )}
 
