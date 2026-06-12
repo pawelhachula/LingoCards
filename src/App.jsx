@@ -45,7 +45,14 @@ const PREMIUM_THEMES = [
 const systemDeckIds = new Set(defaultDecks.map(d => d.id));
 
 export default function App() {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem("lingocards_current_user");
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  });
   const [view, setView] = useState("dashboard");
   const [decks, setDecks] = useState([]);
   const [selectedDeck, setSelectedDeck] = useState(null);

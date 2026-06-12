@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import * as Icons from "lucide-react";
-import { signInWithGoogle, signInWithEmail, registerWithEmail, isFirebaseConfigured } from "../firebase";
+import { auth, signInWithGoogle, signInWithEmail, registerWithEmail, isFirebaseConfigured } from "../firebase";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 export default function Auth({ onLogin }) {
   const [tab, setTab] = useState("login"); // 'login' | 'register'
@@ -13,6 +14,7 @@ export default function Auth({ onLogin }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [forgotMode, setForgotMode] = useState(false);
 
   const avatarsList = ["👑", "🦄", "🐉", "🐙", "🦊", "🦁", "🐼", "🦉", "🚀", "🛸", "👾", "🦖", "🦥", "🦩", "🍕", "🐱", "🐯", "👻", "👽", "🐨"];
 
@@ -104,6 +106,38 @@ export default function Auth({ onLogin }) {
     }
   };
 
+  // ─── Odzyskiwanie hasła ────────────────────────────────────────────────────
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (!email.trim()) {
+      setError("Podaj swój adres e-mail.");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await sendPasswordResetEmail(auth, email.trim());
+      setSuccess("Link do zresetowania hasła został wysłany na Twój adres e-mail!");
+    } catch (err) {
+      let msg = "Błąd wysyłania linku: ";
+      if (err.code === "auth/user-not-found" || err.message.includes("user-not-found")) {
+        msg = "Nie znaleziono użytkownika o tym adresie e-mail.";
+      } else if (err.code === "auth/invalid-email") {
+        msg = "Niepoprawny format adresu e-mail.";
+      } else if (err.code === "auth/missing-email") {
+        msg = "Podaj adres e-mail.";
+      } else {
+        msg += err.message;
+      }
+      setError(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // ─── Logowanie Google ──────────────────────────────────────────────────────
   const handleGoogleClick = async () => {
     setError("");
@@ -140,21 +174,23 @@ export default function Auth({ onLogin }) {
         </div>
 
         {/* Tabs */}
-        <div className="flex bg-black/40 p-1.5 rounded-xl border border-white/5 gap-2 mb-6">
-          {["login", "register"].map(t => (
-            <button
-              key={t}
-              onClick={() => { setTab(t); resetForm(); }}
-              className={`flex-1 btn text-xs font-bold py-2.5 rounded-lg transition-all ${
-                tab === t
-                  ? "bg-indigo-500/10 text-indigo-300 border border-indigo-500/25"
-                  : "bg-transparent text-slate-500 hover:text-white border-transparent"
-              }`}
-            >
-              {t === "login" ? "Logowanie" : "Rejestracja"}
-            </button>
-          ))}
-        </div>
+        {!forgotMode && (
+          <div className="flex bg-black/40 p-1.5 rounded-xl border border-white/5 gap-2 mb-6">
+            {["login", "register"].map(t => (
+              <button
+                key={t}
+                onClick={() => { setTab(t); resetForm(); }}
+                className={`flex-1 btn text-xs font-bold py-2.5 rounded-lg transition-all ${
+                  tab === t
+                    ? "bg-indigo-500/10 text-indigo-300 border border-indigo-500/25"
+                    : "bg-transparent text-slate-500 hover:text-white border-transparent"
+                }`}
+              >
+                {t === "login" ? "Logowanie" : "Rejestracja"}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Error / Success */}
         {error && (
@@ -170,7 +206,47 @@ export default function Auth({ onLogin }) {
           </div>
         )}
 
-        {tab === "login" ? (
+        {forgotMode ? (
+          /* ── ODZYSKIWANIE HASŁA ────────────────────────────────────────── */
+          <form onSubmit={handleResetPassword} className="flex flex-col gap-4">
+            <div className="text-slate-400 text-xs leading-relaxed mb-1">
+              Wpisz swój adres e-mail, a wyślemy Ci link do zresetowania hasła.
+            </div>
+            <div>
+              <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                Adres email
+              </label>
+              <div className="relative">
+                <Icons.Mail size={16} className="absolute left-3.5 top-3.5 text-slate-500" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="twoj@email.com"
+                  autoComplete="email"
+                  className="w-full bg-black/40 border border-white/8 rounded-xl pl-11 pr-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="btn btn-primary w-full py-3.5 mt-2 disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {isLoading ? "Wysyłanie..." : "Wyślij link resetujący"}
+              {!isLoading && <Icons.Send size={16} />}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => { setForgotMode(false); setError(""); setSuccess(""); }}
+              className="text-xs text-slate-500 hover:text-white font-bold text-center mt-2 transition-colors"
+            >
+              Wróć do logowania
+            </button>
+          </form>
+        ) : tab === "login" ? (
           /* ── LOGOWANIE ─────────────────────────────────────────────────── */
           <form onSubmit={handleLoginSubmit} className="flex flex-col gap-4">
             <div>
@@ -191,9 +267,19 @@ export default function Auth({ onLogin }) {
             </div>
 
             <div>
-              <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
-                Hasło
-              </label>
+              <div className="flex justify-between items-center mb-2">
+                <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">
+                  Hasło
+                </label>
+                <button
+                  type="button"
+                  onClick={() => { setForgotMode(true); setError(""); setSuccess(""); }}
+                  className="text-[10px] text-indigo-400 hover:text-indigo-300 font-bold transition-colors"
+                  tabIndex={-1}
+                >
+                  Zapomniałeś hasła?
+                </button>
+              </div>
               <div className="relative">
                 <Icons.Lock size={16} className="absolute left-3.5 top-3.5 text-slate-500" />
                 <input
@@ -218,7 +304,7 @@ export default function Auth({ onLogin }) {
             <button
               type="submit"
               disabled={isLoading}
-              className="btn btn-primary w-full py-3.5 mt-2 disabled:opacity-50"
+              className="btn btn-primary w-full py-3.5 mt-2 disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isLoading ? "Logowanie..." : "Zaloguj się"}
               {!isLoading && <Icons.LogIn size={18} />}
