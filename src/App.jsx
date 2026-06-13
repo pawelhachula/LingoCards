@@ -105,6 +105,41 @@ export default function App() {
     studyTime: 0
   });
 
+  const getSortedDecks = (deckList) => {
+    const levelOrder = { "A1": 1, "A2": 2, "B1": 3, "B2": 4, "C1": 5, "C2": 6 };
+    return [...deckList].sort((a, b) => {
+      const isLockedA = !stats.isPro && a.isPremium;
+      const isLockedB = !stats.isPro && b.isPremium;
+      
+      // 1. Dostępność (niezablokowane najpierw)
+      if (isLockedA !== isLockedB) {
+        return isLockedA ? 1 : -1;
+      }
+      
+      // 2. Dynamiczne/Systemowe najpierw w ramach tej samej dostępności
+      const isSystemA = a.id === "srs" || a.id === "starred";
+      const isSystemB = b.id === "srs" || b.id === "starred";
+      if (isSystemA !== isSystemB) {
+        return isSystemA ? -1 : 1;
+      }
+      if (isSystemA && isSystemB) {
+        if (a.id === "srs") return -1;
+        if (b.id === "srs") return 1;
+        return 0;
+      }
+      
+      // 3. Poziomy trudności (A1 -> C2)
+      const weightA = levelOrder[a.level] || 99;
+      const weightB = levelOrder[b.level] || 99;
+      if (weightA !== weightB) {
+        return weightA - weightB;
+      }
+      
+      // 4. Alfabetycznie po tytule
+      return (a.title || "").localeCompare(b.title || "");
+    });
+  };
+
   // Firebase Auth — automatyczne przywracanie sesji po odświeżeniu strony
   useEffect(() => {
     // Wczytaj motyw
@@ -1296,7 +1331,7 @@ export default function App() {
                 }}
                 className="bg-transparent text-white focus:outline-none cursor-pointer font-bold border-none p-0 pr-6 max-w-[110px] sm:max-w-[140px] md:max-w-[160px] truncate"
               >
-                {[srsDeck, starredDeck, ...decks].map(d => {
+                {getSortedDecks([srsDeck, starredDeck, ...decks]).map(d => {
                   const isLocked = !stats.isPro && d.isPremium;
                   return (
                     <option 

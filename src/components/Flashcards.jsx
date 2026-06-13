@@ -144,14 +144,8 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
       }, 300);
 
       if (localStorage.getItem("lingocards_autoplay") === "true") {
-        if (reversedMode) {
-          if (currentCard?.english) playTTS(currentCard.english, "word");
-        } else {
-          if (currentCard?.exampleEnglish) {
-            playTTS(currentCard.exampleEnglish, "example");
-          } else if (currentCard?.english) {
-            playTTS(currentCard.english, "word");
-          }
+        if (currentCard?.english) {
+          playTTS(currentCard.english, "word");
         }
       }
 

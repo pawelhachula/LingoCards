@@ -12,6 +12,11 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
   const [showConfirmReset, setShowConfirmReset] = useState(false);
   const [resetConfirmText, setResetConfirmText] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [selectedTheme, setSelectedTheme] = useState(theme);
+
+  useEffect(() => {
+    setSelectedTheme(theme);
+  }, [theme]);
 
   useEffect(() => {
     setAudioStyle(isPro ? (stats.audioStyle || "synth") : (stats.audioStyle === "off" ? "off" : "synth"));
@@ -45,7 +50,8 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
       ...stats, 
       dailyTarget: parseInt(dailyGoal),
       audioStyle,
-      confettiStyle
+      confettiStyle,
+      theme: selectedTheme
     };
     onUpdateStats(updatedStats);
 
@@ -236,8 +242,12 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
               <p className="text-[11px] text-slate-500 mt-0.5">Wybierz kolorystykę aplikacji</p>
             </div>
             <select
-              value={theme}
-              onChange={(e) => onThemeChange(e.target.value)}
+              value={selectedTheme}
+              onChange={(e) => {
+                const nt = e.target.value;
+                setSelectedTheme(nt);
+                onThemeChange(nt);
+              }}
               className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500/60 w-52"
             >
               <optgroup label="Motywy podstawowe" className="bg-[var(--bg-main)] text-slate-400">
