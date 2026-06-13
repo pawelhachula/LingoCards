@@ -61,6 +61,8 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
   // SRS States
   const [srsOnly, setSrsOnly] = useState(selectedDeck?.id === "srs");
 
+  const currentCard = cards[currentIndex];
+
   useEffect(() => {
     setSrsOnly(selectedDeck?.id === "srs");
   }, [selectedDeck]);
@@ -187,8 +189,6 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
       </div>
     );
   }
-
-  const currentCard = cards[currentIndex];
 
   const resetSpeechState = () => {
     setIsListening(false);
