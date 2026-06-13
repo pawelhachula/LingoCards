@@ -99,6 +99,8 @@ export default function Dashboard({
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'en-US';
+      const speed = localStorage.getItem("lingocards_speech_speed") || "1.0";
+      utterance.rate = parseFloat(speed);
       window.speechSynthesis.speak(utterance);
     }
   };

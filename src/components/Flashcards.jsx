@@ -119,17 +119,42 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     };
   }, []);
 
-  // Cooldown on card rating after flip
+  // Cooldown on card rating after flip and Autoplay on flip
   useEffect(() => {
     if (isFlipped) {
       const timer = setTimeout(() => {
         setCanRate(true);
       }, 300);
+
+      if (localStorage.getItem("lingocards_autoplay") === "true") {
+        if (reversedMode) {
+          if (currentCard?.english) playTTS(currentCard.english, "word");
+        } else {
+          if (currentCard?.exampleEnglish) {
+            playTTS(currentCard.exampleEnglish, "example");
+          } else if (currentCard?.english) {
+            playTTS(currentCard.english, "word");
+          }
+        }
+      }
+
       return () => clearTimeout(timer);
     } else {
       setCanRate(false);
     }
-  }, [isFlipped]);
+  }, [isFlipped, currentCard, reversedMode]);
+
+  // Autoplay on card change (front side)
+  useEffect(() => {
+    if (!isFlipped && localStorage.getItem("lingocards_autoplay") === "true") {
+      if (!reversedMode && currentCard?.english) {
+        const timer = setTimeout(() => {
+          playTTS(currentCard.english, "word");
+        }, 350);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [currentIndex, reversedMode, currentCard]);
 
   if (!selectedDeck) {
     return (
@@ -238,6 +263,9 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
       if (englishVoice) {
         utterance.voice = englishVoice;
       }
+      
+      const speed = localStorage.getItem("lingocards_speech_speed") || "1.0";
+      utterance.rate = parseFloat(speed);
       
       utterance.onstart = () => setSpeakingType(type);
       utterance.onend = () => setSpeakingType(null);
@@ -405,7 +433,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
       setBestStreak(prev => Math.max(prev, nextStreak));
       if (nextStreak === 3 || nextStreak === 5 || nextStreak === 10) {
         setMomentumToast(`SERIA: ${nextStreak} POPRAWNYCH! 🔥`);
-        playSound("success", stats.audioStyle || "synth");
+        playSound("success", stats.isPro ? (stats.audioStyle || "synth") : "synth");
         setTimeout(() => setMomentumToast(""), 1500);
       }
     } else {
@@ -491,9 +519,9 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
         if (medalXp > 0) onAddXp(medalXp);
         
         setTimeout(() => {
-          playSound("achievement", stats.audioStyle || "synth");
+          playSound("achievement", stats.isPro ? (stats.audioStyle || "synth") : "synth");
           if (pct === 100) triggerFireworks();
-          triggerConfetti(stats.confettiStyle || "standard");
+          triggerConfetti(stats.isPro ? (stats.confettiStyle || "standard") : "standard");
         }, 150);
       }
     }, 200);

@@ -12,10 +12,12 @@ function getAudioContext() {
 }
 
 export function playSound(type, style = "synth") {
+  if (localStorage.getItem("lingocards_mute") === "true") return;
   if (style === "off") return;
   try {
     const ctx = getAudioContext();
     const now = ctx.currentTime;
+    const isShort = style === "short";
     
     // helper to play a note
     const playNote = (freq, startTime, duration, waveType = "sine", volume = 0.08) => {
@@ -37,25 +39,38 @@ export function playSound(type, style = "synth") {
     };
 
     if (type === "success") {
-      // Rising chord
-      playNote(523.25, now, 0.15, "triangle", 0.06); // C5
-      playNote(659.25, now + 0.08, 0.25, "triangle", 0.06); // E5
+      if (isShort) {
+        playNote(659.25, now, 0.12, "triangle", 0.06); // E5 only
+      } else {
+        // Rising chord
+        playNote(523.25, now, 0.15, "triangle", 0.06); // C5
+        playNote(659.25, now + 0.08, 0.25, "triangle", 0.06); // E5
+      }
     } else if (type === "levelup") {
-      // Arpeggio fanfare
-      playNote(523.25, now, 0.12, "sine", 0.08); // C5
-      playNote(659.25, now + 0.08, 0.12, "sine", 0.08); // E5
-      playNote(783.99, now + 0.16, 0.12, "sine", 0.08); // G5
-      playNote(1046.50, now + 0.24, 0.45, "sine", 0.08); // C6
+      if (isShort) {
+        playNote(783.99, now, 0.1, "sine", 0.08); // G5
+        playNote(1046.50, now + 0.06, 0.3, "sine", 0.08); // C6
+      } else {
+        // Arpeggio fanfare
+        playNote(523.25, now, 0.12, "sine", 0.08); // C5
+        playNote(659.25, now + 0.08, 0.12, "sine", 0.08); // E5
+        playNote(783.99, now + 0.16, 0.12, "sine", 0.08); // G5
+        playNote(1046.50, now + 0.24, 0.45, "sine", 0.08); // C6
+      }
     } else if (type === "achievement") {
-      // Shimmering success arpeggio
-      playNote(587.33, now, 0.1, "sine", 0.06); // D5
-      playNote(783.99, now + 0.06, 0.1, "sine", 0.06); // G5
-      playNote(987.77, now + 0.12, 0.1, "sine", 0.06); // B5
-      playNote(1174.66, now + 0.18, 0.5, "sine", 0.06); // D6
+      if (isShort) {
+        playNote(987.77, now, 0.08, "sine", 0.06); // B5
+        playNote(1174.66, now + 0.06, 0.35, "sine", 0.06); // D6
+      } else {
+        // Shimmering success arpeggio
+        playNote(587.33, now, 0.1, "sine", 0.06); // D5
+        playNote(783.99, now + 0.06, 0.1, "sine", 0.06); // G5
+        playNote(987.77, now + 0.12, 0.1, "sine", 0.06); // B5
+        playNote(1174.66, now + 0.18, 0.5, "sine", 0.06); // D6
+      }
     } else if (type === "error") {
       // Low flat buzz
-      playNote(150.00, now, 0.2, "sawtooth", 0.04); // low buzz
-      playNote(140.00, now + 0.05, 0.25, "sawtooth", 0.04); // lower buzz
+      playNote(150.00, now, 0.15, "sawtooth", 0.04);
     }
   } catch (e) {
     console.error("Failed to play synth audio:", e);

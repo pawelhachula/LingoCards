@@ -1,16 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as Icons from "lucide-react";
 
 export default function Settings({ stats, onUpdateStats, theme, onThemeChange, onResetData, DEFAULT_THEMES = [], PREMIUM_THEMES = [] }) {
+  const isPro = !!stats.isPro;
   const [dailyGoal, setDailyGoal] = useState(stats.dailyTarget || 10);
   const [speechSpeed, setSpeechSpeed] = useState(localStorage.getItem("lingocards_speech_speed") || "1.0");
   const [autoplayAudio, setAutoplayAudio] = useState(localStorage.getItem("lingocards_autoplay") === "true");
   const [muteInterface, setMuteInterface] = useState(localStorage.getItem("lingocards_mute") === "true");
-  const [audioStyle, setAudioStyle] = useState(stats.audioStyle || "synth");
-  const [confettiStyle, setConfettiStyle] = useState(stats.confettiStyle || "standard");
+  const [audioStyle, setAudioStyle] = useState(isPro ? (stats.audioStyle || "synth") : "synth");
+  const [confettiStyle, setConfettiStyle] = useState(isPro ? (stats.confettiStyle || "standard") : "standard");
   const [showConfirmReset, setShowConfirmReset] = useState(false);
   const [resetConfirmText, setResetConfirmText] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+
+  useEffect(() => {
+    setAudioStyle(isPro ? (stats.audioStyle || "synth") : "synth");
+    setConfettiStyle(isPro ? (stats.confettiStyle || "standard") : "standard");
+  }, [isPro, stats.audioStyle, stats.confettiStyle]);
+
+  const handleSpeedChange = (e) => {
+    const newVal = e.target.value;
+    setSpeechSpeed(newVal);
+    localStorage.setItem("lingocards_speech_speed", newVal);
+  };
+
+  const handleToggleAutoplay = () => {
+    const newVal = !autoplayAudio;
+    setAutoplayAudio(newVal);
+    localStorage.setItem("lingocards_autoplay", newVal.toString());
+  };
+
+  const handleToggleMute = () => {
+    const newVal = !muteInterface;
+    setMuteInterface(newVal);
+    localStorage.setItem("lingocards_mute", newVal.toString());
+  };
 
   const handleSaveSettings = (e) => {
     e.preventDefault();
@@ -92,7 +116,7 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
             </div>
             <select
               value={speechSpeed}
-              onChange={(e) => setSpeechSpeed(e.target.value)}
+              onChange={handleSpeedChange}
               className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500/60 w-32"
             >
               <option value="0.8">Zwolnione (0.8x)</option>
@@ -115,7 +139,7 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
               <input
                 type="checkbox"
                 checked={autoplayAudio}
-                onChange={() => setAutoplayAudio(!autoplayAudio)}
+                onChange={handleToggleAutoplay}
                 className="sr-only peer"
               />
               <div className="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500 peer-checked:after:bg-white"></div>
@@ -135,7 +159,7 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
               <input
                 type="checkbox"
                 checked={muteInterface}
-                onChange={() => setMuteInterface(!muteInterface)}
+                onChange={handleToggleMute}
                 className="sr-only peer"
               />
               <div className="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500 peer-checked:after:bg-white"></div>
@@ -156,8 +180,15 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
               onChange={(e) => setAudioStyle(e.target.value)}
               className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500/60 w-36"
             >
-              <option value="synth">Retro Synth 🎹</option>
-              <option value="off">Wyciszone 🔇</option>
+              {!isPro ? (
+                <option value="synth">Retro Synth 🎹</option>
+              ) : (
+                <>
+                  <option value="synth">Retro Synth 🎹</option>
+                  <option value="short">Krótkie Synth 🎵</option>
+                  <option value="off">Wyciszone 🔇</option>
+                </>
+              )}
             </select>
           </div>
 
@@ -175,9 +206,15 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
               onChange={(e) => setConfettiStyle(e.target.value)}
               className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500/60 w-36"
             >
-              <option value="standard">Standard 🎉</option>
-              <option value="stars">Gwiazdki ⭐</option>
-              <option value="off">Wyłączone ❌</option>
+              {!isPro ? (
+                <option value="standard">Standard 🎉</option>
+              ) : (
+                <>
+                  <option value="standard">Standard 🎉</option>
+                  <option value="stars">Gwiazdki ⭐</option>
+                  <option value="off">Wyłączone ❌</option>
+                </>
+              )}
             </select>
           </div>
 

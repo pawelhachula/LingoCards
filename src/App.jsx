@@ -853,7 +853,7 @@ export default function App() {
       
       if (newLevel > currentLevel) {
         setTimeout(() => {
-          playSound("levelup", prev.audioStyle || "synth");
+          playSound("levelup", prev.isPro ? (prev.audioStyle || "synth") : "synth");
           triggerFireworks();
           setLevelUpInfo({ oldLevel: currentLevel, newLevel: newLevel });
           setShowLevelUpModal(true);

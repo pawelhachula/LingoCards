@@ -263,6 +263,20 @@ export function useFirestore() {
   }, []);
 
   /**
+   * Usuwa powiadomienie z podkolekcji użytkownika
+   */
+  const deleteNotification = useCallback(async (uid, notificationId) => {
+    if (isFirebaseConfigured && db) {
+      try {
+        const { doc, deleteDoc } = await import("firebase/firestore");
+        await deleteDoc(doc(db, "users", uid, "notifications", notificationId));
+      } catch (e) {
+        console.warn("[Firestore] deleteNotification failed:", e.message);
+      }
+    }
+  }, []);
+
+  /**
    * Pobiera konfigurację globalną systemu
    */
   const loadSystemConfig = useCallback(async () => {
@@ -311,6 +325,7 @@ export function useFirestore() {
     sendSystemNotification,
     loadNotifications,
     markNotificationAsRead,
+    deleteNotification,
     loadSystemConfig,
     updateSystemConfig
   };

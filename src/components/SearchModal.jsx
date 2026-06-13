@@ -46,9 +46,15 @@ export default function SearchModal({ decks, stats, setStats, onNavigate, onSele
     return () => window.removeEventListener("keydown", handler);
   }, [onClose]);
 
+  const isPro = !!stats.isPro;
+
   // Build flat list of all unique cards with deck info
   const allCards = (() => {
-    const realDecks = decks.filter(d => d.id !== "srs" && d.id !== "starred");
+    const realDecks = decks.filter(d => {
+      if (d.id === "srs" || d.id === "starred") return false;
+      if (!isPro && d.isPremium) return false;
+      return true;
+    });
     const seen = new Set();
     const result = [];
     realDecks.forEach(deck => {
@@ -113,6 +119,8 @@ export default function SearchModal({ decks, stats, setStats, onNavigate, onSele
       window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.lang = "en-US";
+      const speed = localStorage.getItem("lingocards_speech_speed") || "1.0";
+      u.rate = parseFloat(speed);
       window.speechSynthesis.speak(u);
     }
   };

@@ -890,6 +890,67 @@ input:focus, textarea:focus, select:focus {
   border-color: var(--border-active) !important;
 }
 
+/* Light theme alert/warning text & icon color overrides for readability */
+[data-theme="sakura"] .text-rose-300,
+[data-theme="forest"] .text-rose-300,
+[data-theme="amber"] .text-rose-300,
+[data-theme="sunset"] .text-rose-300,
+[data-theme="lavender"] .text-rose-300,
+[data-theme="ocean"] .text-rose-300,
+[data-theme="glacier"] .text-rose-300 {
+  color: #dc2626 !important; /* red-600 */
+}
+
+[data-theme="sakura"] .text-rose-400,
+[data-theme="forest"] .text-rose-400,
+[data-theme="amber"] .text-rose-400,
+[data-theme="sunset"] .text-rose-400,
+[data-theme="lavender"] .text-rose-400,
+[data-theme="ocean"] .text-rose-400,
+[data-theme="glacier"] .text-rose-400 {
+  color: #ef4444 !important; /* red-500 */
+}
+
+[data-theme="sakura"] .text-emerald-300,
+[data-theme="forest"] .text-emerald-300,
+[data-theme="amber"] .text-emerald-300,
+[data-theme="sunset"] .text-emerald-300,
+[data-theme="lavender"] .text-emerald-300,
+[data-theme="ocean"] .text-emerald-300,
+[data-theme="glacier"] .text-emerald-300 {
+  color: #059669 !important; /* emerald-600 */
+}
+
+[data-theme="sakura"] .text-emerald-400,
+[data-theme="forest"] .text-emerald-400,
+[data-theme="amber"] .text-emerald-400,
+[data-theme="sunset"] .text-emerald-400,
+[data-theme="lavender"] .text-emerald-400,
+[data-theme="ocean"] .text-emerald-400,
+[data-theme="glacier"] .text-emerald-400 {
+  color: #10b981 !important; /* emerald-500 */
+}
+
+[data-theme="sakura"] .text-amber-300,
+[data-theme="forest"] .text-amber-300,
+[data-theme="amber"] .text-amber-300,
+[data-theme="sunset"] .text-amber-300,
+[data-theme="lavender"] .text-amber-300,
+[data-theme="ocean"] .text-amber-300,
+[data-theme="glacier"] .text-amber-300 {
+  color: #d97706 !important; /* amber-600 */
+}
+
+[data-theme="sakura"] .text-amber-400,
+[data-theme="forest"] .text-amber-400,
+[data-theme="amber"] .text-amber-400,
+[data-theme="sunset"] .text-amber-400,
+[data-theme="lavender"] .text-amber-400,
+[data-theme="ocean"] .text-amber-400,
+[data-theme="glacier"] .text-amber-400 {
+  color: #f59e0b !important; /* amber-500 */
+}
+
 /* Light theme card background adjustments */
 [data-theme="sakura"] .flashcard-front {
   background: linear-gradient(145deg, #fff0f5, #ffe4e1) !important;
