@@ -7,15 +7,15 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
   const [speechSpeed, setSpeechSpeed] = useState(localStorage.getItem("lingocards_speech_speed") || "1.0");
   const [autoplayAudio, setAutoplayAudio] = useState(localStorage.getItem("lingocards_autoplay") === "true");
   const [muteInterface, setMuteInterface] = useState(localStorage.getItem("lingocards_mute") === "true");
-  const [audioStyle, setAudioStyle] = useState(isPro ? (stats.audioStyle || "synth") : "synth");
-  const [confettiStyle, setConfettiStyle] = useState(isPro ? (stats.confettiStyle || "standard") : "standard");
+  const [audioStyle, setAudioStyle] = useState(isPro ? (stats.audioStyle || "synth") : (stats.audioStyle === "off" ? "off" : "synth"));
+  const [confettiStyle, setConfettiStyle] = useState(isPro ? (stats.confettiStyle || "standard") : (stats.confettiStyle === "off" ? "off" : "standard"));
   const [showConfirmReset, setShowConfirmReset] = useState(false);
   const [resetConfirmText, setResetConfirmText] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
-    setAudioStyle(isPro ? (stats.audioStyle || "synth") : "synth");
-    setConfettiStyle(isPro ? (stats.confettiStyle || "standard") : "standard");
+    setAudioStyle(isPro ? (stats.audioStyle || "synth") : (stats.audioStyle === "off" ? "off" : "synth"));
+    setConfettiStyle(isPro ? (stats.confettiStyle || "standard") : (stats.confettiStyle === "off" ? "off" : "standard"));
   }, [isPro, stats.audioStyle, stats.confettiStyle]);
 
   const handleSpeedChange = (e) => {
@@ -181,11 +181,15 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
               className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500/60 w-36"
             >
               {!isPro ? (
-                <option value="synth">Retro Synth 🎹</option>
+                <>
+                  <option value="synth">Retro Synth 🎹</option>
+                  <option value="off">Wyciszone 🔇</option>
+                </>
               ) : (
                 <>
                   <option value="synth">Retro Synth 🎹</option>
                   <option value="short">Krótkie Synth 🎵</option>
+                  <option value="bell">Dzwonki 🔔</option>
                   <option value="off">Wyciszone 🔇</option>
                 </>
               )}
@@ -207,11 +211,15 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
               className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500/60 w-36"
             >
               {!isPro ? (
-                <option value="standard">Standard 🎉</option>
+                <>
+                  <option value="standard">Standard 🎉</option>
+                  <option value="off">Wyłączone ❌</option>
+                </>
               ) : (
                 <>
                   <option value="standard">Standard 🎉</option>
                   <option value="stars">Gwiazdki ⭐</option>
+                  <option value="hearts">Serduszka ❤️</option>
                   <option value="off">Wyłączone ❌</option>
                 </>
               )}

@@ -18,6 +18,7 @@ export function playSound(type, style = "synth") {
     const ctx = getAudioContext();
     const now = ctx.currentTime;
     const isShort = style === "short";
+    const isBell = style === "bell";
     
     // helper to play a note
     const playNote = (freq, startTime, duration, waveType = "sine", volume = 0.08) => {
@@ -39,7 +40,11 @@ export function playSound(type, style = "synth") {
     };
 
     if (type === "success") {
-      if (isShort) {
+      if (isBell) {
+        // Soft high bell chime
+        playNote(1046.50, now, 0.4, "sine", 0.04); // C6
+        playNote(1318.51, now + 0.04, 0.6, "sine", 0.04); // E6
+      } else if (isShort) {
         playNote(659.25, now, 0.12, "triangle", 0.06); // E5 only
       } else {
         // Rising chord
@@ -47,7 +52,13 @@ export function playSound(type, style = "synth") {
         playNote(659.25, now + 0.08, 0.25, "triangle", 0.06); // E5
       }
     } else if (type === "levelup") {
-      if (isShort) {
+      if (isBell) {
+        // Celestial chime sequence
+        playNote(1046.50, now, 0.5, "sine", 0.05); // C6
+        playNote(1318.51, now + 0.08, 0.5, "sine", 0.05); // E6
+        playNote(1567.98, now + 0.16, 0.5, "sine", 0.05); // G6
+        playNote(2093.00, now + 0.24, 0.8, "sine", 0.05); // C7
+      } else if (isShort) {
         playNote(783.99, now, 0.1, "sine", 0.08); // G5
         playNote(1046.50, now + 0.06, 0.3, "sine", 0.08); // C6
       } else {
@@ -58,7 +69,13 @@ export function playSound(type, style = "synth") {
         playNote(1046.50, now + 0.24, 0.45, "sine", 0.08); // C6
       }
     } else if (type === "achievement") {
-      if (isShort) {
+      if (isBell) {
+        // Shimmering clean bell chord
+        playNote(1174.66, now, 0.6, "sine", 0.03); // D6
+        playNote(1567.98, now + 0.05, 0.6, "sine", 0.03); // G6
+        playNote(1975.53, now + 0.10, 0.6, "sine", 0.03); // B6
+        playNote(2349.32, now + 0.15, 1.0, "sine", 0.03); // D7
+      } else if (isShort) {
         playNote(987.77, now, 0.08, "sine", 0.06); // B5
         playNote(1174.66, now + 0.06, 0.35, "sine", 0.06); // D6
       } else {
@@ -131,7 +148,7 @@ class Particle {
     this.x += this.dx;
     this.y += this.dy;
     
-    if (this.type === "confetti" || this.type === "star") {
+    if (this.type === "confetti" || this.type === "star" || this.type === "heart") {
       this.dy += 0.15; // gravity
       this.dx *= 0.99; // drag
       this.angle += this.spin;
@@ -158,6 +175,14 @@ class Particle {
         glCtx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * this.size, -Math.sin((18 + i * 72) * Math.PI / 180) * this.size);
         glCtx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * (this.size / 2), -Math.sin((54 + i * 72) * Math.PI / 180) * (this.size / 2));
       }
+      glCtx.closePath();
+      glCtx.fill();
+    } else if (this.type === "heart") {
+      glCtx.beginPath();
+      const r = this.size / 2;
+      glCtx.moveTo(0, r / 2);
+      glCtx.bezierCurveTo(-r, -r, -2 * r, r / 3, 0, 2 * r);
+      glCtx.bezierCurveTo(2 * r, r / 3, r, -r, 0, r / 2);
       glCtx.closePath();
       glCtx.fill();
     } else if (this.type === "firework-spark") {
@@ -213,7 +238,11 @@ export function triggerConfetti(style = "standard") {
     const size = Math.random() * 8 + 6;
     const color = colors[Math.floor(Math.random() * colors.length)];
     const life = Math.random() * 40 + 60;
-    particles.push(new Particle(x, y, dx, dy, color, size, life, style === "stars" ? "star" : "confetti"));
+    let pType = "confetti";
+    if (style === "stars") pType = "star";
+    else if (style === "hearts") pType = "heart";
+    
+    particles.push(new Particle(x, y, dx, dy, color, size, life, pType));
   }
   
   // Right side burst
@@ -225,7 +254,12 @@ export function triggerConfetti(style = "standard") {
     const size = Math.random() * 8 + 6;
     const color = colors[Math.floor(Math.random() * colors.length)];
     const life = Math.random() * 40 + 60;
-    particles.push(new Particle(x, y, dx, dy, color, size, life, style === "stars" ? "star" : "confetti"));
+    
+    let pType = "confetti";
+    if (style === "stars") pType = "star";
+    else if (style === "hearts") pType = "heart";
+    
+    particles.push(new Particle(x, y, dx, dy, color, size, life, pType));
   }
 
   startAnimation();

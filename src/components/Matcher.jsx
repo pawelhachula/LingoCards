@@ -116,8 +116,8 @@ export default function Matcher({ selectedDeck, stats, setStats, onNavigate, onA
           onAddXp(50);
           
           setTimeout(() => {
-            playSound("achievement", stats.isPro ? (stats.audioStyle || "synth") : "synth");
-            triggerConfetti(stats.isPro ? (stats.confettiStyle || "standard") : "standard");
+            playSound("achievement", stats.isPro ? (stats.audioStyle || "synth") : (stats.audioStyle === "off" ? "off" : "synth"));
+            triggerConfetti(stats.isPro ? (stats.confettiStyle || "standard") : (stats.confettiStyle === "off" ? "off" : "standard"));
           }, 100);
         }
       } else {

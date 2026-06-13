@@ -433,7 +433,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
       setBestStreak(prev => Math.max(prev, nextStreak));
       if (nextStreak === 3 || nextStreak === 5 || nextStreak === 10) {
         setMomentumToast(`SERIA: ${nextStreak} POPRAWNYCH! 🔥`);
-        playSound("success", stats.isPro ? (stats.audioStyle || "synth") : "synth");
+        playSound("success", stats.isPro ? (stats.audioStyle || "synth") : (stats.audioStyle === "off" ? "off" : "synth"));
         setTimeout(() => setMomentumToast(""), 1500);
       }
     } else {
@@ -519,9 +519,9 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
         if (medalXp > 0) onAddXp(medalXp);
         
         setTimeout(() => {
-          playSound("achievement", stats.isPro ? (stats.audioStyle || "synth") : "synth");
+          playSound("achievement", stats.isPro ? (stats.audioStyle || "synth") : (stats.audioStyle === "off" ? "off" : "synth"));
           if (pct === 100) triggerFireworks();
-          triggerConfetti(stats.isPro ? (stats.confettiStyle || "standard") : "standard");
+          triggerConfetti(stats.isPro ? (stats.confettiStyle || "standard") : (stats.confettiStyle === "off" ? "off" : "standard"));
         }, 150);
       }
     }, 200);

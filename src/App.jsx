@@ -74,7 +74,7 @@ export default function App() {
   const { 
     saveStats, loadStats, saveDecks, loadDecks,
     syncUserMeta, loadAllUsers, updateUserField,
-    sendSystemNotification, loadNotifications, markNotificationAsRead,
+    sendSystemNotification, loadNotifications, markNotificationAsRead, deleteNotification,
     loadSystemConfig, updateSystemConfig
   } = useFirestore();
 
@@ -253,10 +253,18 @@ export default function App() {
 
   // Safety check to prevent free users from accessing premium decks through direct navigation/URL
   useEffect(() => {
-    if ((view === "learn" || view === "quiz" || view === "match") && !stats.isPro && selectedDeck?.isPremium) {
-      setView("dashboard");
+    if ((view === "learn" || view === "quiz" || view === "match") && !stats.isPro) {
+      if (!selectedDeck || selectedDeck.isPremium) {
+        // Find the first available free deck from decks state
+        const firstFreeDeck = decks.find(d => !d.isPremium);
+        if (firstFreeDeck) {
+          setSelectedDeck(firstFreeDeck);
+        } else {
+          setView("dashboard");
+        }
+      }
     }
-  }, [view, selectedDeck, stats.isPro]);
+  }, [view, selectedDeck, stats.isPro, decks]);
 
   const getStatsScore = (s) => {
     if (!s) return 0;
@@ -814,6 +822,17 @@ export default function App() {
     }
   };
 
+  const handleDeleteNotification = async (notificationId) => {
+    if (!currentUser) return;
+    try {
+      const uidKey = getFirestoreUidKey(currentUser.uid);
+      await deleteNotification(uidKey, notificationId);
+      setNotifications(prev => prev.filter(n => n.id !== notificationId));
+    } catch (e) {
+      console.warn("Failed to delete notification:", e.message);
+    }
+  };
+
 
 
   const handleAddXp = (amount) => {
@@ -853,7 +872,7 @@ export default function App() {
       
       if (newLevel > currentLevel) {
         setTimeout(() => {
-          playSound("levelup", prev.isPro ? (prev.audioStyle || "synth") : "synth");
+          playSound("levelup", prev.isPro ? (prev.audioStyle || "synth") : (prev.audioStyle === "off" ? "off" : "synth"));
           triggerFireworks();
           setLevelUpInfo({ oldLevel: currentLevel, newLevel: newLevel });
           setShowLevelUpModal(true);
@@ -1741,25 +1760,40 @@ export default function App() {
                     return (
                       <div 
                         key={notif.id}
-                        className={`p-4 rounded-xl border transition-all duration-300 relative group overflow-hidden ${
+                        onClick={() => {
+                          if (!notif.read) handleMarkNotificationAsRead(notif.id);
+                        }}
+                        className={`p-4 rounded-xl border transition-all duration-300 relative group overflow-hidden cursor-pointer ${
                           notif.read 
                             ? "bg-white/[0.02] border-white/5 opacity-70" 
-                            : "bg-gradient-to-r from-indigo-500/5 to-cyan-500/5 border-indigo-500/20 shadow-[0_4px_20px_rgba(99,102,241,0.05)]"
+                            : "bg-gradient-to-r from-indigo-500/5 to-cyan-500/5 border-indigo-500/20 shadow-[0_4px_20px_rgba(99,102,241,0.05)] hover:border-indigo-500/30"
                         }`}
                       >
                         {/* Read status dot */}
                         {!notif.read && (
-                          <div className="absolute top-4 right-4 h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
+                          <div className="absolute top-4 right-4 group-hover:right-11 h-2 w-2 rounded-full bg-rose-500 animate-pulse transition-all" />
                         )}
+
+                        {/* Delete button (trash icon) */}
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteNotification(notif.id);
+                          }}
+                          className="absolute top-3.5 right-3.5 p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 hover:text-white transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 z-10"
+                          title="Usuń powiadomienie"
+                        >
+                          <Icons.Trash2 size={13} />
+                        </button>
 
                         <div className="flex flex-col gap-2">
                           <div className="flex justify-between items-start gap-4">
-                            <h4 className={`font-bold ${notif.read ? "text-slate-300" : "text-white text-base"}`}>
+                            <h4 className={`font-bold pr-6 ${notif.read ? "text-slate-300" : "text-white text-base"}`}>
                               {notif.title || "Ogłoszenie systemowe"}
                             </h4>
                           </div>
                           
-                          <p className="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">
+                          <p className="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed pr-2">
                             {notif.message}
                           </p>
                           
@@ -1771,7 +1805,10 @@ export default function App() {
 
                             {!notif.read && (
                               <button
-                                onClick={() => handleMarkNotificationAsRead(notif.id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleMarkNotificationAsRead(notif.id);
+                                }}
                                 className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-300 hover:text-white transition-all text-xs font-bold"
                               >
                                 <Icons.Check size={12} />
