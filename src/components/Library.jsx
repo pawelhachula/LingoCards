@@ -36,8 +36,17 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
   const userDecks = systemDeckIds ? decks.filter(d => !systemDeckIds.has(d.id)) : [];
 
   const handleTogglePro = () => {
-    onUpdateStats({ isPro: !isPro });
-    playSound("success", stats.audioStyle || "synth");
+    if (isPro) {
+      onUpdateStats({ isPro: false });
+      playSound("success", stats.audioStyle || "synth");
+    } else {
+      if (onOpenPremium) {
+        onOpenPremium(null);
+      } else {
+        onUpdateStats({ isPro: true });
+        playSound("success", stats.audioStyle || "synth");
+      }
+    }
   };
 
 

@@ -384,6 +384,20 @@ export default function App() {
             shouldSave = true;
           }
         }
+        const cards = (updatedDeck.cards || []).map(card => {
+          let updatedCard = { ...card };
+          if (updatedCard.level !== updatedDeck.level) {
+            updatedCard.level = updatedDeck.level;
+            shouldSave = true;
+          }
+          if (updatedCard.isPremium !== !!updatedDeck.isPremium) {
+            updatedCard.isPremium = !!updatedDeck.isPremium;
+            shouldSave = true;
+          }
+          return updatedCard;
+        });
+        updatedDeck.cards = cards;
+
         return updatedDeck;
       });
       const loadedIds = new Set(loadedDecks.map(d => d.id));
@@ -1206,7 +1220,11 @@ export default function App() {
 
   // Compile Dynamic SRS Deck
   const todayStr = getLocalDateString();
-  const realDecksForSrs = decks.filter(d => d.id !== "starred" && d.id !== "srs");
+  const realDecksForSrs = decks.filter(d => {
+    if (d.id === "starred" || d.id === "srs") return false;
+    if (!stats.isPro && d.isPremium) return false;
+    return true;
+  });
   const allUniqueCards = [];
   const cardIdsSet = new Set();
   realDecksForSrs.flatMap(d => d.cards || []).forEach(c => {
@@ -1218,7 +1236,7 @@ export default function App() {
 
   const srsDueCards = allUniqueCards.filter(c => {
     const srs = stats.srsData?.[c.id];
-    if (!srs) return true;
+    if (!srs) return false;
     return srs.nextReviewDate <= todayStr;
   });
 
@@ -1274,7 +1292,11 @@ export default function App() {
           </div>
           <div>
             <h1 className="text-base font-extrabold tracking-tight text-white flex items-center gap-1.5">
-              LingoCards <span className="text-[10px] bg-indigo-500/15 text-indigo-400 px-2 py-0.5 rounded-full font-black border border-indigo-500/10">PRO</span>
+              LingoCards {stats.isPro ? (
+                <span className="text-[9px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full font-black border border-amber-500/20 shadow-sm shadow-amber-500/5">PRO</span>
+              ) : (
+                <span className="text-[9px] bg-white/5 text-slate-400 px-2 py-0.5 rounded-full font-bold border border-white/10">FREE</span>
+              )}
             </h1>
             <p className="text-[8px] text-slate-500 uppercase tracking-widest font-black mt-0.5 whitespace-nowrap">Premium Language Learning</p>
           </div>
@@ -1434,6 +1456,27 @@ export default function App() {
                 {notifications.filter(n => !n.read).length}
               </span>
             )}
+          </button>
+
+          {/* Premium / PRO Status Button */}
+          <button 
+            onClick={() => {
+              if (stats.isPro) {
+                handleSetStats({ isPro: false });
+                playSound("success", stats.audioStyle || "synth");
+              } else {
+                handleOpenPremiumModal(null);
+              }
+            }}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border scale-hover shrink-0 text-xs font-bold transition-all ${
+              stats.isPro 
+                ? "bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-md shadow-amber-500/5 font-extrabold" 
+                : "bg-white/5 text-slate-400 border-white/10 hover:text-white"
+            }`}
+            title={stats.isPro ? "Masz aktywny pakiet PRO! Kliknij, aby zmienić na FREE (symulacja)" : "Kliknij, aby odblokować wersję PRO"}
+          >
+            <Icons.Crown size={14} className={stats.isPro ? "fill-amber-400 text-amber-400" : "text-slate-400"} />
+            <span className="hidden sm:inline">{stats.isPro ? "PRO" : "FREE"}</span>
           </button>
 
           {/* Daily streak indicator */}
@@ -1900,10 +1943,18 @@ export default function App() {
 
             <div>
               <span className="text-[9px] font-black text-amber-400 uppercase tracking-widest bg-amber-500/10 px-3 py-0.5 rounded-full border border-amber-500/20">✦ Plan PRO</span>
-              <h3 className="text-xl font-black text-white mt-2 tracking-tight">Odblokuj zaawansowane lekcje</h3>
-              <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
-                Talia <strong className="text-white">"{premiumTriggerDeck?.title}"</strong> zawiera zaawansowane słownictwo na poziomie <strong className="text-indigo-400">{premiumTriggerDeck?.level}</strong> i wymaga konta premium.
-              </p>
+              <h3 className="text-xl font-black text-white mt-2 tracking-tight">
+                {premiumTriggerDeck ? "Odblokuj zaawansowane lekcje" : "Odblokuj wersję PRO"}
+              </h3>
+              {premiumTriggerDeck ? (
+                <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
+                  Talia <strong className="text-white">"{premiumTriggerDeck?.title}"</strong> zawiera zaawansowane słownictwo na poziomie <strong className="text-indigo-400">{premiumTriggerDeck?.level}</strong> i wymaga konta premium.
+                </p>
+              ) : (
+                <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
+                  Uzyskaj pełny dostęp do wszystkich talii (od poziomu B1 do C2), specjalistycznego słownictwa oraz dodatkowych motywów graficznych.
+                </p>
+              )}
             </div>
 
             {/* Benefits list */}

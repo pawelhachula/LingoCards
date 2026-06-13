@@ -14,6 +14,20 @@ const cleanWord = (str) => {
   return cleaned;
 };
 
+const getCardLevel = (card) => {
+  if (!card) return "B1";
+  if (card.level) return card.level;
+  const id = card.id || "";
+  if (id.startsWith("everyday")) return "A2";
+  if (id.startsWith("travel")) return "A2";
+  if (id.startsWith("restaurant")) return "B1";
+  if (id.startsWith("business")) return "B2";
+  if (id.startsWith("tech")) return "B2";
+  if (id.startsWith("advanced")) return "C1";
+  if (id.startsWith("idioms")) return "C2";
+  return "B1";
+};
+
 export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavigate, onAddXp }) {
   const [direction, setDirection] = useState("default"); // 'default' | 'reversed'
   const [quizMode, setQuizMode] = useState(null); // 'choice' | 'spell'
@@ -77,7 +91,8 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
       const shuffledCards = [...deckCards].sort(() => Math.random() - 0.5);
       
       // Gather ALL translations across all decks as a wide distraction pool
-      const allDecksCards = decks.flatMap(d => d.cards || []);
+      const filteredDecks = stats?.isPro ? decks : decks.filter(d => !d.isPremium);
+      const allDecksCards = filteredDecks.flatMap(d => d.cards || []);
       
       const preparedQuestions = shuffledCards.map((card) => {
         if (quizMode === 'choice') {
@@ -310,7 +325,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
               className={`flex-1 py-2.5 px-4 rounded-xl border text-xs font-bold uppercase tracking-wide transition-all ${
                 isDefault
                   ? 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30 shadow-sm'
-                  : 'text-slate-400 border-white/10 hover:text-white hover:bg-white/5'
+                  : 'text-[var(--text-secondary)] border-[var(--border-light)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-input)]'
               }`}
             >
               ENG → PL
@@ -320,7 +335,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
               className={`flex-1 py-2.5 px-4 rounded-xl border text-xs font-bold uppercase tracking-wide transition-all ${
                 !isDefault
                   ? 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30 shadow-sm'
-                  : 'text-slate-400 border-white/10 hover:text-white hover:bg-white/5'
+                  : 'text-[var(--text-secondary)] border-[var(--border-light)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-input)]'
               }`}
             >
               PL → ENG
@@ -382,7 +397,8 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
               cx="64"
               cy="64"
               r="52"
-              stroke="rgba(255,255,255,0.03)"
+              stroke="var(--text-muted)"
+              opacity={0.15}
               strokeWidth="10"
               fill="transparent"
             />
@@ -434,7 +450,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
             {quizMode === 'choice' ? "Test wyboru" : "Pisownia słówek"}
           </h2>
         </div>
-        <span className="text-xs font-bold text-slate-300 bg-white/5 border border-white/10 px-3.5 py-1.5 rounded-xl">
+        <span className="text-xs font-bold text-[var(--text-secondary)] bg-[var(--bg-input)] border border-[var(--border-light)] px-3.5 py-1.5 rounded-xl">
           Pytanie {currentIndex + 1} z {questions.length}
         </span>
       </div>
@@ -451,9 +467,14 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
       <div className="glass-card p-8 flex flex-col gap-6 items-center">
         {quizMode === 'choice' ? (
           <>
-            <span className="text-[10px] bg-indigo-500/10 text-indigo-400 font-extrabold uppercase px-3.5 py-1 rounded-full border border-indigo-500/20 tracking-wider">
-              {direction === 'default' ? 'Przetłumacz na polski' : 'Przetłumacz na angielski'}
-            </span>
+            <div className="flex items-center gap-2 flex-wrap justify-center">
+              <span className="text-[10px] bg-indigo-500/10 text-indigo-400 font-extrabold uppercase px-3.5 py-1 rounded-full border border-indigo-500/20 tracking-wider">
+                {direction === 'default' ? 'Przetłumacz na polski' : 'Przetłumacz na angielski'}
+              </span>
+              <span className="text-[10px] font-extrabold tracking-wider text-[var(--text-secondary)] bg-[var(--bg-input)] border border-[var(--border-light)] px-3 py-1 rounded-full uppercase font-mono">
+                {getCardLevel(currentQuestion.card)}
+              </span>
+            </div>
             <div className="flex items-center gap-3">
               <h3 className="text-3xl font-black text-white">{currentQuestion.prompt}</h3>
               {direction === 'default' && (
@@ -475,7 +496,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
             {/* Selection Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 w-full mt-4">
               {currentQuestion.options.map((option, idx) => {
-                let btnStyle = "bg-white/5 border-white/10 text-slate-200 hover:bg-white/10 hover:border-white/20";
+                let btnStyle = "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:bg-[var(--bg-card)] hover:border-[var(--border-active)]";
                 
                 if (isAnswered) {
                   if (option === currentQuestion.correctAnswer) {
@@ -483,7 +504,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
                   } else if (selectedAnswer === option) {
                     btnStyle = "bg-rose-500/15 border-rose-500/40 text-rose-300 pointer-events-none";
                   } else {
-                    btnStyle = "bg-white/5 border-white/5 text-slate-600 opacity-40 pointer-events-none";
+                    btnStyle = "bg-[var(--bg-input)] border-[var(--border-light)] text-slate-600 opacity-40 pointer-events-none";
                   }
                 }
 
@@ -508,9 +529,14 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
           </>
         ) : (
           <>
-            <span className="text-[10px] bg-cyan-500/10 text-cyan-400 font-extrabold uppercase px-3.5 py-1 rounded-full border border-cyan-500/20 tracking-wider">
-              {direction === 'default' ? 'Przetłumacz na angielski' : 'Przetłumacz na polski'}
-            </span>
+            <div className="flex items-center gap-2 flex-wrap justify-center">
+              <span className="text-[10px] bg-cyan-500/10 text-cyan-400 font-extrabold uppercase px-3.5 py-1 rounded-full border border-cyan-500/20 tracking-wider">
+                {direction === 'default' ? 'Przetłumacz na angielski' : 'Przetłumacz na polski'}
+              </span>
+              <span className="text-[10px] font-extrabold tracking-wider text-[var(--text-secondary)] bg-[var(--bg-input)] border border-[var(--border-light)] px-3 py-1 rounded-full uppercase font-mono">
+                {getCardLevel(currentQuestion.card)}
+              </span>
+            </div>
             
             <h3 className="text-3xl font-black text-white text-center leading-snug">{currentQuestion.prompt}</h3>
 
@@ -523,7 +549,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
                   onChange={(e) => setSpellingInput(e.target.value)}
                   readOnly={isAnswered}
                   placeholder={isAnswered ? 'Naciśnij Enter, aby przejść dalej...' : (direction === 'default' ? 'Wpisz słówko po angielsku...' : 'Wpisz tłumaczenie po polsku...')}
-                  className="flex-grow bg-[var(--bg-input,#0d0d1a)] border border-white/10 rounded-xl px-4 py-3.5 text-[var(--text-primary,#fff)] focus:outline-none focus:border-cyan-500/60 font-semibold placeholder-slate-600"
+                  className="flex-grow bg-[var(--bg-input,#0d0d1a)] border border-[var(--border-light)] rounded-xl px-4 py-3.5 text-[var(--text-primary,#fff)] focus:outline-none focus:border-cyan-500/60 font-semibold placeholder-slate-600"
                 />
                 
                 <button type="submit" className="btn btn-primary bg-cyan-600 hover:bg-cyan-500 shadow-cyan-600/10">

@@ -176,6 +176,18 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
     c.polish.toLowerCase().includes(favoritesSearch.toLowerCase())
   );
 
+  const wordsMonthAgo = chartData[0]?.value || 0;
+
+  const getWordsPlural = (count) => {
+    if (count === 1) return "słowo";
+    const lastDigit = count % 10;
+    const lastTwoDigits = count % 100;
+    if (lastDigit >= 2 && lastDigit <= 4 && (lastTwoDigits < 10 || lastTwoDigits >= 20)) {
+      return "słowa";
+    }
+    return "słów";
+  };
+
   return (
     <div className="flex flex-col gap-8 animate-slide-in">
       
@@ -279,7 +291,7 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
               <Icons.TrendingUp size={16} />
             </div>
             <p className="text-xs text-slate-300 font-semibold leading-tight">
-              Miesiąc temu znałeś <span className="text-indigo-400 font-black">250</span> słów.<br />
+              Miesiąc temu znałeś <span className="text-indigo-400 font-black">{wordsMonthAgo}</span> {getWordsPlural(wordsMonthAgo)}.<br />
               Teraz znasz już <span className="text-emerald-400 font-black">{learnedCount}</span>!
             </p>
           </div>
@@ -318,13 +330,14 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
                       y1={y} 
                       x2={width - padding} 
                       y2={y} 
-                      stroke="rgba(255,255,255,0.03)" 
+                      stroke="var(--text-muted)" 
+                      opacity={0.15}
                       strokeDasharray="4 4" 
                     />
                     <text 
                       x={padding - 8} 
                       y={y + 3} 
-                      fill="rgba(255,255,255,0.3)" 
+                      fill="var(--text-muted)" 
                       fontSize="9" 
                       fontWeight="bold"
                       textAnchor="end"
@@ -374,7 +387,7 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
                       <text 
                         x={p.x} 
                         y={height - padding + 15} 
-                        fill="rgba(255,255,255,0.4)" 
+                        fill="var(--text-muted)" 
                         fontSize="8.5" 
                         fontWeight="black" 
                         textAnchor="middle"

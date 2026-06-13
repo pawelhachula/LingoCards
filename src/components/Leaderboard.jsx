@@ -25,13 +25,29 @@ export default function Leaderboard({ stats, onNavigate, loadAllUsers, systemCon
     return () => { active = false; };
   }, [loadAllUsers]);
 
+  const getRankTitle = (lvl) => {
+    if (lvl >= 100) return "Tytan Słownictwa 🌋";
+    if (lvl >= 81) return "Arcymistrz ⚡";
+    if (lvl >= 66) return "Mistrz 👑";
+    if (lvl >= 51) return "Mentor 🏛️";
+    if (lvl >= 41) return "Ekspert 🧠";
+    if (lvl >= 33) return "Uczony 🎓";
+    if (lvl >= 26) return "Poliglota 🗣️";
+    if (lvl >= 20) return "Praktyk 🛠️";
+    if (lvl >= 15) return "Poszukiwacz 🗺️";
+    if (lvl >= 10) return "Odkrywca 🧭";
+    if (lvl >= 6) return "Adept ⚙️";
+    if (lvl >= 3) return "Uczeń 📚";
+    return "Nowicjusz 🌱";
+  };
+
   // Competitors Mock Database
   const mockCompetitors = [
-    { username: "Alex_Lingo", avatar: "🦊", xp: 2200, streak: 12, words: 62, level: 8, title: "Explorer" },
-    { username: "Emily_Eng", avatar: "🦉", xp: 1450, streak: 8, words: 45, level: 5, title: "Learner" },
-    { username: "Lucas_Learn", avatar: "🦁", xp: 620, streak: 3, words: 24, level: 3, title: "Beginner" },
-    { username: "Sophia_Word", avatar: "🦄", xp: 1850, streak: 9, words: 54, level: 7, title: "Explorer" },
-    { username: "Kamil_Fiszka", avatar: "🐼", xp: 1100, streak: 5, words: 38, level: 4, title: "Learner" },
+    { username: "Alex_Lingo", avatar: "🦊", xp: 2200, streak: 12, words: 62, level: 8, title: getRankTitle(8) },
+    { username: "Emily_Eng", avatar: "🦉", xp: 1450, streak: 8, words: 45, level: 5, title: getRankTitle(5) },
+    { username: "Lucas_Learn", avatar: "🦁", xp: 620, streak: 3, words: 24, level: 3, title: getRankTitle(3) },
+    { username: "Sophia_Word", avatar: "🦄", xp: 1850, streak: 9, words: 54, level: 7, title: getRankTitle(7) },
+    { username: "Kamil_Fiszka", avatar: "🐼", xp: 1100, streak: 5, words: 38, level: 4, title: getRankTitle(4) },
   ];
 
   // User details
@@ -39,7 +55,7 @@ export default function Leaderboard({ stats, onNavigate, loadAllUsers, systemCon
   const userStreak = stats.streak || 0;
   const userWords = Object.keys(stats.learnedCards || {}).length;
   const userLevel = stats.level || 1;
-  const userTitle = userLevel >= 15 ? "Master" : userLevel >= 10 ? "Scholar" : userLevel >= 6 ? "Explorer" : userLevel >= 3 ? "Learner" : "Beginner";
+  const userTitle = getRankTitle(userLevel);
 
   const currentUsernameLower = (currentUser?.username || stats.username || "Ty").toLowerCase();
 
@@ -56,7 +72,7 @@ export default function Leaderboard({ stats, onNavigate, loadAllUsers, systemCon
       streak: u.streak || 0,
       words: u.wordsCount || 0,
       level: u.level || 1,
-      title: u.level >= 15 ? "Master" : u.level >= 10 ? "Scholar" : u.level >= 6 ? "Explorer" : u.level >= 3 ? "Learner" : "Beginner"
+      title: getRankTitle(u.level || 1)
     }));
 
   // Combine real and mock, avoiding duplicate usernames

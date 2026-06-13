@@ -379,9 +379,17 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
                 <span className="text-slate-300 font-bold text-[10px]">
                   {(() => {
                     const lvl = stats.level || 1;
-                    if (lvl >= 15) return "Mistrz 👑";
-                    if (lvl >= 10) return "Uczony 🎓";
-                    if (lvl >= 6) return "Odkrywca 🧭";
+                    if (lvl >= 100) return "Tytan Słownictwa 🌋";
+                    if (lvl >= 81) return "Arcymistrz ⚡";
+                    if (lvl >= 66) return "Mistrz 👑";
+                    if (lvl >= 51) return "Mentor 🏛️";
+                    if (lvl >= 41) return "Ekspert 🧠";
+                    if (lvl >= 33) return "Uczony 🎓";
+                    if (lvl >= 26) return "Poliglota 🗣️";
+                    if (lvl >= 20) return "Praktyk 🛠️";
+                    if (lvl >= 15) return "Poszukiwacz 🗺️";
+                    if (lvl >= 10) return "Odkrywca 🧭";
+                    if (lvl >= 6) return "Adept ⚙️";
                     if (lvl >= 3) return "Uczeń 📚";
                     return "Nowicjusz 🌱";
                   })()}

@@ -74,7 +74,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
         const todayStr = getLocalDateString();
         filteredCards = filteredCards.filter(c => {
           const srs = stats.srsData?.[c.id];
-          if (!srs) return true;
+          if (!srs) return false;
           return srs.nextReviewDate <= todayStr;
         });
       }
@@ -144,8 +144,14 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
       }, 300);
 
       if (localStorage.getItem("lingocards_autoplay") === "true") {
-        if (currentCard?.english) {
-          playTTS(currentCard.english, "word");
+        if (reversedMode) {
+          if (currentCard?.english) {
+            playTTS(currentCard.english, "word", null, "en-US");
+          }
+        } else {
+          if (currentCard?.polish) {
+            playTTS(currentCard.polish, "word", null, "pl-PL");
+          }
         }
       }
 
@@ -160,7 +166,12 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     if (!isFlipped && localStorage.getItem("lingocards_autoplay") === "true") {
       if (!reversedMode && currentCard?.english) {
         const timer = setTimeout(() => {
-          playTTS(currentCard.english, "word");
+          playTTS(currentCard.english, "word", null, "en-US");
+        }, 350);
+        return () => clearTimeout(timer);
+      } else if (reversedMode && currentCard?.polish) {
+        const timer = setTimeout(() => {
+          playTTS(currentCard.polish, "word", null, "pl-PL");
         }, 350);
         return () => clearTimeout(timer);
       }
@@ -260,17 +271,17 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     }
   }, [stopAmbientSound]);
 
-  const playTTS = (text, type, e) => {
+  const playTTS = (text, type, e, lang = 'en-US') => {
     if (e) e.stopPropagation();
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
+      utterance.lang = lang;
       
       const voices = window.speechSynthesis.getVoices();
-      const englishVoice = voices.find(voice => voice.lang.startsWith('en-'));
-      if (englishVoice) {
-        utterance.voice = englishVoice;
+      const preferredVoice = voices.find(voice => voice.lang.toLowerCase().startsWith(lang.split('-')[0].toLowerCase()));
+      if (preferredVoice) {
+        utterance.voice = preferredVoice;
       }
       
       const speed = localStorage.getItem("lingocards_speech_speed") || "1.0";
@@ -559,7 +570,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
         const todayStr = getLocalDateString();
         filteredCards = filteredCards.filter(c => {
           const srs = stats.srsData?.[c.id];
-          if (!srs) return true;
+          if (!srs) return false;
           return srs.nextReviewDate <= todayStr;
         });
       }
@@ -832,7 +843,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                   </div>
                   
                   <div className="flex items-center gap-3">
-                    {!reversedMode && speakingType === "word" && (
+                    {speakingType === "word" && (
                       <div className="sound-wave">
                         <div className="sound-wave-bar" />
                         <div className="sound-wave-bar" />
@@ -840,19 +851,23 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                         <div className="sound-wave-bar" />
                       </div>
                     )}
-                    {!reversedMode && (
-                      <button 
-                        onClick={(e) => playTTS(currentCard.english, "word", e)}
-                        className={`p-2.5 rounded-xl transition-all scale-hover ${
-                          speakingType === "word" 
-                            ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30" 
-                            : "bg-white/5 text-slate-400 hover:text-white"
-                        }`}
-                        title="Odsłuchaj wymowę"
-                      >
-                        <Icons.Volume2 size={18} />
-                      </button>
-                    )}
+                    <button 
+                      onClick={(e) => {
+                        if (reversedMode) {
+                          playTTS(currentCard.polish, "word", e, "pl-PL");
+                        } else {
+                          playTTS(currentCard.english, "word", e, "en-US");
+                        }
+                      }}
+                      className={`p-2.5 rounded-xl transition-all scale-hover ${
+                        speakingType === "word" 
+                          ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30" 
+                          : "bg-white/5 text-slate-400 hover:text-white"
+                      }`}
+                      title="Odsłuchaj wymowę"
+                    >
+                      <Icons.Volume2 size={18} />
+                    </button>
                   </div>
                 </div>
                 
@@ -937,7 +952,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                   </div>
                   
                   <div className="flex items-center gap-3">
-                    {speakingType === "example" && (
+                    {speakingType === "word" && (
                       <div className="sound-wave">
                         <div className="sound-wave-bar" />
                         <div className="sound-wave-bar" />
@@ -945,18 +960,30 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                         <div className="sound-wave-bar" />
                       </div>
                     )}
-                    {reversedMode && (
-                      <button 
-                        onClick={(e) => playTTS(currentCard.english, "word", e)}
-                        className={`p-2.5 rounded-xl transition-all scale-hover ${
-                          speakingType === "word" 
-                            ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30" 
-                            : "bg-white/5 text-slate-400 hover:text-white"
-                        }`}
-                        title="Odsłuchaj wymowę"
-                      >
-                        <Icons.Volume2 size={18} />
-                      </button>
+                    <button 
+                      onClick={(e) => {
+                        if (reversedMode) {
+                          playTTS(currentCard.english, "word", e, "en-US");
+                        } else {
+                          playTTS(currentCard.polish, "word", e, "pl-PL");
+                        }
+                      }}
+                      className={`p-2.5 rounded-xl transition-all scale-hover ${
+                        speakingType === "word" 
+                          ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30" 
+                          : "bg-white/5 text-slate-400 hover:text-white"
+                      }`}
+                      title="Odsłuchaj wymowę"
+                    >
+                      <Icons.Volume2 size={18} />
+                    </button>
+                    {speakingType === "example" && (
+                      <div className="sound-wave">
+                        <div className="sound-wave-bar" />
+                        <div className="sound-wave-bar" />
+                        <div className="sound-wave-bar" />
+                        <div className="sound-wave-bar" />
+                      </div>
                     )}
                     {!reversedMode && currentCard.exampleEnglish && (
                       <button 

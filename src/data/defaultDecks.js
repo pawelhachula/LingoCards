@@ -14778,7 +14778,7 @@ const brandNewDecks = [
       {
         "id": "id-c2-29",
         "english": "Touch base",
-        "polish": "skontaktować się krótko",
+        "polish": "skontaktować się na chwilę / omówić krótko status",
         "pronunciation": "/tʌtʃ beɪs/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Call me later and we'll touch base.",
@@ -14814,8 +14814,15 @@ export const defaultDecks = [...rawDefaultDecks, ...extraIdiomDecks, ...brandNew
     }
   }
 
+  const cards = (deck.cards || []).map(card => ({
+    ...card,
+    level: deck.level,
+    isPremium
+  }));
+
   return {
     ...deck,
+    cards,
     type,
     isPremium
   };
