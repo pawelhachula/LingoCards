@@ -313,7 +313,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
                   : 'text-slate-400 border-white/10 hover:text-white hover:bg-white/5'
               }`}
             >
-              🇬🇧 ENG → PL
+              ENG → PL
             </button>
             <button
               onClick={() => setDirection('reversed')}
@@ -323,7 +323,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
                   : 'text-slate-400 border-white/10 hover:text-white hover:bg-white/5'
               }`}
             >
-              🇵🇱 PL → ENG
+              PL → ENG
             </button>
           </div>
         </div>

@@ -553,8 +553,8 @@ export default function Creator({
               </div>
             )}
             {customDecks.length === 0 ? (
-              <div className="bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs p-4.5 rounded-xl flex flex-col gap-2">
-                <div className="flex items-center gap-2">
+              <div className="bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs p-4.5 rounded-xl flex flex-col items-center text-center gap-2">
+                <div className="flex items-center justify-center gap-2">
                   <Icons.AlertCircle className="text-amber-400" size={16} />
                   <span className="font-extrabold uppercase tracking-wider">Brak własnych talii</span>
                 </div>

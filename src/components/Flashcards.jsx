@@ -4,6 +4,7 @@ import { playSound, triggerConfetti, triggerFireworks } from "../utils/effects";
 import { getLocalDateString } from "../utils/date";
 
 const getCardLevel = (card) => {
+  if (!card) return "B1";
   if (card.level) return card.level;
   const id = card.id || "";
   if (id.startsWith("everyday")) return "A2";
@@ -65,8 +66,8 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
   }, [selectedDeck]);
 
   useEffect(() => {
-    if (selectedDeck && selectedDeck.cards) {
-      let filteredCards = [...selectedDeck.cards];
+    if (selectedDeck) {
+      let filteredCards = [...(selectedDeck.cards || [])];
       if (srsOnly) {
         const todayStr = getLocalDateString();
         filteredCards = filteredCards.filter(c => {
@@ -85,6 +86,20 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
       setSpeakingType(null);
       resetSpeechState();
       setSessionStartTime(Date.now());
+      setSessionElapsed(0);
+      setMissedCards([]);
+      setBestStreak(0);
+    } else {
+      cardsRef.current = [];
+      currentIndexRef.current = 0;
+      setCards([]);
+      setCurrentIndex(0);
+      setIsFlipped(false);
+      setSessionResults({ known: 0, unknown: 0 });
+      setCompleted(false);
+      setSpeakingType(null);
+      resetSpeechState();
+      setSessionStartTime(null);
       setSessionElapsed(0);
       setMissedCards([]);
       setBestStreak(0);
@@ -573,7 +588,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     setBestStreak(0);
   };
 
-  if (cards.length === 0) {
+  if (cards.length === 0 || !currentCard) {
     return (
       <div className="glass-card p-12 text-center flex flex-col items-center gap-6 max-w-md mx-auto animate-slide-in">
         <div className="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center border border-emerald-500/20">
@@ -603,7 +618,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     );
   }
 
-  const isStarred = stats.starredCards?.[currentCard.id];
+  const isStarred = currentCard ? stats.starredCards?.[currentCard.id] : false;
 
   return (
     <div className="flex flex-col items-center gap-6 max-w-2xl mx-auto w-full animate-slide-in">
