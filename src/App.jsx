@@ -1463,19 +1463,16 @@ export default function App() {
           {/* Premium / PRO Status Button */}
           <button 
             onClick={() => {
-              if (stats.isPro) {
-                handleSetStats({ isPro: false });
-                playSound("success", stats.audioStyle || "synth");
-              } else {
+              if (!stats.isPro) {
                 handleOpenPremiumModal(null);
               }
             }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border scale-hover shrink-0 text-xs font-bold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border shrink-0 text-xs font-bold transition-all ${
               stats.isPro 
-                ? "bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-md shadow-amber-500/5 font-extrabold" 
-                : "bg-white/5 text-slate-400 border-white/10 hover:text-white"
+                ? "bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-md shadow-amber-500/5 font-extrabold cursor-default" 
+                : "bg-white/5 text-slate-400 border-white/10 hover:text-white scale-hover"
             }`}
-            title={stats.isPro ? "Masz aktywny pakiet PRO! Kliknij, aby zmienić na FREE (symulacja)" : "Kliknij, aby odblokować wersję PRO"}
+            title={stats.isPro ? "Masz aktywny pakiet PRO!" : "Kliknij, aby odblokować wersję PRO"}
           >
             <Icons.Crown size={14} className={stats.isPro ? "fill-amber-400 text-amber-400" : "text-slate-400"} />
             <span className="hidden sm:inline">{stats.isPro ? "PRO" : "FREE"}</span>

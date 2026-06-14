@@ -396,13 +396,13 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
           
           {/* Search Box */}
           <div className="relative w-full md:w-96">
-            <Icons.Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+            <Icons.Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-5 h-5" />
             <input
               type="text"
               placeholder="Szukaj po nazwie użytkownika lub e-mail..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-11 pr-4 py-2.5 bg-black/40 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-rose-500/50 transition-colors text-sm"
+              className="w-full pl-11 pr-4 py-2.5 bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--border-active)] transition-colors text-sm"
             />
           </div>
 
@@ -427,11 +427,11 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2 border-t border-white/5">
           {/* Role Filter */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Rola</label>
+            <label className="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider">Rola</label>
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="w-full px-3 py-2 bg-black/30 border border-white/10 rounded-lg text-white text-xs focus:outline-none focus:border-rose-500/50 transition-colors"
+              className="w-full px-3 py-2 bg-[var(--bg-input)] border border-[var(--border-light)] rounded-lg text-[var(--text-primary)] text-xs focus:outline-none focus:border-[var(--border-active)] transition-colors"
             >
               <option value="all" className="bg-[var(--bg-main)]">Wszyscy</option>
               <option value="user" className="bg-[var(--bg-main)]">Użytkownicy (User)</option>
@@ -441,11 +441,11 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
 
           {/* Plan Filter */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Plan (Premium)</label>
+            <label className="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider">Plan (Premium)</label>
             <select
               value={planFilter}
               onChange={(e) => setPlanFilter(e.target.value)}
-              className="w-full px-3 py-2 bg-black/30 border border-white/10 rounded-lg text-white text-xs focus:outline-none focus:border-rose-500/50 transition-colors"
+              className="w-full px-3 py-2 bg-[var(--bg-input)] border border-[var(--border-light)] rounded-lg text-[var(--text-primary)] text-xs focus:outline-none focus:border-[var(--border-active)] transition-colors"
             >
               <option value="all" className="bg-[var(--bg-main)]">Wszyscy</option>
               <option value="free" className="bg-[var(--bg-main)]">Darmowy (FREE)</option>
@@ -455,11 +455,11 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
 
           {/* Status Filter */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Status</label>
+            <label className="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider">Status</label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-3 py-2 bg-black/30 border border-white/10 rounded-lg text-white text-xs focus:outline-none focus:border-rose-500/50 transition-colors"
+              className="w-full px-3 py-2 bg-[var(--bg-input)] border border-[var(--border-light)] rounded-lg text-[var(--text-primary)] text-xs focus:outline-none focus:border-[var(--border-active)] transition-colors"
             >
               <option value="all" className="bg-[var(--bg-main)]">Wszyscy</option>
               <option value="active" className="bg-[var(--bg-main)]">Aktywni</option>
@@ -469,11 +469,11 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
 
           {/* Sort Filter */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Sortowanie</label>
+            <label className="text-[10px] uppercase font-bold text-[var(--text-muted)] tracking-wider">Sortowanie</label>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-full px-3 py-2 bg-black/30 border border-white/10 rounded-lg text-white text-xs focus:outline-none focus:border-rose-500/50 transition-colors"
+              className="w-full px-3 py-2 bg-[var(--bg-input)] border border-[var(--border-light)] rounded-lg text-[var(--text-primary)] text-xs focus:outline-none focus:border-[var(--border-active)] transition-colors"
             >
               <option value="newest" className="bg-[var(--bg-main)]">Najnowsi</option>
               <option value="oldest" className="bg-[var(--bg-main)]">Najstarsi</option>

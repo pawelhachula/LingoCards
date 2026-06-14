@@ -495,8 +495,8 @@ export default function Dashboard({
           </div>
           
           {/* Growing flame effect indicator */}
-          <div className="flex items-center gap-1.5 bg-black/20 px-2.5 py-1 rounded-xl border border-white/5 self-start sm:self-auto text-[10px]">
-            <span className="text-slate-400 font-bold">Moc płomienia:</span>
+          <div className="flex items-center gap-1.5 bg-[var(--bg-input)] px-2.5 py-1 rounded-xl border border-[var(--border-light)] self-start sm:self-auto text-[10px]">
+            <span className="text-[var(--text-muted)] font-bold">Moc płomienia:</span>
             <span className={`font-black uppercase ${
               stats.streak >= 30 
                 ? "text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 animate-pulse" 
@@ -540,7 +540,7 @@ export default function Dashboard({
                         : "bg-amber-500/10 border-amber-500/40 text-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.2)]"
                     : day.isToday
                       ? "bg-white/5 border-indigo-500/40 text-indigo-400"
-                      : "bg-black/20 border-white/5 text-slate-600 hover:border-white/10"
+                      : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-muted)] hover:border-[var(--border-active)]"
                 }`}
               >
                 {day.hasStudied ? (
@@ -584,7 +584,7 @@ export default function Dashboard({
                   className={`p-3 rounded-xl border flex items-center gap-3 transition-all duration-300 ${
                     unlocked 
                       ? "bg-amber-600/5 border-amber-600/30 text-amber-500 shadow-[0_0_12px_rgba(217,119,6,0.1)] hover:border-amber-500/40" 
-                      : "bg-black/20 border-white/5 text-slate-500 opacity-40"
+                      : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-muted)] opacity-60"
                   }`}
                 >
                   <div className={`p-2 rounded-lg border flex items-center justify-center shrink-0 ${unlocked ? "border-amber-500/20 bg-amber-500/10" : "border-transparent bg-white/5"}`}>
@@ -612,7 +612,7 @@ export default function Dashboard({
                   className={`p-3 rounded-xl border flex items-center gap-3 transition-all duration-300 ${
                     unlocked 
                       ? "bg-slate-400/5 border-slate-400/30 text-slate-300 shadow-[0_0_12px_rgba(148,163,184,0.1)] hover:border-slate-300/40" 
-                      : "bg-black/20 border-white/5 text-slate-500 opacity-40"
+                      : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-muted)] opacity-60"
                   }`}
                 >
                   <div className={`p-2 rounded-lg border flex items-center justify-center shrink-0 ${unlocked ? "border-slate-300/20 bg-slate-300/10" : "border-transparent bg-white/5"}`}>
@@ -640,7 +640,7 @@ export default function Dashboard({
                   className={`p-3 rounded-xl border flex items-center gap-3 transition-all duration-300 ${
                     unlocked 
                       ? "bg-yellow-500/5 border-yellow-500/30 text-yellow-500 shadow-[0_0_12px_rgba(234,179,8,0.1)] hover:border-yellow-400/40" 
-                      : "bg-black/20 border-white/5 text-slate-500 opacity-40"
+                      : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-muted)] opacity-60"
                   }`}
                 >
                   <div className={`p-2 rounded-lg border flex items-center justify-center shrink-0 ${unlocked ? "border-yellow-500/20 bg-yellow-500/10" : "border-transparent bg-white/5"}`}>
@@ -668,7 +668,7 @@ export default function Dashboard({
                   className={`p-3 rounded-xl border flex items-center gap-3 transition-all duration-300 ${
                     unlocked 
                       ? "bg-cyan-500/5 border-cyan-500/30 text-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.1)] hover:border-cyan-400/40" 
-                      : "bg-black/20 border-white/5 text-slate-500 opacity-40"
+                      : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-muted)] opacity-60"
                   }`}
                 >
                   <div className={`p-2 rounded-lg border flex items-center justify-center shrink-0 ${unlocked ? "border-cyan-500/20 bg-cyan-500/10" : "border-transparent bg-white/5"}`}>

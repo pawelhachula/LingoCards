@@ -371,12 +371,12 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
               onChange={(e) => setUsernameInput(e.target.value)}
               autoComplete="off"
               data-lpignore="true"
-              className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500/60 font-semibold"
+              className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-4 py-2.5 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-active)] font-semibold"
             />
           </div>
 
           {/* Poziom & XP Progress Bar */}
-          <div className="bg-black/30 border border-white/5 rounded-2xl p-3 text-left">
+          <div className="bg-[var(--bg-input)] border border-[var(--border-light)] rounded-2xl p-3 text-left">
             <div className="flex justify-between items-center text-xs mb-1.5">
               <div className="flex items-center gap-1">
                 <span className="px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-400 font-extrabold text-[9px]">Lvl {stats.level || 1}</span>
@@ -424,13 +424,13 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
 
           {/* Change Avatar Picker */}
           <div className="w-full mt-2 pt-4 border-t border-white/5" data-lpignore="true" data-1p-ignore>
-            <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2.5 text-left flex justify-between items-center">
+            <label className="text-[10px] text-[var(--text-muted)] font-extrabold uppercase tracking-wider block mb-2.5 text-left flex justify-between items-center">
               <span>Wybierz awatar</span>
               {(stats.referrals || []).length < 3 && (
-                <span className="text-[8px] text-slate-400 font-bold lowercase">Poleć 3 znajomych, aby odblokować kosmiczne awatary! 👽🛸👾</span>
+                <span className="text-[8px] text-[var(--primary)] font-bold lowercase">Poleć 3 znajomych, aby odblokować kosmiczne awatary! 👽🛸👾</span>
               )}
             </label>
-            <div className="grid grid-cols-5 gap-1.5 bg-black/20 p-2 rounded-xl border border-white/5 max-h-[120px] overflow-y-auto">
+            <div className="grid grid-cols-5 gap-1.5 bg-[var(--bg-input)] p-2 rounded-xl border border-[var(--border-light)] max-h-[120px] overflow-y-auto">
               {avatarsList.map((av) => (
                 <button
                   key={av}
