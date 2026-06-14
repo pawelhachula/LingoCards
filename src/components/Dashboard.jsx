@@ -534,22 +534,20 @@ export default function Dashboard({
                 className={`aspect-square flex flex-col items-center justify-center rounded-xl border text-[9px] font-black transition-all relative group cursor-pointer ${
                   day.hasStudied
                     ? stats.streak >= 30
-                      ? "bg-gradient-to-br from-pink-500 via-purple-500 to-cyan-500 border-transparent text-white shadow-[0_0_8px_rgba(236,72,153,0.3)]"
+                      ? "bg-gradient-to-br from-pink-500 via-purple-500 to-cyan-500 border-transparent text-white shadow-[0_0_12px_rgba(236,72,153,0.5)]"
                       : stats.streak >= 7
-                        ? "bg-cyan-500/10 border-cyan-500/40 text-cyan-400 shadow-[0_0_6px_rgba(6,182,212,0.2)]"
-                        : "bg-amber-500/10 border-amber-500/40 text-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.2)]"
+                        ? "bg-gradient-to-br from-cyan-400 to-blue-500 border-transparent text-white shadow-[0_0_12px_rgba(6,182,212,0.4)]"
+                        : "bg-gradient-to-br from-amber-400 to-orange-500 border-transparent text-white shadow-[0_0_12px_rgba(245,158,11,0.4)]"
                     : day.isToday
                       ? "bg-white/5 border-indigo-500/40 text-[var(--primary)]"
                       : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-muted)] hover:border-[var(--border-active)]"
                 }`}
               >
                 {day.hasStudied ? (
-                  <Icons.Flame size={12} className={`${
+                  <Icons.Flame size={14} className={`${
                     stats.streak >= 30
-                      ? "text-white fill-white/20 animate-pulse"
-                      : stats.streak >= 7
-                        ? "text-cyan-400 fill-cyan-400/20"
-                        : "text-amber-500 fill-amber-500/20"
+                      ? "text-white fill-white/30 animate-pulse"
+                      : "text-white fill-white/30"
                   }`} />
                 ) : (
                   <span>{day.label}</span>
