@@ -148,10 +148,6 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
           if (currentCard?.english) {
             playTTS(currentCard.english, "word", null, "en-US");
           }
-        } else {
-          if (currentCard?.polish) {
-            playTTS(currentCard.polish, "word", null, "pl-PL");
-          }
         }
       }
 
@@ -167,11 +163,6 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
       if (!reversedMode && currentCard?.english) {
         const timer = setTimeout(() => {
           playTTS(currentCard.english, "word", null, "en-US");
-        }, 350);
-        return () => clearTimeout(timer);
-      } else if (reversedMode && currentCard?.polish) {
-        const timer = setTimeout(() => {
-          playTTS(currentCard.polish, "word", null, "pl-PL");
         }, 350);
         return () => clearTimeout(timer);
       }
@@ -843,7 +834,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                   </div>
                   
                   <div className="flex items-center gap-3">
-                    {speakingType === "word" && (
+                    {speakingType === "word" && !reversedMode && (
                       <div className="sound-wave">
                         <div className="sound-wave-bar" />
                         <div className="sound-wave-bar" />
@@ -851,27 +842,23 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                         <div className="sound-wave-bar" />
                       </div>
                     )}
-                    <button 
-                      onClick={(e) => {
-                        if (reversedMode) {
-                          playTTS(currentCard.polish, "word", e, "pl-PL");
-                        } else {
-                          playTTS(currentCard.english, "word", e, "en-US");
-                        }
-                      }}
-                      className={`p-2.5 rounded-xl transition-all scale-hover ${
-                        speakingType === "word" 
-                          ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30" 
-                          : "bg-white/5 text-slate-400 hover:text-white"
-                      }`}
-                      title="Odsłuchaj wymowę"
-                    >
-                      <Icons.Volume2 size={18} />
-                    </button>
+                    {!reversedMode && (
+                      <button 
+                        onClick={(e) => playTTS(currentCard.english, "word", e, "en-US")}
+                        className={`p-2.5 rounded-xl transition-all scale-hover ${
+                          speakingType === "word" 
+                            ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30" 
+                            : "bg-white/5 text-slate-400 hover:text-white"
+                        }`}
+                        title="Odsłuchaj wymowę"
+                      >
+                        <Icons.Volume2 size={18} />
+                      </button>
+                    )}
                   </div>
                 </div>
                 
-                <div className="my-auto flex flex-col items-center text-center gap-3 w-full">
+                <div className="flex-1 flex flex-col justify-center items-center text-center gap-3 w-full">
                   <h3 className="text-4xl md:text-5xl font-black text-[var(--text-primary)] tracking-tight leading-tight">
                     {reversedMode ? currentCard.polish : currentCard.english}
                   </h3>
@@ -880,11 +867,12 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                       {currentCard.pronunciation}
                     </p>
                   )}
+                </div>
                   
-                  {/* MIC INPUT CHECKER - only in normal mode */}
-                  {!reversedMode && (
-                    <div className="mt-6 flex flex-col items-center gap-2">
-                      <button
+                {/* MIC INPUT CHECKER - only in normal mode */}
+                {!reversedMode && (
+                  <div className="mb-4 flex flex-col items-center gap-2">
+                    <button
                         onClick={startListening}
                         className={`p-3 rounded-full border transition-all scale-hover btn-flashcard-mic ${
                           isListening 
@@ -952,7 +940,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                   </div>
                   
                   <div className="flex items-center gap-3">
-                    {speakingType === "word" && (
+                    {speakingType === "word" && reversedMode && (
                       <div className="sound-wave">
                         <div className="sound-wave-bar" />
                         <div className="sound-wave-bar" />
@@ -960,40 +948,15 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                         <div className="sound-wave-bar" />
                       </div>
                     )}
-                    <button 
-                      onClick={(e) => {
-                        if (reversedMode) {
-                          playTTS(currentCard.english, "word", e, "en-US");
-                        } else {
-                          playTTS(currentCard.polish, "word", e, "pl-PL");
-                        }
-                      }}
-                      className={`p-2.5 rounded-xl transition-all scale-hover ${
-                        speakingType === "word" 
-                          ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30" 
-                          : "bg-white/5 text-slate-400 hover:text-white"
-                      }`}
-                      title="Odsłuchaj wymowę"
-                    >
-                      <Icons.Volume2 size={18} />
-                    </button>
-                    {speakingType === "example" && (
-                      <div className="sound-wave">
-                        <div className="sound-wave-bar" />
-                        <div className="sound-wave-bar" />
-                        <div className="sound-wave-bar" />
-                        <div className="sound-wave-bar" />
-                      </div>
-                    )}
-                    {!reversedMode && currentCard.exampleEnglish && (
+                    {reversedMode && (
                       <button 
-                        onClick={(e) => playTTS(currentCard.exampleEnglish, "example", e)}
+                        onClick={(e) => playTTS(currentCard.english, "word", e, "en-US")}
                         className={`p-2.5 rounded-xl transition-all scale-hover ${
-                          speakingType === "example" 
+                          speakingType === "word" 
                             ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30" 
                             : "bg-white/5 text-slate-400 hover:text-white"
                         }`}
-                        title="Odsłuchaj zdanie przykładowe"
+                        title="Odsłuchaj wymowę"
                       >
                         <Icons.Volume2 size={18} />
                       </button>
@@ -1001,7 +964,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                   </div>
                 </div>
 
-                <div className="my-auto flex flex-col items-center text-center gap-5 w-full">
+                <div className="flex-1 flex flex-col justify-center items-center text-center gap-5 w-full">
                   <h3 className="text-3xl font-black text-[var(--text-primary)] tracking-tight leading-snug">
                     {reversedMode ? currentCard.english : currentCard.polish}
                   </h3>
@@ -1010,14 +973,15 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                       {currentCard.pronunciation}
                     </p>
                   )}
+                </div>
                   
-                  {currentCard.exampleEnglish && (
-                    <div className="text-center flashcard-example-block p-4 rounded-2xl w-full">
-                      <span className="text-[10px] text-[var(--primary)] font-extrabold uppercase tracking-wider block mb-1">
-                        Przykład w zdaniu
-                      </span>
-                      <p className="text-sm font-semibold text-[var(--text-primary)] leading-relaxed">
-                        {currentCard.exampleEnglish}
+                {currentCard.exampleEnglish && (
+                  <div className="text-center flashcard-example-block p-4 rounded-2xl w-full mb-4">
+                    <span className="text-[10px] text-[var(--primary)] font-extrabold uppercase tracking-wider block mb-1">
+                      Przykład w zdaniu
+                    </span>
+                    <p className="text-sm font-semibold text-[var(--text-primary)] leading-relaxed">
+                      {currentCard.exampleEnglish}
                       </p>
                       <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed font-medium">
                         {currentCard.examplePolish}

@@ -251,7 +251,7 @@ export default function Referrals({ stats, onUpdateStats, onNavigate }) {
         <p className="text-slate-400 text-xs mb-4">Poniżej znajduje się lista osób, które dołączyły dzięki Tobie.</p>
 
         {refCount === 0 ? (
-          <div className="bg-black/20 p-8 rounded-2xl border border-white/5 text-center text-slate-500 text-xs font-semibold">
+          <div className="bg-[var(--bg-input)] p-8 rounded-2xl border border-[var(--border-light)] text-center text-[var(--text-primary)] text-xs font-semibold">
             Brak poleconych osób. Wyślij link znajomym lub użyj formularza symulacji powyżej! 🚀
           </div>
         ) : (
@@ -259,7 +259,7 @@ export default function Referrals({ stats, onUpdateStats, onNavigate }) {
             {referrals.map((friend, idx) => (
               <div 
                 key={idx} 
-                className="bg-black/30 border border-white/5 rounded-xl px-4 py-3 flex items-center gap-2.5 hover:border-indigo-500/20 transition-colors"
+                className="bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-4 py-3 flex items-center gap-2.5 hover:border-[var(--border-active)] transition-colors"
               >
                 <div className="w-6 h-6 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-[10px] font-black text-indigo-400">
                   {idx + 1}
