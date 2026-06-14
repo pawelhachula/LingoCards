@@ -183,17 +183,21 @@ export function useFirestore() {
   }, []);
 
   /**
-   * Pobiera wszystkich użytkowników z kolekcji głównej users (tylko dla admina)
+   * Pobiera wszystkich użytkowników z kolekcji głównej users (dla rankingu)
    */
   const loadAllUsers = useCallback(async () => {
     if (isFirebaseConfigured && db) {
       try {
         const { collection, getDocs } = await import("firebase/firestore");
         const snap = await getDocs(collection(db, "users"));
-        return snap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+        const results = snap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+        console.log(`[Firestore] loadAllUsers: found ${results.length} user documents`);
+        return results;
       } catch (e) {
-        console.warn("[Firestore] loadAllUsers failed:", e.message);
+        console.error("[Firestore] loadAllUsers failed:", e.message, e);
       }
+    } else {
+      console.warn("[Firestore] loadAllUsers skipped — isFirebaseConfigured:", isFirebaseConfigured, "db:", !!db);
     }
     return [];
   }, []);

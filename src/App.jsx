@@ -839,6 +839,7 @@ export default function App() {
             wordsCount: Object.keys(updatedStats.learnedCards || {}).length,
             avatar: updatedStats.avatarData || currentUser?.avatar || "👑",
             username: updatedStats.customUsername || currentUser?.username || "",
+            isPro: !!updatedStats.isPro,
             lastActiveAt: Date.now()
           }).catch(err => console.warn("Failed to sync leaderboard stats to users collection:", err.message));
         }

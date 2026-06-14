@@ -12,7 +12,9 @@ export default function Leaderboard({ stats, onNavigate, loadAllUsers, systemCon
     if (loadAllUsers) {
       loadAllUsers().then(data => {
         if (active) {
-          setUsers(data || []);
+          const loaded = data || [];
+          console.log(`[Leaderboard] Loaded ${loaded.length} users from Firestore:`, loaded.map(u => u.username || u.uid));
+          setUsers(loaded);
           setLoading(false);
         }
       }).catch(err => {
@@ -20,6 +22,7 @@ export default function Leaderboard({ stats, onNavigate, loadAllUsers, systemCon
         if (active) setLoading(false);
       });
     } else {
+      console.warn("[Leaderboard] loadAllUsers is not available — Firebase may not be configured");
       setLoading(false);
     }
     return () => { active = false; };
@@ -58,12 +61,19 @@ export default function Leaderboard({ stats, onNavigate, loadAllUsers, systemCon
   const userTitle = getRankTitle(userLevel);
 
   const currentUsernameLower = (currentUser?.username || stats.username || "Ty").toLowerCase();
+  const currentUserUid = currentUser?.uid || "";
 
-  // Map real users from database
+  // Map real users from database (filter out current user by BOTH uid and username)
   const realCompetitors = users
     .filter(u => {
       const uname = (u.username || "").toLowerCase();
-      return uname !== "" && uname !== currentUsernameLower;
+      // Exclude users with empty username
+      if (uname === "") return false;
+      // Exclude current user by uid match
+      if (currentUserUid && u.uid === currentUserUid) return false;
+      // Exclude current user by username match
+      if (uname === currentUsernameLower) return false;
+      return true;
     })
     .map(u => ({
       username: u.username,
