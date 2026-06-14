@@ -10,6 +10,10 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
   const [audioStyle, setAudioStyle] = useState(isPro ? (stats.audioStyle || "synth") : (stats.audioStyle === "off" ? "off" : "synth"));
   const [confettiStyle, setConfettiStyle] = useState(isPro ? (stats.confettiStyle || "standard") : (stats.confettiStyle === "off" ? "off" : "standard"));
   const [showConfirmReset, setShowConfirmReset] = useState(false);
+  const [showRecovery, setShowRecovery] = useState(false);
+  const [recoveryStreak, setRecoveryStreak] = useState(stats.streak || 0);
+  const [recoveryXp, setRecoveryXp] = useState(stats.xp || 0);
+  const [recoveryLevel, setRecoveryLevel] = useState(stats.level || 1);
   const [resetConfirmText, setResetConfirmText] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [selectedTheme, setSelectedTheme] = useState(theme);
