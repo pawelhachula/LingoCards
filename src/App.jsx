@@ -1304,41 +1304,41 @@ export default function App() {
           </div>
         </div>
 
-        {/* Tab Actions — wszystkie zakładki obok siebie */}
-        <div className="hidden lg:flex items-center gap-0.5 text-[10px] font-bold uppercase tracking-wider shrink-0 overflow-x-auto no-scrollbar">
-          {(() => {
-            const tabs = [
-              { id: "dashboard", label: "Pulpit", icon: null },
-              { id: "library",   label: "Katalog", icon: "Compass" },
-              { id: "learn",     label: "Fiszki",  icon: null },
-              { id: "quiz",      label: "Testy",   icon: null },
-              { id: "match",     label: "Gra",     icon: "Zap" },
-              { id: "creator",   label: "Menedżer",icon: "PlusCircle" },
-              { id: "stats",     label: "Statyst.",icon: "BarChart2" },
-              { id: "referrals", label: "Polecenia",icon: "Users" },
-            ];
-            if (currentUser?.role === "admin") {
-              tabs.push({ id: "admin", label: "Admin Panel", icon: "ShieldAlert" });
-            }
-            return tabs.map(({ id, label, icon }) => {
-              const IconEl = icon ? Icons[icon] : null;
-              const active = view === id;
-              return (
-                <button
-                  key={id}
-                  onClick={() => setView(id)}
-                  className={`px-2 xl:px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${
-                    active
-                      ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm"
-                      : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent hover:bg-[var(--bg-input)]"
-                  }`}
-                >
-                  {IconEl && <IconEl size={12} className="shrink-0" />}
-                  {label}
-                </button>
-              );
-            });
-          })()}
+        {/* Navigation Tabs - Redesigned */}
+        <div className="hidden lg:flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider shrink-0">
+          <button onClick={() => setView("dashboard")} className={`px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${view === "dashboard" ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent hover:bg-[var(--bg-input)]"}`}>
+            Pulpit
+          </button>
+
+          <div className="relative group">
+            <button className={`px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${["learn", "quiz", "match"].includes(view) ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent hover:bg-[var(--bg-input)]"}`}>
+              Nauka <Icons.ChevronDown size={12} className="opacity-70 group-hover:rotate-180 transition-transform" />
+            </button>
+            <div className="absolute top-full left-0 mt-1 w-40 bg-[var(--bg-card)] border border-[var(--border-light)] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col p-1 z-50">
+              <button onClick={() => setView("learn")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "learn" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.BookOpen size={14} /> Fiszki</button>
+              <button onClick={() => setView("quiz")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "quiz" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.HelpCircle size={14} /> Testy</button>
+              <button onClick={() => setView("match")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "match" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.Zap size={14} /> Gra</button>
+            </div>
+          </div>
+
+          <button onClick={() => setView("library")} className={`px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${view === "library" ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent hover:bg-[var(--bg-input)]"}`}>
+            <Icons.Compass size={12} /> Katalog
+          </button>
+
+          <button onClick={() => setView("creator")} className={`px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${view === "creator" ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent hover:bg-[var(--bg-input)]"}`}>
+            <Icons.PlusCircle size={12} /> Menedżer
+          </button>
+          
+          <div className="relative group">
+            <button className={`px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${["stats", "referrals", "admin"].includes(view) ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent hover:bg-[var(--bg-input)]"}`}>
+              <Icons.MoreHorizontal size={12} /> Więcej
+            </button>
+            <div className="absolute top-full left-0 mt-1 w-44 bg-[var(--bg-card)] border border-[var(--border-light)] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col p-1 z-50">
+              <button onClick={() => setView("stats")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "stats" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.BarChart2 size={14} /> Statystyki</button>
+              <button onClick={() => setView("referrals")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "referrals" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.Users size={14} /> Polecenia</button>
+              {currentUser?.role === "admin" && <button onClick={() => setView("admin")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "admin" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-rose-400"}`}><Icons.ShieldAlert size={14} /> Admin Panel</button>}
+            </div>
+          </div>
         </div>
 
         {/* Global Streak / Theme Selector / User Profile */}
@@ -1358,12 +1358,7 @@ export default function App() {
                 {getSortedDecks([srsDeck, starredDeck, ...decks]).map(d => {
                   const isLocked = !stats.isPro && d.isPremium;
                   return (
-                    <option 
-                      key={d.id} 
-                      value={d.id} 
-                      disabled={isLocked}
-                      className={`bg-[var(--bg-main)] ${isLocked ? "text-slate-600 font-normal" : "text-[var(--text-primary)]"}`}
-                    >
+                    <option key={d.id} value={d.id} disabled={isLocked} className={`bg-[var(--bg-main)] ${isLocked ? "text-slate-600 font-normal" : "text-[var(--text-primary)]"}`}>
                       {isLocked ? `🔒 ${d.title} (PRO)` : d.title}
                     </option>
                   );
@@ -1372,106 +1367,24 @@ export default function App() {
             </div>
           )}
 
-          {/* THEME SELECTOR DROPDOWN */}
-          <div className="hidden lg:flex items-center gap-1.5 bg-[var(--bg-input)] border border-[var(--border-light)] px-2.5 py-1.5 rounded-xl text-xs font-bold text-[var(--text-primary)] whitespace-nowrap shrink-0">
-            <Icons.Palette size={14} className="text-[var(--text-secondary)] shrink-0" />
-            <select
-              value={theme}
-              onChange={(e) => handleThemeChange(e.target.value)}
-              className="bg-transparent text-[var(--text-primary)] focus:outline-none cursor-pointer font-bold border-none p-0 pr-6 text-xs max-w-[90px] sm:max-w-[120px] truncate"
-            >
-              <optgroup label="Motywy podstawowe" className="bg-[var(--bg-main)] text-[var(--text-secondary)]">
-                {DEFAULT_THEMES.map(t => (
-                  <option key={t.id} value={t.id} className="bg-[var(--bg-main)] text-[var(--text-primary)]">{t.label}</option>
-                ))}
-              </optgroup>
-              <optgroup label="Motywy premium" className="bg-[var(--bg-main)] text-[var(--primary)]">
-                {PREMIUM_THEMES.map(t => {
-                  const isUnlocked = !!stats.isPro && (stats.level || 1) >= t.levelRequired;
-                  return (
-                    <option 
-                      key={t.id} 
-                      value={t.id} 
-                      disabled={!isUnlocked} 
-                      className={`bg-[var(--bg-main)] ${isUnlocked ? "text-[var(--text-primary)]" : "text-slate-600 font-normal"}`}
-                    >
-                      {isUnlocked ? `✨ ${t.label}` : (!stats.isPro ? `🔒 ${t.label} (Premium PRO)` : `🔒 ${t.label} (Poziom ${t.levelRequired})`)}
-                    </option>
-                  );
-                })}
-              </optgroup>
-            </select>
-          </div>
-
           {/* Search button */}
-          <button
-            onClick={() => setShowSearch(true)}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl border bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-active)] transition-all scale-hover whitespace-nowrap shrink-0"
-            title="Wyszukaj słówko (Ctrl+K)"
-          >
+          <button onClick={() => setShowSearch(true)} className="flex items-center gap-2 px-2.5 py-2 rounded-xl border bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-active)] transition-all scale-hover whitespace-nowrap shrink-0" title="Wyszukaj słówko (Ctrl+K)">
             <Icons.Search size={15} className="shrink-0" />
             <span className="hidden xl:flex items-center gap-1.5 text-[10px] font-bold text-[var(--text-secondary)] whitespace-nowrap shrink-0">
-              Szukaj
-              <kbd className="border border-[var(--border-light)] rounded px-1.5 py-0.5 font-mono text-[9px] whitespace-nowrap shrink-0">Ctrl K</kbd>
+              Szukaj <kbd className="border border-[var(--border-light)] rounded px-1.5 py-0.5 font-mono text-[9px] whitespace-nowrap shrink-0">Ctrl K</kbd>
             </span>
           </button>
 
-          {/* Leaderboard button */}
-          <button 
-            onClick={() => setView("leaderboard")}
-            className={`flex items-center justify-center p-2.5 rounded-xl border scale-hover shrink-0 ${
-              view === "leaderboard" 
-                ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" 
-                : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-            }`}
-            title="Ranking Rywalizacji"
-          >
-            <Icons.Trophy size={16} className="shrink-0" />
-          </button>
-
-          {/* Settings gear button */}
-          <button 
-            onClick={() => setView("settings")}
-            className={`flex items-center justify-center p-2.5 rounded-xl border scale-hover shrink-0 ${
-              view === "settings" 
-                ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" 
-                : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-            }`}
-            title="Ustawienia"
-          >
-            <Icons.Settings size={16} className="shrink-0" />
-          </button>
-
           {/* Notifications Bell */}
-          <button 
-            onClick={() => setShowNotifications(true)}
-            className={`relative flex items-center justify-center p-2.5 rounded-xl border scale-hover shrink-0 ${
-              showNotifications 
-                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
-                : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
-            }`}
-            title="Powiadomienia"
-          >
+          <button onClick={() => setShowNotifications(true)} className={`relative flex items-center justify-center p-2.5 rounded-xl border scale-hover shrink-0 ${showNotifications ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"}`} title="Powiadomienia">
             <Icons.Bell size={16} className={notifications.filter(n => !n.read).length > 0 ? "animate-wiggle" : ""} />
-            {notifications.filter(n => !n.read).length > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-rose-500 text-[8px] font-black text-white shadow-md animate-pulse">
-                {notifications.filter(n => !n.read).length}
-              </span>
-            )}
+            {notifications.filter(n => !n.read).length > 0 && <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-rose-500 text-[8px] font-black text-white shadow-md animate-pulse">{notifications.filter(n => !n.read).length}</span>}
           </button>
 
           {/* Premium / PRO Status Button */}
           <button 
-            onClick={() => {
-              if (!stats.isPro) {
-                handleOpenPremiumModal(null);
-              }
-            }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border shrink-0 text-xs font-bold transition-all ${
-              stats.isPro 
-                ? "bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-md shadow-amber-500/5 font-extrabold cursor-default" 
-                : "bg-white/5 text-slate-400 border-white/10 hover:text-white scale-hover"
-            }`}
+            onClick={() => { if (!stats.isPro) handleOpenPremiumModal(null); }}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border shrink-0 text-xs font-bold transition-all ${stats.isPro ? "bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-md shadow-amber-500/5 font-extrabold cursor-default" : "bg-white/5 text-slate-400 border-white/10 hover:text-white scale-hover"}`}
             title={stats.isPro ? "Masz aktywny pakiet PRO!" : "Kliknij, aby odblokować wersję PRO"}
           >
             <Icons.Crown size={14} className={stats.isPro ? "fill-amber-400 text-amber-400" : "text-slate-400"} />
@@ -1484,32 +1397,45 @@ export default function App() {
             <span className="whitespace-nowrap shrink-0">{formatDays(stats.streak || 0)}</span>
           </div>
 
-          <button 
-            onClick={() => setView("profile")}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border scale-hover whitespace-nowrap shrink-0 ${
-              view === "profile" 
-                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
-                : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
-            }`}
-          >
-            {currentUser.avatar && currentUser.avatar.startsWith("data:") ? (
-              <img src={currentUser.avatar} alt="Avatar" className="w-5 h-5 rounded-full object-cover border border-white/20 shrink-0" />
-            ) : (
-              <span className="text-base shrink-0">{currentUser.avatar || "👑"}</span>
-            )}
-            <span className="hidden xl:inline text-xs font-bold whitespace-nowrap shrink-0">
-              {currentUser.username} <span className="text-[10px] opacity-60 font-medium">({currentUser.role === "admin" ? "Admin" : "User"})</span>
-            </span>
-          </button>
+          {/* User Profile Dropdown */}
+          <div className="relative group">
+            <button className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border whitespace-nowrap shrink-0 transition-colors ${view === "profile" ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:bg-[var(--bg-card)]"}`}>
+              {currentUser.avatar && currentUser.avatar.startsWith("data:") ? (
+                <img src={currentUser.avatar} alt="Avatar" className="w-6 h-6 rounded-md object-cover border border-[var(--border-light)] shrink-0" />
+              ) : (
+                <span className="text-base shrink-0">{currentUser.avatar || "👑"}</span>
+              )}
+              <div className="hidden md:flex flex-col items-start">
+                <span className="text-[10px] font-bold text-[var(--text-primary)] leading-tight">{currentUser.username || "Gość"}</span>
+                <span className="text-[8px] text-[var(--text-muted)] leading-tight capitalize">{currentUser?.role || "User"}</span>
+              </div>
+              <Icons.ChevronDown size={12} className="text-[var(--text-muted)] group-hover:rotate-180 transition-transform hidden md:block" />
+            </button>
 
-          {/* Logout button */}
-          <button 
-            onClick={handleLogout}
-            className="flex items-center justify-center p-2.5 rounded-xl border bg-rose-500/10 border-rose-500/20 text-rose-400 hover:text-rose-300 hover:bg-rose-500/20 scale-hover shrink-0"
-            title="Wyloguj się"
-          >
-            <Icons.LogOut size={16} className="shrink-0" />
-          </button>
+            <div className="absolute top-full right-0 mt-1 w-56 bg-[var(--bg-card)] border border-[var(--border-light)] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col p-1 z-50">
+              <button onClick={() => setView("profile")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "profile" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.User size={14} className="text-[var(--text-muted)]" /> Mój Profil</button>
+              <button onClick={() => setView("leaderboard")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "leaderboard" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.Trophy size={14} className="text-[var(--text-muted)]" /> Ranking</button>
+              <button onClick={() => setView("settings")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "settings" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.Settings size={14} className="text-[var(--text-muted)]" /> Ustawienia</button>
+              
+              <div className="my-1 border-t border-[var(--border-light)]" />
+              
+              <div className="px-3 py-2">
+                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1 block">Motyw</label>
+                <select value={theme} onChange={(e) => handleThemeChange(e.target.value)} className="w-full bg-[var(--bg-input)] text-[var(--text-primary)] border border-[var(--border-light)] rounded-lg p-1.5 text-xs focus:outline-none focus:border-[var(--border-active)]">
+                  <optgroup label="Podstawowe">{DEFAULT_THEMES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}</optgroup>
+                  <optgroup label="Premium">
+                    {PREMIUM_THEMES.map(t => {
+                      const isUnlocked = !!stats.isPro && (stats.level || 1) >= t.levelRequired;
+                      return <option key={t.id} value={t.id} disabled={!isUnlocked}>{isUnlocked ? `✨ ${t.label}` : `🔒 ${t.label}`}</option>;
+                    })}
+                  </optgroup>
+                </select>
+              </div>
+
+              <div className="my-1 border-t border-[var(--border-light)]" />
+              <button onClick={handleLogout} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-rose-500/10 text-left text-rose-400 font-bold"><Icons.LogOut size={14} /> Wyloguj się</button>
+            </div>
+          </div>
         </div>
       </nav>
 

@@ -108,11 +108,18 @@ export default function Creator({
       }
       const script = document.createElement("script");
       script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js";
-      script.onload = () => {
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+      script.onload = async () => {
+        try {
+          // Pobierz skrypt workera jako blob, aby uniknąć błędu CORS dla Workerów w środowisku produkcyjnym (np. Vercel)
+          const workerRes = await fetch("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js");
+          const workerBlob = await workerRes.blob();
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(workerBlob);
+        } catch (err) {
+          console.warn("Nie udało się pobrać workera, PDF.js użyje fake workera:", err);
+        }
         resolve(window.pdfjsLib);
       };
-      script.onerror = () => reject(new Error("Nie udało się załadować biblioteki PDF.js z CDN."));
+      script.onerror = () => reject(new Error("Nie udało się załadować biblioteki PDF.js z CDN. Upewnij się, że masz połączenie z internetem."));
       document.head.appendChild(script);
     });
   };
