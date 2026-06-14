@@ -296,7 +296,7 @@ export default function Dashboard({
                 const updatedStarred = { ...(prev.starredCards || {}) };
                 const isStarred = updatedStarred[wordOfTheDay.id];
                 if (isStarred) {
-                  delete updatedStarred[wordOfTheDay.id];
+                  updatedStarred[wordOfTheDay.id] = false;
                 } else {
                   updatedStarred[wordOfTheDay.id] = true;
                 }

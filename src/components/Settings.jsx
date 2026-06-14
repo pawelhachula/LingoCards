@@ -293,32 +293,87 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
       {/* Narzędzie odzyskiwania danych */}
       <div className="glass-card p-5 mt-6 border-amber-500/30 bg-amber-500/5">
         <div className="flex items-center gap-3 mb-4 cursor-pointer" onClick={() => setShowRecovery(!showRecovery)}>
-          <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400">
+          <div className="p-2 rounded-xl bg-amber-500/20 text-amber-500">
             <Icons.DatabaseBackup size={20} />
           </div>
           <div className="flex-1">
-            <h3 className="font-bold text-white text-sm">Narzędzie odzyskiwania danych (Awaryjne)</h3>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5">Użyj w przypadku awarii, by przywrócić usunięty streak</p>
+            <h3 className="font-bold text-[var(--text-primary)] text-sm">Narzędzie odzyskiwania danych (Awaryjne)</h3>
+            <p className="text-xs text-amber-500/70 font-semibold mt-0.5">Automatyczne odzyskiwanie z kopii lokalnej</p>
           </div>
-          <Icons.ChevronDown size={16} className={`text-slate-400 transition-transform ${showRecovery ? "rotate-180" : ""}`} />
+          <Icons.ChevronDown size={16} className={`text-amber-500 transition-transform ${showRecovery ? "rotate-180" : ""}`} />
         </div>
         {showRecovery && (
-          <div className="flex flex-col gap-3 mt-4 border-t border-amber-500/10 pt-4">
-            <div className="grid grid-cols-3 gap-3">
-              <div className="flex flex-col gap-1">
-                <label className="text-[10px] text-amber-300 font-bold uppercase tracking-wider">Streak (dni)</label>
-                <input type="number" value={recoveryStreak} onChange={e => setRecoveryStreak(parseInt(e.target.value)||0)} className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500/60 font-semibold" />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-[10px] text-amber-300 font-bold uppercase tracking-wider">XP</label>
-                <input type="number" value={recoveryXp} onChange={e => setRecoveryXp(parseInt(e.target.value)||0)} className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500/60 font-semibold" />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-[10px] text-amber-300 font-bold uppercase tracking-wider">Poziom</label>
-                <input type="number" value={recoveryLevel} onChange={e => setRecoveryLevel(parseInt(e.target.value)||1)} className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500/60 font-semibold" />
+          <div className="flex flex-col gap-4 mt-4 border-t border-amber-500/20 pt-4">
+            
+            {/* Skaner lokalnych kopii */}
+            <div className="bg-amber-500/10 rounded-xl p-4 border border-amber-500/20">
+              <h4 className="text-xs font-bold text-amber-500 mb-2 flex items-center gap-2">
+                <Icons.Search size={14} /> Znalezione lokalne kopie zapasowe:
+              </h4>
+              <div className="flex flex-col gap-2">
+                {(() => {
+                  const found = [];
+                  for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith("lingocards_stats_")) {
+                      try {
+                        const data = JSON.parse(localStorage.getItem(key));
+                        if (data && (data.streak > 0 || data.xp > 0 || Object.keys(data.learnedCards || {}).length > 0)) {
+                          found.push({ key, data });
+                        }
+                      } catch (e) {}
+                    }
+                  }
+                  if (found.length === 0) {
+                    return <p className="text-xs text-amber-500/70">Nie znaleziono żadnych pełnych kopii (jeśli używałeś innej przeglądarki lub wyczyszczono dane, skaner nic nie znajdzie).</p>;
+                  }
+                  return found.map(b => (
+                    <div key={b.key} className="flex items-center justify-between bg-black/20 p-2 rounded-lg border border-amber-500/10">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] text-amber-300 font-bold">{b.key.replace("lingocards_stats_", "")}</span>
+                        <span className="text-xs text-[var(--text-primary)]">Streak: {b.data.streak} dni | XP: {b.data.xp || 0}</span>
+                      </div>
+                      <button 
+                        type="button" 
+                        onClick={() => { onUpdateStats(b.data); setSuccessMsg("Przywrócono pełną kopię zapasową!"); }}
+                        className="btn bg-amber-600 hover:bg-amber-700 text-white text-[10px] py-1.5 px-3"
+                      >
+                        Przywróć to
+                      </button>
+                    </div>
+                  ));
+                })()}
               </div>
             </div>
-            <button type="button" onClick={() => { onUpdateStats({...stats, streak: recoveryStreak, bestStreak: Math.max(stats.bestStreak || 0, recoveryStreak), xp: recoveryXp, level: recoveryLevel}); setSuccessMsg("Dane awaryjne przywrócone!"); }} className="btn bg-amber-600 hover:bg-amber-700 text-white text-xs py-2 px-4 mt-2">Zapisz i przywróć</button>
+
+            <div className="mt-2">
+              <h4 className="text-xs font-bold text-amber-500 mb-2">Lub wpisz ręcznie (odbuduje też kalendarz):</h4>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] text-amber-300 font-bold uppercase tracking-wider">Streak</label>
+                  <input type="number" value={recoveryStreak} onChange={e => setRecoveryStreak(parseInt(e.target.value)||0)} className="bg-[var(--bg-input)] border border-amber-500/30 rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-amber-500/80 font-semibold" />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] text-amber-300 font-bold uppercase tracking-wider">XP</label>
+                  <input type="number" value={recoveryXp} onChange={e => setRecoveryXp(parseInt(e.target.value)||0)} className="bg-[var(--bg-input)] border border-amber-500/30 rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-amber-500/80 font-semibold" />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] text-amber-300 font-bold uppercase tracking-wider">Poziom</label>
+                  <input type="number" value={recoveryLevel} onChange={e => setRecoveryLevel(parseInt(e.target.value)||1)} className="bg-[var(--bg-input)] border border-amber-500/30 rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-amber-500/80 font-semibold" />
+                </div>
+              </div>
+              <button type="button" onClick={() => { 
+                const dates = [];
+                const today = new Date();
+                for(let i = 0; i < recoveryStreak; i++) {
+                  const d = new Date(today);
+                  d.setDate(today.getDate() - i);
+                  dates.push(d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, '0') + "-" + String(d.getDate()).padStart(2, '0'));
+                }
+                onUpdateStats({...stats, streak: recoveryStreak, bestStreak: Math.max(stats.bestStreak || 0, recoveryStreak), xp: recoveryXp, level: recoveryLevel, studyDates: [...new Set([...(stats.studyDates || []), ...dates])]}); 
+                setSuccessMsg("Dane ręczne przywrócone!"); 
+              }} className="btn bg-amber-600 hover:bg-amber-700 text-white text-xs py-2 px-4 mt-3 w-full">Odbuduj statystyki</button>
+            </div>
           </div>
         )}
       </div>

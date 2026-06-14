@@ -291,8 +291,8 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     const cardId = currentCard.id;
     setStats(prev => {
       const updatedStarred = { ...(prev.starredCards || {}) };
-      if (updatedStarred[cardId]) {
-        delete updatedStarred[cardId];
+      if (isStarred) {
+        updatedStarred[cardId] = false;
       } else {
         updatedStarred[cardId] = true;
       }
