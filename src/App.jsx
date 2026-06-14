@@ -70,6 +70,7 @@ export default function App() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [premiumTriggerDeck, setPremiumTriggerDeck] = useState(null);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   // Firestore sync hook — działa zarówno gdy Firebase jest skonfigurowany, jak i bez niego
   const { 
@@ -269,10 +270,10 @@ export default function App() {
   };
   // Persist stats instantly on every change to prevent data loss (and sync to Firestore)
   useEffect(() => {
-    if (currentUser && stats && Object.keys(stats).length > 0) {
+    if (isDataLoaded && currentUser && stats && Object.keys(stats).length > 0) {
       saveStats(getFirestoreUidKey(currentUser.uid), stats);
     }
-  }, [stats, currentUser, saveStats]);
+  }, [stats, currentUser, saveStats, isDataLoaded]);
 
   // Periodically update lastActiveAt timestamp in Firestore (every 60 seconds)
   useEffect(() => {
@@ -715,6 +716,7 @@ export default function App() {
     const themeToSet = loadedStats.theme || "navy";
     setTheme(themeToSet);
     localStorage.setItem("lingocards_theme", themeToSet);
+    setIsDataLoaded(true);
   };
 
   const handleLogin = (user) => {

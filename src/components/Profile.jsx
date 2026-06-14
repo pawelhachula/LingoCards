@@ -177,7 +177,7 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
       title: "Twórca wiedzy",
       desc: "Dodano własną talię z min. 5 fiszkami",
       icon: "PlusCircle",
-      unlocked: decks.some(d => !systemDeckIds.has(d.id) && (d.cards || []).length >= 5),
+      unlocked: decks.some(d => d.id !== 'srs' && d.id !== 'starred' && !systemDeckIds.has(d.id) && (d.cards || []).length >= 5),
       color: "text-pink-400 bg-pink-500/10 border-pink-500/20"
     },
     {
