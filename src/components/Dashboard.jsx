@@ -300,13 +300,13 @@ export default function Dashboard({
                 } else {
                   updatedStarred[wordOfTheDay.id] = true;
                 }
-                return { starredCards: updatedStarred };
+                return { ...prev, starredCards: updatedStarred };
               });
             }}
             className={`btn text-xs py-2.5 px-4 flex items-center gap-1.5 font-bold hover:scale-105 transition-transform shrink-0 self-start md:self-auto ${
               stats.starredCards?.[wordOfTheDay.id] 
                 ? "bg-amber-500/10 border-amber-500/20 text-amber-500" 
-                : "bg-white/5 border-[var(--border-light)] text-[var(--text-primary)] hover:text-white"
+                : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
           >
             <Icons.Star size={14} className={stats.starredCards?.[wordOfTheDay.id] ? "fill-amber-500" : ""} />

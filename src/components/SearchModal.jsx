@@ -130,7 +130,7 @@ export default function SearchModal({ decks, stats, setStats, onNavigate, onSele
       const updated = { ...(prev.starredCards || {}) };
       if (updated[cardId]) delete updated[cardId];
       else updated[cardId] = true;
-      return { starredCards: updated };
+      return { ...prev, starredCards: updated };
     });
   };
 

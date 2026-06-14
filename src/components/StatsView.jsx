@@ -79,7 +79,7 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
       } else {
         updatedStarred[cardId] = true;
       }
-      return { starredCards: updatedStarred };
+      return { ...prev, starredCards: updatedStarred };
     });
   };
 

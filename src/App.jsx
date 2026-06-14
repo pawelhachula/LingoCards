@@ -267,6 +267,13 @@ export default function App() {
     }
     return uid.toLowerCase();
   };
+  // Persist stats instantly on every change to prevent data loss
+  useEffect(() => {
+    if (currentUser && stats && Object.keys(stats).length > 0) {
+      const userStatsKey = `lingocards_stats_${currentUser.username.toLowerCase()}`;
+      localStorage.setItem(userStatsKey, JSON.stringify(stats));
+    }
+  }, [stats, currentUser]);
 
   // Periodically update lastActiveAt timestamp in Firestore (every 60 seconds)
   useEffect(() => {

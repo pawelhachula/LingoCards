@@ -296,7 +296,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
       } else {
         updatedStarred[cardId] = true;
       }
-      return { starredCards: updatedStarred };
+      return { ...prev, starredCards: updatedStarred };
     });
   };
 
