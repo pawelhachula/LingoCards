@@ -470,7 +470,7 @@ export default function Creator({
       <div>
         <button 
           onClick={() => onNavigate("dashboard")}
-          className="text-xs text-[var(--text-secondary)] hover:text-white transition-colors flex items-center gap-1.5 font-bold"
+          className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-1.5 font-bold"
         >
           <Icons.ChevronLeft size={16} /> Powrót do pulpitu
         </button>
@@ -488,7 +488,7 @@ export default function Creator({
           className={`flex-1 btn text-xs font-bold py-2.5 rounded-xl transition-all ${
             activeTab === "add-card" 
               ? "bg-[var(--primary-glow)] text-[var(--text-primary)] border border-[var(--border-active)] shadow-sm" 
-              : "bg-transparent text-[var(--text-secondary)] hover:text-white border-transparent"
+              : "bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent"
           }`}
         >
           <Icons.Plus size={14} />
@@ -502,7 +502,7 @@ export default function Creator({
           className={`flex-1 btn text-xs font-bold py-2.5 rounded-xl transition-all ${
             activeTab === "create-deck" && !editingDeckId
               ? "bg-[var(--primary-glow)] text-[var(--text-primary)] border border-[var(--border-active)] shadow-sm" 
-              : "bg-transparent text-[var(--text-secondary)] hover:text-white border-transparent"
+              : "bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent"
           }`}
         >
           <Icons.FolderPlus size={14} />
@@ -517,7 +517,7 @@ export default function Creator({
           className={`flex-1 btn text-xs font-bold py-2.5 rounded-xl transition-all ${
             activeTab === "import-file"
               ? "bg-[var(--primary-glow)] text-[var(--text-primary)] border border-[var(--border-active)] shadow-sm" 
-              : "bg-transparent text-[var(--text-secondary)] hover:text-white border-transparent"
+              : "bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent"
           }`}
         >
           <Icons.FileUp size={14} />
@@ -531,7 +531,7 @@ export default function Creator({
           className={`flex-1 btn text-xs font-bold py-2.5 rounded-xl transition-all ${
             activeTab === "manage-decks" || (activeTab === "create-deck" && editingDeckId)
               ? "bg-[var(--primary-glow)] text-[var(--text-primary)] border border-[var(--border-active)] shadow-sm" 
-              : "bg-transparent text-[var(--text-secondary)] hover:text-white border-transparent"
+              : "bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent"
           }`}
         >
           <Icons.FolderEdit size={14} />
@@ -875,7 +875,7 @@ export default function Creator({
                       className={`btn p-3 border rounded-xl flex items-center justify-center transition-all scale-hover ${
                         isSel 
                           ? "bg-indigo-500/15 border-indigo-500/40 text-[var(--primary)]" 
-                          : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:text-white"
+                          : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                       }`}
                     >
                       <Icon size={18} />

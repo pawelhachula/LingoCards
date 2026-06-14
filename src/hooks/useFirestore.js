@@ -34,7 +34,7 @@ export function useFirestore() {
     if (isFirebaseConfigured && db) {
       try {
         const { doc, setDoc } = await import("firebase/firestore");
-        await setDoc(doc(db, "users", uid, "data", "stats"), stats, { merge: true });
+        await setDoc(doc(db, "users", uid, "data", "stats"), stats, { merge: false });
       } catch (e) {
         console.warn("[Firestore] saveStats failed, using localStorage only:", e.message);
       }
