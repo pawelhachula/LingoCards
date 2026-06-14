@@ -216,7 +216,7 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
                     : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
                 }`}
               >
-                {lvl} {lvl === "A1" || lvl === "A2" ? "(FREE)" : "(PRO)"}
+                {lvl}
               </button>
             ))}
           </div>
