@@ -1305,38 +1305,38 @@ export default function App() {
         </div>
 
         {/* Navigation Tabs - Redesigned */}
-        <div className="hidden lg:flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider shrink-0">
+        <div className="hidden lg:flex items-center gap-2 text-xs font-bold uppercase tracking-wider shrink-0">
           <button onClick={() => setView("dashboard")} className={`px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${view === "dashboard" ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent hover:bg-[var(--bg-input)]"}`}>
             Pulpit
           </button>
 
           <div className="relative group">
             <button className={`px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${["learn", "quiz", "match"].includes(view) ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent hover:bg-[var(--bg-input)]"}`}>
-              Nauka <Icons.ChevronDown size={12} className="opacity-70 group-hover:rotate-180 transition-transform" />
+              Nauka <Icons.ChevronDown size={14} className="opacity-70 group-hover:rotate-180 transition-transform" />
             </button>
-            <div className="absolute top-full left-0 mt-1 w-40 bg-[var(--bg-card)] border border-[var(--border-light)] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col p-1 z-50">
-              <button onClick={() => setView("learn")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "learn" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.BookOpen size={14} /> Fiszki</button>
-              <button onClick={() => setView("quiz")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "quiz" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.HelpCircle size={14} /> Testy</button>
-              <button onClick={() => setView("match")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "match" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.Zap size={14} /> Gra</button>
+            <div className="absolute top-full left-0 mt-1 w-44 bg-[var(--bg-card)] border border-[var(--border-light)] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col p-1 z-50">
+              <button onClick={() => setView("learn")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "learn" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.BookOpen size={16} /> Fiszki</button>
+              <button onClick={() => setView("quiz")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "quiz" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.HelpCircle size={16} /> Testy</button>
+              <button onClick={() => setView("match")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "match" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.Zap size={16} /> Gra</button>
             </div>
           </div>
 
           <button onClick={() => setView("library")} className={`px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${view === "library" ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent hover:bg-[var(--bg-input)]"}`}>
-            <Icons.Compass size={12} /> Katalog
+            <Icons.Compass size={14} /> Katalog
           </button>
 
           <button onClick={() => setView("creator")} className={`px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${view === "creator" ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent hover:bg-[var(--bg-input)]"}`}>
-            <Icons.PlusCircle size={12} /> Menedżer
+            <Icons.PlusCircle size={14} /> Menedżer
           </button>
           
           <div className="relative group">
             <button className={`px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${["stats", "referrals", "admin"].includes(view) ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent hover:bg-[var(--bg-input)]"}`}>
-              <Icons.MoreHorizontal size={12} /> Więcej
+              <Icons.MoreHorizontal size={14} /> Więcej
             </button>
             <div className="absolute top-full left-0 mt-1 w-44 bg-[var(--bg-card)] border border-[var(--border-light)] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col p-1 z-50">
-              <button onClick={() => setView("stats")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "stats" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.BarChart2 size={14} /> Statystyki</button>
-              <button onClick={() => setView("referrals")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "referrals" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.Users size={14} /> Polecenia</button>
-              {currentUser?.role === "admin" && <button onClick={() => setView("admin")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "admin" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-rose-400"}`}><Icons.ShieldAlert size={14} /> Admin Panel</button>}
+              <button onClick={() => setView("stats")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "stats" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.BarChart2 size={16} /> Statystyki</button>
+              <button onClick={() => setView("referrals")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "referrals" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.Users size={16} /> Polecenia</button>
+              {currentUser?.role === "admin" && <button onClick={() => setView("admin")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "admin" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-rose-400"}`}><Icons.ShieldAlert size={16} /> Admin Panel</button>}
             </div>
           </div>
         </div>
@@ -1370,7 +1370,7 @@ export default function App() {
           {/* Search button */}
           <button onClick={() => setShowSearch(true)} className="flex items-center gap-2 px-2.5 py-2 rounded-xl border bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-active)] transition-all scale-hover whitespace-nowrap shrink-0" title="Wyszukaj słówko (Ctrl+K)">
             <Icons.Search size={15} className="shrink-0" />
-            <span className="hidden xl:flex items-center gap-1.5 text-[10px] font-bold text-[var(--text-secondary)] whitespace-nowrap shrink-0">
+            <span className="hidden xl:flex items-center gap-1.5 text-xs font-bold text-[var(--text-secondary)] whitespace-nowrap shrink-0">
               Szukaj <kbd className="border border-[var(--border-light)] rounded px-1.5 py-0.5 font-mono text-[9px] whitespace-nowrap shrink-0">Ctrl K</kbd>
             </span>
           </button>
@@ -1384,11 +1384,11 @@ export default function App() {
           {/* Premium / PRO Status Button */}
           <button 
             onClick={() => { if (!stats.isPro) handleOpenPremiumModal(null); }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border shrink-0 text-xs font-bold transition-all ${stats.isPro ? "bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-md shadow-amber-500/5 font-extrabold cursor-default" : "bg-white/5 text-slate-400 border-white/10 hover:text-white scale-hover"}`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border shrink-0 text-xs font-bold transition-all ${stats.isPro ? "bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-md shadow-amber-500/5 font-extrabold cursor-default" : "bg-amber-500 hover:bg-amber-400 text-amber-950 border-amber-600 shadow-md scale-hover"}`}
             title={stats.isPro ? "Masz aktywny pakiet PRO!" : "Kliknij, aby odblokować wersję PRO"}
           >
-            <Icons.Crown size={14} className={stats.isPro ? "fill-amber-400 text-amber-400" : "text-slate-400"} />
-            <span className="hidden sm:inline">{stats.isPro ? "PRO" : "FREE"}</span>
+            <Icons.Crown size={14} className={stats.isPro ? "fill-amber-400 text-amber-400" : "fill-amber-950/20 text-amber-950"} />
+            <span className="hidden sm:inline">{stats.isPro ? "PRO" : "KUP PRO"}</span>
           </button>
 
           {/* Daily streak indicator */}

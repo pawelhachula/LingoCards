@@ -479,7 +479,7 @@ export default function Creator({
       </div>
 
       {/* Selector Tabs */}
-      <div className="flex bg-black/40 p-1.5 rounded-2xl border border-white/5 gap-2 max-w-2xl flex-wrap">
+      <div className="flex bg-[var(--bg-input)] p-1.5 rounded-2xl border border-[var(--border-light)] gap-2 max-w-2xl flex-wrap">
         <button
           onClick={() => {
             setActiveTab("add-card");
@@ -560,13 +560,13 @@ export default function Creator({
               </div>
             )}
             {customDecks.length === 0 ? (
-              <div className="bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs p-4.5 rounded-xl flex flex-col items-center text-center gap-2">
+              <div className="bg-[var(--primary-glow)] border border-[var(--border-active)] text-[var(--primary)] text-xs p-4.5 rounded-xl flex flex-col items-center text-center gap-2">
                 <div className="flex items-center justify-center gap-2">
-                  <Icons.AlertCircle className="text-amber-400" size={16} />
+                  <Icons.AlertCircle size={16} />
                   <span className="font-extrabold uppercase tracking-wider">Brak własnych talii</span>
                 </div>
-                <p className="leading-relaxed">
-                  Aby dodać nową fiszkę, musisz najpierw stworzyć talię. Przejdź do zakładki <strong className="text-indigo-400 cursor-pointer hover:underline" onClick={() => setActiveTab("create-deck")}>Nowa talia</strong> lub skorzystaj z zakładki <strong className="text-indigo-400 cursor-pointer hover:underline" onClick={() => setActiveTab("import-file")}>Import z pliku</strong>.
+                <p className="leading-relaxed text-[var(--text-primary)]">
+                  Aby dodać nową fiszkę, musisz najpierw stworzyć talię. Przejdź do zakładki <strong className="text-[var(--primary)] cursor-pointer hover:opacity-80" onClick={() => setActiveTab("create-deck")}>Nowa talia</strong> lub skorzystaj z zakładki <strong className="text-[var(--primary)] cursor-pointer hover:opacity-80" onClick={() => setActiveTab("import-file")}>Import z pliku</strong>.
                 </p>
               </div>
             ) : (

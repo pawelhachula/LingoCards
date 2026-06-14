@@ -210,8 +210,8 @@ export default function SearchModal({ decks, stats, setStats, onNavigate, onSele
                 onClick={() => setFilter(key)}
                 className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wider transition-all ${
                   filter === key
-                    ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
-                    : "text-slate-500 hover:text-slate-300 border border-transparent hover:border-white/10"
+                    ? "bg-[var(--primary-glow)] text-[var(--primary)] border border-[var(--border-active)]"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-transparent hover:border-white/10"
                 }`}
               >
                 <Icon size={11} />
@@ -230,8 +230,8 @@ export default function SearchModal({ decks, stats, setStats, onNavigate, onSele
                 onClick={() => setCefrFilter(lvl)}
                 className={`px-2 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wider transition-all border ${
                   cefrFilter === lvl
-                    ? "bg-white/10 text-white border-white/20"
-                    : "text-slate-500 hover:text-slate-300 border-transparent hover:border-white/10"
+                    ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)]"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent hover:border-white/10"
                 }`}
               >
                 {lvl === "all" ? "Wszystkie" : lvl}
@@ -373,8 +373,8 @@ export default function SearchModal({ decks, stats, setStats, onNavigate, onSele
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-5 py-3 border-t border-white/5 bg-black/20">
-          <div className="flex items-center gap-3 text-[10px] text-slate-600 font-bold">
+        <div className="flex items-center justify-between px-5 py-3 border-t border-[var(--border-light)] bg-[var(--bg-input)]">
+          <div className="flex items-center gap-3 text-[10px] text-[var(--text-secondary)] font-bold">
             <span className="flex items-center gap-1">
               <kbd className="border border-white/10 rounded px-1.5 py-0.5 font-mono text-slate-500">↑↓</kbd>
               nawigacja

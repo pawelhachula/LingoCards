@@ -161,11 +161,7 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
                       onNavigate("learn");
                       playSound("tap", stats.audioStyle || "synth");
                     }}
-                    className={`shrink-0 text-xs font-extrabold px-3.5 py-2 rounded-lg bg-gradient-to-r text-white transition-all flex items-center gap-1 scale-hover shadow-lg uppercase tracking-wider ${
-                      activeTab === "vocabulary"
-                        ? "from-indigo-500 to-cyan-500 hover:from-indigo-400 hover:to-cyan-400 shadow-indigo-500/10"
-                        : "from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 shadow-orange-500/10"
-                    }`}
+                    className="shrink-0 text-xs font-extrabold px-3.5 py-2 rounded-lg bg-[var(--primary)] text-[var(--bg-main)] transition-all flex items-center gap-1 scale-hover shadow-lg shadow-[var(--primary)]/20 uppercase tracking-wider hover:opacity-90"
                   >
                     Ucz się
                     <Icons.ArrowRight size={12} />
@@ -360,7 +356,7 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
                               onSelectDeck(deck);
                               onNavigate("learn");
                             }}
-                            className="px-3.5 py-2 bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-400 hover:to-cyan-400 text-white font-extrabold text-[10px] rounded-lg uppercase tracking-wider flex items-center gap-1 scale-hover shadow-lg shadow-indigo-500/10"
+                            className="px-3.5 py-2 bg-[var(--primary)] hover:opacity-90 text-[var(--bg-main)] font-extrabold text-[10px] rounded-lg uppercase tracking-wider flex items-center gap-1 scale-hover shadow-lg shadow-[var(--primary)]/20"
                           >
                             Ucz się
                             <Icons.ArrowRight size={12} />
