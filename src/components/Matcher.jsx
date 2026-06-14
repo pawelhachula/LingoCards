@@ -72,7 +72,7 @@ export default function Matcher({ selectedDeck, stats, setStats, onNavigate, onA
   if (!selectedDeck) {
     return (
       <div className="glass-card p-12 text-center flex flex-col items-center gap-6 max-w-md mx-auto animate-slide-in">
-        <div className="w-16 h-16 bg-cyan-500/10 text-cyan-400 rounded-2xl flex items-center justify-center border border-cyan-500/20">
+        <div className="w-16 h-16 bg-[var(--primary-glow)] text-[var(--primary)] rounded-2xl flex items-center justify-center border border-[var(--border-active)]">
           <Icons.Trophy size={32} />
         </div>
         <div>
@@ -169,7 +169,7 @@ export default function Matcher({ selectedDeck, stats, setStats, onNavigate, onA
   if (gameFinished) {
     return (
       <div className="glass-card p-8 text-center flex flex-col items-center gap-6 w-full max-w-[460px] mx-auto animate-slide-in">
-        <div className="w-16 h-16 bg-cyan-500/10 text-cyan-400 rounded-2xl flex items-center justify-center border border-cyan-500/20">
+        <div className="w-16 h-16 bg-[var(--primary-glow)] text-[var(--primary)] rounded-2xl flex items-center justify-center border border-[var(--border-active)]">
           <Icons.Trophy size={32} className="text-cyan-400 animate-bounce" />
         </div>
 
@@ -193,7 +193,7 @@ export default function Matcher({ selectedDeck, stats, setStats, onNavigate, onA
           <button onClick={() => onNavigate("dashboard")} className="flex-1 btn btn-secondary text-sm">
             Do Pulpitu
           </button>
-          <button onClick={handleRestart} className="flex-1 btn btn-primary bg-cyan-600 hover:bg-cyan-500 text-sm">
+          <button onClick={handleRestart} className="flex-1 btn btn-primary text-sm">
             Zagraj ponownie
           </button>
         </div>
@@ -215,13 +215,13 @@ export default function Matcher({ selectedDeck, stats, setStats, onNavigate, onA
         </div>
         
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-cyan-400 bg-cyan-500/10 px-3.5 py-2 rounded-xl font-mono text-sm font-bold border border-cyan-500/20 shadow-sm">
+          <div className="flex items-center gap-1.5 text-[var(--primary)] bg-[var(--primary-glow)] px-3.5 py-2 rounded-xl font-mono text-sm font-bold border border-[var(--border-active)] shadow-sm">
             <Icons.Clock size={16} />
             <span>{formatTime(time)}</span>
           </div>
           <button 
             onClick={handleRestart} 
-            className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-slate-300 hover:text-white transition-all scale-hover border border-white/5"
+            className="p-2.5 bg-[var(--bg-input)] hover:bg-[var(--bg-card)] rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all scale-hover border border-[var(--border-light)]"
             title="Przetasuj i restartuj"
           >
             <Icons.RotateCcw size={16} />

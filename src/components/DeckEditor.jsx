@@ -129,16 +129,16 @@ export default function DeckEditor({ deck, onClose, onUpdateDeck }) {
         </div>
 
         {/* Toolbar */}
-        <div className="flex gap-3 p-4 border-b border-white/5">
+        <div className="flex gap-3 p-4 border-b border-[var(--border-light)]">
           <div className="relative flex-grow">
-            <Icons.Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <Icons.Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
             <input
               ref={searchRef}
               type="text"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Szukaj słówka..."
-              className="w-full bg-black/30 border border-white/10 rounded-xl pl-8 pr-3 py-2 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/60"
+              className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl pl-8 pr-3 py-2 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--border-active)] transition-colors"
             />
           </div>
           <button
@@ -151,15 +151,15 @@ export default function DeckEditor({ deck, onClose, onUpdateDeck }) {
 
         {/* Add word form */}
         {showAddForm && (
-          <div className="p-4 bg-indigo-500/5 border-b border-indigo-500/15 flex flex-col gap-3">
-            <p className="text-xs font-extrabold uppercase tracking-wider text-indigo-400">Nowe słowo</p>
+          <div className="p-4 bg-[var(--primary-glow)] border-b border-[var(--border-light)] flex flex-col gap-3">
+            <p className="text-xs font-extrabold uppercase tracking-wider text-[var(--primary)]">Nowe słowo</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <input
                 type="text"
                 value={addForm.english}
                 onChange={e => setAddForm(f => ({ ...f, english: e.target.value }))}
                 placeholder="Angielski *"
-                className="bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/60"
+                className="bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-3 py-2.5 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--border-active)] transition-colors"
                 autoFocus
               />
               <input
@@ -167,14 +167,14 @@ export default function DeckEditor({ deck, onClose, onUpdateDeck }) {
                 value={addForm.polish}
                 onChange={e => setAddForm(f => ({ ...f, polish: e.target.value }))}
                 placeholder="Polski *"
-                className="bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/60"
+                className="bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-3 py-2.5 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--border-active)] transition-colors"
               />
               <input
                 type="text"
                 value={addForm.pronunciation}
                 onChange={e => setAddForm(f => ({ ...f, pronunciation: e.target.value }))}
                 placeholder="Wymowa (opcjonalnie)"
-                className="bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/60"
+                className="bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-3 py-2.5 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--border-active)] transition-colors"
               />
             </div>
             <div className="flex gap-2 justify-end">

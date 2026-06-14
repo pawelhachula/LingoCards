@@ -324,7 +324,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
               onClick={() => setDirection('default')}
               className={`flex-1 py-2.5 px-4 rounded-xl border text-xs font-bold uppercase tracking-wide transition-all ${
                 isDefault
-                  ? 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30 shadow-sm'
+                  ? 'bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm'
                   : 'text-[var(--text-secondary)] border-[var(--border-light)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-input)]'
               }`}
             >
@@ -334,7 +334,7 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
               onClick={() => setDirection('reversed')}
               className={`flex-1 py-2.5 px-4 rounded-xl border text-xs font-bold uppercase tracking-wide transition-all ${
                 !isDefault
-                  ? 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30 shadow-sm'
+                  ? 'bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm'
                   : 'text-[var(--text-secondary)] border-[var(--border-light)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-input)]'
               }`}
             >
@@ -346,14 +346,14 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <button 
             onClick={() => setQuizMode('choice')}
-            className="glass-card p-8 text-center flex flex-col items-center gap-5 hover:-translate-y-1 scale-hover group hover:border-indigo-500/30"
+            className="glass-card p-8 text-center flex flex-col items-center gap-5 hover:-translate-y-1 scale-hover group hover:border-[var(--border-active)]"
           >
-            <div className="p-4 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 group-hover:scale-110 transition-transform">
+            <div className="p-4 rounded-2xl bg-[var(--primary-glow)] text-[var(--primary)] border border-[var(--border-active)] group-hover:scale-110 transition-transform">
               <Icons.ListChecks size={32} />
             </div>
             <div>
-              <h4 className="text-lg font-bold text-white">Test wyboru</h4>
-              <p className="text-xs text-slate-400 mt-2 leading-relaxed font-medium">
+              <h4 className="text-lg font-bold text-[var(--text-primary)]">Test wyboru</h4>
+              <p className="text-xs text-[var(--text-secondary)] mt-2 leading-relaxed font-medium">
                 {isDefault ? 'Pytanie po angielsku → wybierz polskie tłumaczenie.' : 'Pytanie po polsku → wybierz angielski odpowiednik.'}
               </p>
             </div>
@@ -361,14 +361,14 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
 
           <button 
             onClick={() => setQuizMode('spell')}
-            className="glass-card p-8 text-center flex flex-col items-center gap-5 hover:-translate-y-1 scale-hover group hover:border-cyan-500/30"
+            className="glass-card p-8 text-center flex flex-col items-center gap-5 hover:-translate-y-1 scale-hover group hover:border-[var(--secondary-glow)]"
           >
-            <div className="p-4 rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 group-hover:scale-110 transition-transform">
+            <div className="p-4 rounded-2xl bg-[var(--secondary-glow)] text-[var(--secondary)] border border-[var(--border-light)] group-hover:scale-110 transition-transform">
               <Icons.Keyboard size={32} />
             </div>
             <div>
-              <h4 className="text-lg font-bold text-white">Pisanie i pisownia</h4>
-              <p className="text-xs text-slate-400 mt-2 leading-relaxed font-medium">
+              <h4 className="text-lg font-bold text-[var(--text-primary)]">Pisanie i pisownia</h4>
+              <p className="text-xs text-[var(--text-secondary)] mt-2 leading-relaxed font-medium">
                 {isDefault ? 'Pytanie po polsku → wpisz słówko po angielsku.' : 'Pytanie po angielsku → wpisz tłumaczenie po polsku.'}
               </p>
             </div>

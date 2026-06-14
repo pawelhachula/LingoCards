@@ -1329,8 +1329,8 @@ export default function App() {
                   onClick={() => setView(id)}
                   className={`px-2 xl:px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${
                     active
-                      ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm"
-                      : "text-slate-400 hover:text-white border-transparent hover:bg-white/5"
+                      ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm"
+                      : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent hover:bg-[var(--bg-input)]"
                   }`}
                 >
                   {IconEl && <IconEl size={12} className="shrink-0" />}
@@ -1344,8 +1344,8 @@ export default function App() {
         {/* Global Streak / Theme Selector / User Profile */}
         <div className="flex items-center gap-2 lg:gap-3 shrink-0">
           {(view === "learn" || view === "quiz" || view === "match") && decks.length > 0 && (
-            <div className="hidden sm:flex items-center gap-1.5 bg-black/30 border border-white/5 px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-300 whitespace-nowrap shrink-0">
-              <span className="text-slate-500 font-extrabold uppercase text-[9px] tracking-wider">Talia:</span>
+            <div className="hidden sm:flex items-center gap-1.5 bg-[var(--bg-input)] border border-[var(--border-light)] px-2.5 py-1.5 rounded-xl text-xs font-bold text-[var(--text-primary)] whitespace-nowrap shrink-0">
+              <span className="text-[var(--text-secondary)] font-extrabold uppercase text-[9px] tracking-wider">Talia:</span>
               <select 
                 value={selectedDeck?.id || ""} 
                 onChange={(e) => {
@@ -1353,7 +1353,7 @@ export default function App() {
                   const found = allDecks.find(d => d.id === e.target.value);
                   if (found) setSelectedDeck(found);
                 }}
-                className="bg-transparent text-white focus:outline-none cursor-pointer font-bold border-none p-0 pr-6 max-w-[110px] sm:max-w-[140px] md:max-w-[160px] truncate"
+                className="bg-transparent text-[var(--text-primary)] focus:outline-none cursor-pointer font-bold border-none p-0 pr-6 max-w-[110px] sm:max-w-[140px] md:max-w-[160px] truncate"
               >
                 {getSortedDecks([srsDeck, starredDeck, ...decks]).map(d => {
                   const isLocked = !stats.isPro && d.isPremium;
@@ -1373,19 +1373,19 @@ export default function App() {
           )}
 
           {/* THEME SELECTOR DROPDOWN */}
-          <div className="hidden lg:flex items-center gap-1.5 bg-black/30 border border-white/8 px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-300 whitespace-nowrap shrink-0">
-            <Icons.Palette size={14} className="text-slate-400 shrink-0" />
+          <div className="hidden lg:flex items-center gap-1.5 bg-[var(--bg-input)] border border-[var(--border-light)] px-2.5 py-1.5 rounded-xl text-xs font-bold text-[var(--text-primary)] whitespace-nowrap shrink-0">
+            <Icons.Palette size={14} className="text-[var(--text-secondary)] shrink-0" />
             <select
               value={theme}
               onChange={(e) => handleThemeChange(e.target.value)}
-              className="bg-transparent text-white focus:outline-none cursor-pointer font-bold border-none p-0 pr-6 text-xs max-w-[90px] sm:max-w-[120px] truncate"
+              className="bg-transparent text-[var(--text-primary)] focus:outline-none cursor-pointer font-bold border-none p-0 pr-6 text-xs max-w-[90px] sm:max-w-[120px] truncate"
             >
-              <optgroup label="Motywy podstawowe" className="bg-[var(--bg-main)] text-slate-400">
+              <optgroup label="Motywy podstawowe" className="bg-[var(--bg-main)] text-[var(--text-secondary)]">
                 {DEFAULT_THEMES.map(t => (
                   <option key={t.id} value={t.id} className="bg-[var(--bg-main)] text-[var(--text-primary)]">{t.label}</option>
                 ))}
               </optgroup>
-              <optgroup label="Motywy premium" className="bg-[var(--bg-main)] text-indigo-400">
+              <optgroup label="Motywy premium" className="bg-[var(--bg-main)] text-[var(--primary)]">
                 {PREMIUM_THEMES.map(t => {
                   const isUnlocked = !!stats.isPro && (stats.level || 1) >= t.levelRequired;
                   return (
@@ -1406,13 +1406,13 @@ export default function App() {
           {/* Search button */}
           <button
             onClick={() => setShowSearch(true)}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl border bg-white/5 border-white/10 text-slate-300 hover:text-white hover:bg-white/10 hover:border-white/15 transition-all scale-hover whitespace-nowrap shrink-0"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl border bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-active)] transition-all scale-hover whitespace-nowrap shrink-0"
             title="Wyszukaj słówko (Ctrl+K)"
           >
             <Icons.Search size={15} className="shrink-0" />
-            <span className="hidden xl:flex items-center gap-1.5 text-[10px] font-bold text-slate-500 whitespace-nowrap shrink-0">
+            <span className="hidden xl:flex items-center gap-1.5 text-[10px] font-bold text-[var(--text-secondary)] whitespace-nowrap shrink-0">
               Szukaj
-              <kbd className="border border-white/10 rounded px-1.5 py-0.5 font-mono text-[9px] whitespace-nowrap shrink-0">Ctrl K</kbd>
+              <kbd className="border border-[var(--border-light)] rounded px-1.5 py-0.5 font-mono text-[9px] whitespace-nowrap shrink-0">Ctrl K</kbd>
             </span>
           </button>
 
@@ -1421,8 +1421,8 @@ export default function App() {
             onClick={() => setView("leaderboard")}
             className={`flex items-center justify-center p-2.5 rounded-xl border scale-hover shrink-0 ${
               view === "leaderboard" 
-                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
-                : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
+                ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" 
+                : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
             title="Ranking Rywalizacji"
           >
@@ -1434,8 +1434,8 @@ export default function App() {
             onClick={() => setView("settings")}
             className={`flex items-center justify-center p-2.5 rounded-xl border scale-hover shrink-0 ${
               view === "settings" 
-                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm" 
-                : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
+                ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" 
+                : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
             title="Ustawienia"
           >
@@ -1740,14 +1740,14 @@ export default function App() {
             
             <div className="mt-8">
               <span className="text-xs font-black text-yellow-400 uppercase tracking-widest bg-yellow-500/10 px-3 py-1 rounded-full border border-yellow-500/20">AWANS POZIOMU!</span>
-              <h3 className="text-3xl font-black text-white mt-4 tracking-tight">Poziom w górę! 🎉</h3>
-              <p className="text-slate-400 text-xs mt-2 leading-relaxed">Twoja wiedza rośnie! Osiągnąłeś nowy poziom nauki.</p>
+              <h3 className="text-3xl font-black text-[var(--text-primary)] mt-4 tracking-tight">Poziom w górę! 🎉</h3>
+              <p className="text-[var(--text-secondary)] text-xs mt-2 leading-relaxed">Twoja wiedza rośnie! Osiągnąłeś nowy poziom nauki.</p>
             </div>
 
-            <div className="flex items-center gap-4 bg-black/40 px-6 py-4 rounded-2xl border border-white/5 w-full justify-center">
+            <div className="flex items-center gap-4 bg-[var(--bg-input)] px-6 py-4 rounded-2xl border border-[var(--border-light)] w-full justify-center">
               <div className="text-center">
-                <span className="text-[10px] text-slate-500 font-extrabold uppercase block leading-none">Poprzedni</span>
-                <strong className="text-slate-400 text-xl font-black block mt-1">Lvl {levelUpInfo.oldLevel}</strong>
+                <span className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase block leading-none">Poprzedni</span>
+                <strong className="text-[var(--text-primary)] text-xl font-black block mt-1">Lvl {levelUpInfo.oldLevel}</strong>
               </div>
               <Icons.ArrowRight className="text-yellow-400" size={20} />
               <div className="text-center">
@@ -1756,8 +1756,8 @@ export default function App() {
               </div>
             </div>
 
-            <div className="text-xs text-indigo-300 font-bold">
-              Nowy Tytuł: <span className="text-white font-extrabold uppercase tracking-wide">
+            <div className="text-xs text-[var(--primary)] font-bold">
+              Nowy Tytuł: <span className="text-[var(--text-primary)] font-extrabold uppercase tracking-wide">
                 {levelUpInfo.newLevel >= 15 ? "Master 👑" : levelUpInfo.newLevel >= 10 ? "Scholar 🎓" : levelUpInfo.newLevel >= 6 ? "Explorer 🧭" : levelUpInfo.newLevel >= 3 ? "Learner 📚" : "Beginner 🌱"}
               </span>
             </div>
