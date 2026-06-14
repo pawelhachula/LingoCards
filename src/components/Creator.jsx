@@ -470,12 +470,12 @@ export default function Creator({
       <div>
         <button 
           onClick={() => onNavigate("dashboard")}
-          className="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 font-bold"
+          className="text-xs text-[var(--text-secondary)] hover:text-white transition-colors flex items-center gap-1.5 font-bold"
         >
           <Icons.ChevronLeft size={16} /> Powrót do pulpitu
         </button>
         <h2 className="text-2xl font-black mt-2 text-white">Menedżer Zestawów i Fiszek</h2>
-        <p className="text-slate-400 text-sm mt-1">Zarządzaj słownictwem, modyfikuj talie i rozbudowuj swoją bazę.</p>
+        <p className="text-[var(--text-secondary)] text-sm mt-1">Zarządzaj słownictwem, modyfikuj talie i rozbudowuj swoją bazę.</p>
       </div>
 
       {/* Selector Tabs */}
@@ -487,8 +487,8 @@ export default function Creator({
           }}
           className={`flex-1 btn text-xs font-bold py-2.5 rounded-xl transition-all ${
             activeTab === "add-card" 
-              ? "bg-indigo-500/10 text-indigo-300 border border-indigo-500/25 shadow-sm" 
-              : "bg-transparent text-slate-400 hover:text-white border-transparent"
+              ? "bg-[var(--primary-glow)] text-[var(--text-primary)] border border-[var(--border-active)] shadow-sm" 
+              : "bg-transparent text-[var(--text-secondary)] hover:text-white border-transparent"
           }`}
         >
           <Icons.Plus size={14} />
@@ -501,8 +501,8 @@ export default function Creator({
           }}
           className={`flex-1 btn text-xs font-bold py-2.5 rounded-xl transition-all ${
             activeTab === "create-deck" && !editingDeckId
-              ? "bg-indigo-500/10 text-indigo-300 border border-indigo-500/25 shadow-sm" 
-              : "bg-transparent text-slate-400 hover:text-white border-transparent"
+              ? "bg-[var(--primary-glow)] text-[var(--text-primary)] border border-[var(--border-active)] shadow-sm" 
+              : "bg-transparent text-[var(--text-secondary)] hover:text-white border-transparent"
           }`}
         >
           <Icons.FolderPlus size={14} />
@@ -516,8 +516,8 @@ export default function Creator({
           }}
           className={`flex-1 btn text-xs font-bold py-2.5 rounded-xl transition-all ${
             activeTab === "import-file"
-              ? "bg-indigo-500/10 text-indigo-300 border border-indigo-500/25 shadow-sm" 
-              : "bg-transparent text-slate-400 hover:text-white border-transparent"
+              ? "bg-[var(--primary-glow)] text-[var(--text-primary)] border border-[var(--border-active)] shadow-sm" 
+              : "bg-transparent text-[var(--text-secondary)] hover:text-white border-transparent"
           }`}
         >
           <Icons.FileUp size={14} />
@@ -530,8 +530,8 @@ export default function Creator({
           }}
           className={`flex-1 btn text-xs font-bold py-2.5 rounded-xl transition-all ${
             activeTab === "manage-decks" || (activeTab === "create-deck" && editingDeckId)
-              ? "bg-indigo-500/10 text-indigo-300 border border-indigo-500/25 shadow-sm" 
-              : "bg-transparent text-slate-400 hover:text-white border-transparent"
+              ? "bg-[var(--primary-glow)] text-[var(--text-primary)] border border-[var(--border-active)] shadow-sm" 
+              : "bg-transparent text-[var(--text-secondary)] hover:text-white border-transparent"
           }`}
         >
           <Icons.FolderEdit size={14} />
@@ -573,14 +573,14 @@ export default function Creator({
               <form onSubmit={handleCardSubmit} className="flex flex-col gap-5">
                 {/* Deck selector */}
                 <div>
-                  <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                  <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-2">
                     Wybierz talię docelową
                   </label>
                   <select
                     value={selectedDeckId}
                     onChange={(e) => setSelectedDeckId(e.target.value)}
                     disabled={!!editingCardId}
-                    className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--primary)] font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <option value="" disabled>Zaznacz talię...</option>
                     {customDecks.map(deck => (
@@ -592,7 +592,7 @@ export default function Creator({
                 {/* English & Polish Inputs */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                    <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-2">
                       Słówko / fraza (angielski) *
                     </label>
                     <input
@@ -600,11 +600,11 @@ export default function Creator({
                       value={english}
                       onChange={(e) => setEnglish(e.target.value)}
                       placeholder="np. Resilience"
-                      className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
+                      className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--primary)] font-semibold placeholder-slate-700"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                    <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-2">
                       Tłumaczenie (polski) *
                     </label>
                     <input
@@ -612,7 +612,7 @@ export default function Creator({
                       value={polish}
                       onChange={(e) => setPolish(e.target.value)}
                       placeholder="np. Odporność, elastyczność"
-                      className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
+                      className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--primary)] font-semibold placeholder-slate-700"
                     />
                   </div>
                 </div>
@@ -620,7 +620,7 @@ export default function Creator({
                 {/* Phonetics, Category & CEFR Level */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                    <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-2">
                       Zapis fonetyczny (opcjonalnie)
                     </label>
                     <input
@@ -628,17 +628,17 @@ export default function Creator({
                       value={pronunciation}
                       onChange={(e) => setPronunciation(e.target.value)}
                       placeholder="np. /rɪˈzɪl.jəns/"
-                      className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
+                      className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--primary)] font-semibold placeholder-slate-700"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                    <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-2">
                       Część mowy
                     </label>
                     <select
                       value={partOfSpeech}
                       onChange={(e) => setPartOfSpeech(e.target.value)}
-                      className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold"
+                      className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--primary)] font-semibold"
                     >
                       <option value="word">Słówko (Word)</option>
                       <option value="noun">Rzeczownik (Noun)</option>
@@ -650,13 +650,13 @@ export default function Creator({
                     </select>
                   </div>
                   <div>
-                    <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                    <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-2">
                       Poziom trudności (CEFR)
                     </label>
                     <select
                       value={level}
                       onChange={(e) => setLevel(e.target.value)}
-                      className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold"
+                      className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--primary)] font-semibold"
                     >
                       <option value="A1">A1 (Początkujący)</option>
                       <option value="A2">A2 (Podstawowy)</option>
@@ -670,7 +670,7 @@ export default function Creator({
 
                 {/* Context example sentences */}
                 <div>
-                  <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                  <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-2">
                     Zdanie przykładowe (angielski - opcjonalnie)
                   </label>
                   <textarea
@@ -678,12 +678,12 @@ export default function Creator({
                     onChange={(e) => setExampleEnglish(e.target.value)}
                     placeholder="np. The team showed great resilience during the crisis."
                     rows={2}
-                    className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700 resize-none animate-none"
+                    className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--primary)] font-semibold placeholder-slate-700 resize-none animate-none"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                  <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-2">
                     Tłumaczenie zdania (polski - opcjonalnie)
                   </label>
                   <textarea
@@ -691,7 +691,7 @@ export default function Creator({
                     onChange={(e) => setExamplePolish(e.target.value)}
                     placeholder="np. Zespół wykazał się ogromną odpornością w czasie kryzysu."
                     rows={2}
-                    className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700 resize-none animate-none"
+                    className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--primary)] font-semibold placeholder-slate-700 resize-none animate-none"
                   />
                 </div>
 
@@ -723,11 +723,11 @@ export default function Creator({
 
           {/* Sidebar - Deck content summary */}
           <div className="glass-card p-6 flex flex-col h-[530px]">
-            <h4 className="text-xs font-extrabold text-slate-500 mb-3 uppercase tracking-wider">Zawartość wybranej talii</h4>
+            <h4 className="text-xs font-extrabold text-[var(--text-secondary)] mb-3 uppercase tracking-wider">Zawartość wybranej talii</h4>
             
             {currentSelectedDeck ? (
               <>
-                <div className="flex items-center gap-3 mb-4 bg-black/25 p-3 rounded-2xl border border-white/5">
+                <div className="flex items-center gap-3 mb-4 bg-[var(--bg-input)] p-3 rounded-2xl border border-[var(--border-light)]">
                   <div 
                     className="p-2.5 rounded-xl border animate-none"
                     style={{ 
@@ -740,13 +740,13 @@ export default function Creator({
                   </div>
                   <div>
                     <div className="text-xs text-white font-extrabold">{currentSelectedDeck.title}</div>
-                    <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">{currentSelectedDeck.cards.length} fiszek</div>
+                    <div className="text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-wider mt-0.5">{currentSelectedDeck.cards.length} fiszek</div>
                   </div>
                 </div>
 
                 <div className="flex-grow overflow-y-auto pr-1 flex flex-col gap-2.5">
                   {currentSelectedDeck.cards.length === 0 ? (
-                    <div className="text-center py-12 text-slate-500 text-xs font-medium leading-relaxed">
+                    <div className="text-center py-12 text-[var(--text-secondary)] text-xs font-medium leading-relaxed">
                       Ta talia nie zawiera jeszcze żadnych fiszek. Wypełnij pola i kliknij "Dodaj fiszkę".
                     </div>
                   ) : (
@@ -755,11 +755,11 @@ export default function Creator({
                       return (
                         <div 
                           key={card.id}
-                          className="bg-black/30 p-3 rounded-xl border border-white/5 flex items-center justify-between text-xs hover:border-white/10 transition-colors"
+                          className="bg-[var(--bg-input)] p-3 rounded-xl border border-[var(--border-light)] flex items-center justify-between text-xs hover:border-[var(--border-light)] transition-colors"
                         >
                           <div className="flex-1 min-w-0 pr-3">
                             <div className="font-extrabold text-white truncate">{card.english}</div>
-                            <div className="text-[10px] text-slate-400 truncate mt-0.5 font-medium">{card.polish}</div>
+                            <div className="text-[10px] text-[var(--text-secondary)] truncate mt-0.5 font-medium">{card.polish}</div>
                           </div>
                           
                           <div className="flex gap-1 items-center shrink-0">
@@ -767,14 +767,14 @@ export default function Creator({
                               <>
                                 <button 
                                   onClick={() => handleStartEditCard(card)}
-                                  className="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-all"
+                                  className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--primary)] hover:bg-indigo-500/10 rounded-lg transition-all"
                                   title="Edytuj fiszkę"
                                 >
                                   <Icons.Edit2 size={13} />
                                 </button>
                                 <button 
                                   onClick={() => onDeleteCard(currentSelectedDeck.id, card.id)}
-                                  className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all"
+                                  className="p-1.5 text-[var(--text-secondary)] hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all"
                                   title="Usuń fiszkę"
                                 >
                                   <Icons.Trash2 size={13} />
@@ -791,7 +791,7 @@ export default function Creator({
                 </div>
               </>
             ) : (
-              <div className="text-center py-12 text-slate-500 text-xs">
+              <div className="text-center py-12 text-[var(--text-secondary)] text-xs">
                 Wybierz talię docelową, aby zarządzać jej fiszkami.
               </div>
             )}
@@ -820,7 +820,7 @@ export default function Creator({
           <form onSubmit={handleDeckSubmit} className="flex flex-col gap-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-2">
                   Nazwa talii (np. po angielsku) *
                 </label>
                 <input
@@ -828,11 +828,11 @@ export default function Creator({
                   value={deckTitle}
                   onChange={(e) => setDeckTitle(e.target.value)}
                   placeholder="np. Food & Cooking"
-                  className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
+                  className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--primary)] font-semibold placeholder-slate-700"
                 />
               </div>
               <div>
-                <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+                <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-2">
                   Polski odpowiednik / podtytuł *
                 </label>
                 <input
@@ -840,13 +840,13 @@ export default function Creator({
                   value={deckPolishTitle}
                   onChange={(e) => setDeckPolishTitle(e.target.value)}
                   placeholder="np. Jedzenie i Gotowanie"
-                  className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
+                  className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--primary)] font-semibold placeholder-slate-700"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+              <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-2">
                 Krótki opis talii
               </label>
               <input
@@ -854,13 +854,13 @@ export default function Creator({
                 value={deckDesc}
                 onChange={(e) => setDeckDesc(e.target.value)}
                 placeholder="np. Naucz się nazw składników, potraw i słownictwa restauracyjnego."
-                className="w-full bg-black/40 border border-white/8 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
+                className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[var(--primary)] font-semibold placeholder-slate-700"
               />
             </div>
 
             {/* Icons Selector */}
             <div>
-              <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+              <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-2">
                 Wybierz ikonę talii
               </label>
               <div className="grid grid-cols-5 sm:grid-cols-9 gap-2">
@@ -874,8 +874,8 @@ export default function Creator({
                       onClick={() => setDeckIcon(icoName)}
                       className={`btn p-3 border rounded-xl flex items-center justify-center transition-all scale-hover ${
                         isSel 
-                          ? "bg-indigo-500/15 border-indigo-500/40 text-indigo-400" 
-                          : "bg-black/20 border-white/5 text-slate-400 hover:text-white"
+                          ? "bg-indigo-500/15 border-indigo-500/40 text-[var(--primary)]" 
+                          : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:text-white"
                       }`}
                     >
                       <Icon size={18} />
@@ -887,7 +887,7 @@ export default function Creator({
 
             {/* Color Selector */}
             <div>
-              <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+              <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-2">
                 Kolor akcentujący talii
               </label>
               <div className="flex flex-wrap gap-2.5">
@@ -940,7 +940,7 @@ export default function Creator({
         <div className="flex flex-col gap-6">
           <div className="glass-card p-6 md:p-8">
             <h3 className="text-lg font-bold text-white mb-5 flex items-center gap-2">
-              <Icons.FileUp className="text-indigo-400" size={20} />
+              <Icons.FileUp className="text-[var(--primary)]" size={20} />
               Importuj fiszki z pliku
             </h3>
 
@@ -959,9 +959,9 @@ export default function Creator({
 
             <div className="flex flex-col gap-6">
               {/* Target options */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-black/20 p-4 rounded-xl border border-white/5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-[var(--bg-input)] p-4 rounded-xl border border-[var(--border-light)]">
                 <div>
-                  <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">Cel importu</label>
+                  <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-2">Cel importu</label>
                   <div className="flex gap-4">
                     <label className="flex items-center gap-2 text-xs text-white font-semibold cursor-pointer">
                       <input
@@ -993,33 +993,33 @@ export default function Creator({
                 {importTargetType === "new" ? (
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-1">Nazwa talii *</label>
+                      <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-1">Nazwa talii *</label>
                       <input
                         type="text"
                         value={newDeckTitle}
                         onChange={(e) => setNewDeckTitle(e.target.value)}
                         placeholder="Nazwa talii"
-                        className="w-full bg-black/40 border border-white/8 rounded-lg px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:border-indigo-500/60"
+                        className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-lg px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:border-[var(--primary)]"
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-1">Polski podtytuł *</label>
+                      <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-1">Polski podtytuł *</label>
                       <input
                         type="text"
                         value={newDeckPolishTitle}
                         onChange={(e) => setNewDeckPolishTitle(e.target.value)}
                         placeholder="Polski podtytuł"
-                        className="w-full bg-black/40 border border-white/8 rounded-lg px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:border-indigo-500/60"
+                        className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-lg px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:border-[var(--primary)]"
                       />
                     </div>
                   </div>
                 ) : (
                   <div>
-                    <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-1">Wybierz talię</label>
+                    <label className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block mb-1">Wybierz talię</label>
                     <select
                       value={importSelectedDeckId}
                       onChange={(e) => setImportSelectedDeckId(e.target.value)}
-                      className="w-full bg-black/40 border border-white/8 rounded-lg px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:border-indigo-500/60"
+                      className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-lg px-3 py-1.5 text-xs text-white font-semibold focus:outline-none focus:border-[var(--primary)]"
                     >
                       <option value="" disabled>Wybierz talię...</option>
                       {customDecks.map(deck => (
@@ -1039,7 +1039,7 @@ export default function Creator({
                 className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center gap-3 transition-all cursor-pointer ${
                   dragActive
                     ? "border-indigo-500 bg-indigo-500/5 text-indigo-300"
-                    : "border-white/10 hover:border-indigo-500/30 text-slate-400 hover:text-slate-200"
+                    : "border-[var(--border-light)] hover:border-indigo-500/30 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 }`}
                 onClick={() => document.getElementById("file-upload").click()}
               >
@@ -1058,24 +1058,24 @@ export default function Creator({
                   </div>
                 ) : (
                   <>
-                    <Icons.Upload size={36} className="text-indigo-400/80 mb-1" />
+                    <Icons.Upload size={36} className="text-[var(--primary)]/80 mb-1" />
                     <p className="text-sm font-bold text-white">Przeciągnij i upuść plik tutaj lub kliknij, aby wybrać</p>
-                    <p className="text-[11px] text-slate-500">Obsługiwane formaty: <strong>CSV, TXT, PDF, JSON</strong>. Maksymalnie 5MB.</p>
+                    <p className="text-[11px] text-[var(--text-secondary)]">Obsługiwane formaty: <strong>CSV, TXT, PDF, JSON</strong>. Maksymalnie 5MB.</p>
                   </>
                 )}
               </div>
 
               {/* Tip / Formatting help */}
-              <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4.5 text-xs text-slate-400 flex flex-col gap-2">
+              <div className="bg-white/[0.02] border border-[var(--border-light)] rounded-2xl p-4.5 text-xs text-[var(--text-secondary)] flex flex-col gap-2">
                 <span className="font-extrabold text-white uppercase text-[10px] tracking-wider flex items-center gap-1.5">
-                  <Icons.Info size={14} className="text-indigo-400" />
+                  <Icons.Info size={14} className="text-[var(--primary)]" />
                   Wskazówka dotycząca formatu plików
                 </span>
                 <p className="leading-relaxed">
                   Dla plików **TXT / CSV / PDF** upewnij się, że słówka są zapisane w osobnych liniach, np.:
                   <br />
-                  <code className="text-indigo-300 font-mono text-[10px] bg-black/30 px-1 py-0.5 rounded inline-block mt-1">resilience - odporność</code> lub
-                  <code className="text-indigo-300 font-mono text-[10px] bg-black/30 px-1 py-0.5 rounded inline-block mt-1 ml-2">hello, cześć</code>
+                  <code className="text-indigo-300 font-mono text-[10px] bg-[var(--bg-input)] px-1 py-0.5 rounded inline-block mt-1">resilience - odporność</code> lub
+                  <code className="text-indigo-300 font-mono text-[10px] bg-[var(--bg-input)] px-1 py-0.5 rounded inline-block mt-1 ml-2">hello, cześć</code>
                   <br />
                   Parser automatycznie wykryje separatory i wyciągnie poprawne pary słówek.
                 </p>
@@ -1089,10 +1089,10 @@ export default function Creator({
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <h4 className="text-md font-bold text-white flex items-center gap-2">
-                    <Icons.Table size={18} className="text-indigo-400" />
+                    <Icons.Table size={18} className="text-[var(--primary)]" />
                     Podgląd i edycja zaimportowanych fiszek ({parsedCards.length})
                   </h4>
-                  <p className="text-slate-400 text-xs mt-1">Przejrzyj zaimportowane dane. Możesz kliknąć w dowolne pole, aby je zmodyfikować przed zapisem.</p>
+                  <p className="text-[var(--text-secondary)] text-xs mt-1">Przejrzyj zaimportowane dane. Możesz kliknąć w dowolne pole, aby je zmodyfikować przed zapisem.</p>
                 </div>
                 <div className="flex gap-2">
                   <button
@@ -1107,10 +1107,10 @@ export default function Creator({
                 </div>
               </div>
 
-              <div className="overflow-x-auto max-h-[400px] border border-white/5 rounded-xl">
+              <div className="overflow-x-auto max-h-[400px] border border-[var(--border-light)] rounded-xl">
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="bg-black/45 text-slate-400 font-extrabold uppercase border-b border-white/5">
+                    <tr className="bg-[var(--bg-input)] text-[var(--text-secondary)] font-extrabold uppercase border-b border-[var(--border-light)]">
                       <th className="p-3.5 w-12 text-center">#</th>
                       <th className="p-3.5 w-1/4">Angielski *</th>
                       <th className="p-3.5 w-1/4">Polski *</th>
@@ -1123,13 +1123,13 @@ export default function Creator({
                   <tbody className="divide-y divide-white/5">
                     {parsedCards.map((card, idx) => (
                       <tr key={card.id} className="hover:bg-white/[0.01] transition-colors">
-                        <td className="p-3 text-slate-500 font-bold text-center">{idx + 1}</td>
+                        <td className="p-3 text-[var(--text-secondary)] font-bold text-center">{idx + 1}</td>
                         <td className="p-2">
                           <input
                             type="text"
                             value={card.english}
                             onChange={(e) => updateCardField(card.id, "english", e.target.value)}
-                            className="w-full bg-transparent border border-transparent hover:border-white/10 focus:border-indigo-500 focus:bg-black/30 rounded px-2 py-1 text-white font-semibold outline-none"
+                            className="w-full bg-transparent border border-transparent hover:border-[var(--border-light)] focus:border-[var(--primary)] focus:bg-[var(--bg-input)] rounded px-2 py-1 text-white font-semibold outline-none"
                           />
                         </td>
                         <td className="p-2">
@@ -1137,7 +1137,7 @@ export default function Creator({
                             type="text"
                             value={card.polish}
                             onChange={(e) => updateCardField(card.id, "polish", e.target.value)}
-                            className="w-full bg-transparent border border-transparent hover:border-white/10 focus:border-indigo-500 focus:bg-black/30 rounded px-2 py-1 text-white font-semibold outline-none"
+                            className="w-full bg-transparent border border-transparent hover:border-[var(--border-light)] focus:border-[var(--primary)] focus:bg-[var(--bg-input)] rounded px-2 py-1 text-white font-semibold outline-none"
                           />
                         </td>
                         <td className="p-2">
@@ -1145,7 +1145,7 @@ export default function Creator({
                             type="text"
                             value={card.pronunciation}
                             onChange={(e) => updateCardField(card.id, "pronunciation", e.target.value)}
-                            className="w-full bg-transparent border border-transparent hover:border-white/10 focus:border-indigo-500 focus:bg-black/30 rounded px-2 py-1 text-slate-300 font-mono outline-none"
+                            className="w-full bg-transparent border border-transparent hover:border-[var(--border-light)] focus:border-[var(--primary)] focus:bg-[var(--bg-input)] rounded px-2 py-1 text-[var(--text-primary)] font-mono outline-none"
                             placeholder="/.../"
                           />
                         </td>
@@ -1154,7 +1154,7 @@ export default function Creator({
                             type="text"
                             value={card.exampleEnglish}
                             onChange={(e) => updateCardField(card.id, "exampleEnglish", e.target.value)}
-                            className="w-full bg-transparent border border-transparent hover:border-white/10 focus:border-indigo-500 focus:bg-black/30 rounded px-2 py-1 text-slate-300 outline-none"
+                            className="w-full bg-transparent border border-transparent hover:border-[var(--border-light)] focus:border-[var(--primary)] focus:bg-[var(--bg-input)] rounded px-2 py-1 text-[var(--text-primary)] outline-none"
                             placeholder="Zdanie po angielsku"
                           />
                         </td>
@@ -1163,14 +1163,14 @@ export default function Creator({
                             type="text"
                             value={card.examplePolish}
                             onChange={(e) => updateCardField(card.id, "examplePolish", e.target.value)}
-                            className="w-full bg-transparent border border-transparent hover:border-white/10 focus:border-indigo-500 focus:bg-black/30 rounded px-2 py-1 text-slate-300 outline-none"
+                            className="w-full bg-transparent border border-transparent hover:border-[var(--border-light)] focus:border-[var(--primary)] focus:bg-[var(--bg-input)] rounded px-2 py-1 text-[var(--text-primary)] outline-none"
                             placeholder="Tłumaczenie zdania"
                           />
                         </td>
                         <td className="p-2 text-center">
                           <button
                             onClick={() => removeParsedCard(card.id)}
-                            className="p-1.5 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all"
+                            className="p-1.5 text-[var(--text-secondary)] hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all"
                             title="Usuń wiersz"
                           >
                             <Icons.Trash2 size={14} />
@@ -1203,16 +1203,16 @@ export default function Creator({
           {(() => {
             if (customDecks.length === 0) {
               return (
-                <div className="text-center py-12 text-slate-500 text-xs font-medium leading-relaxed">
+                <div className="text-center py-12 text-[var(--text-secondary)] text-xs font-medium leading-relaxed">
                   Nie stworzyłeś jeszcze żadnej własnej talii. <br />
-                  Przejdź do zakładki <strong className="text-indigo-400 cursor-pointer hover:underline" onClick={() => setActiveTab("create-deck")}>Nowa talia</strong>, aby stworzyć swój pierwszy zestaw.
+                  Przejdź do zakładki <strong className="text-[var(--primary)] cursor-pointer hover:underline" onClick={() => setActiveTab("create-deck")}>Nowa talia</strong>, aby stworzyć swój pierwszy zestaw.
                 </div>
               );
             }
             return (
               <div className="flex flex-col gap-4">
                 {customDecks.map(deck => (
-                  <div key={deck.id} className="bg-black/35 p-4 rounded-2xl border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-white/10 transition-colors">
+                  <div key={deck.id} className="bg-[var(--bg-input)] p-4 rounded-2xl border border-[var(--border-light)] flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-[var(--border-light)] transition-colors">
                     <div className="flex items-center gap-3">
                       <div 
                         className="p-3 rounded-xl border flex items-center justify-center animate-none"
@@ -1225,9 +1225,9 @@ export default function Creator({
                         {React.createElement(Icons[deck.icon] || Icons.BookOpen, { size: 20 })}
                       </div>
                       <div>
-                        <h4 className="text-sm font-extrabold text-white">{deck.title} <span className="text-[10px] text-slate-400 font-medium">({deck.polishTitle})</span></h4>
-                        <p className="text-xs text-slate-400 mt-1 max-w-md">{deck.description}</p>
-                        <span className="text-[9px] bg-white/5 border border-white/10 px-2 py-0.5 rounded-full text-slate-400 font-extrabold uppercase mt-2 inline-block tracking-wider">
+                        <h4 className="text-sm font-extrabold text-white">{deck.title} <span className="text-[10px] text-[var(--text-secondary)] font-medium">({deck.polishTitle})</span></h4>
+                        <p className="text-xs text-[var(--text-secondary)] mt-1 max-w-md">{deck.description}</p>
+                        <span className="text-[9px] bg-white/5 border border-[var(--border-light)] px-2 py-0.5 rounded-full text-[var(--text-secondary)] font-extrabold uppercase mt-2 inline-block tracking-wider">
                           {deck.cards.length} fiszek
                         </span>
                       </div>

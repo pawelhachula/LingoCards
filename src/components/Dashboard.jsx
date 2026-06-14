@@ -134,20 +134,20 @@ export default function Dashboard({
 
           
           <div>
-            <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest block">LingoCards Premium</span>
+            <span className="text-xs font-bold text-[var(--primary)] uppercase tracking-widest block">LingoCards Premium</span>
             <h2 className="text-3xl md:text-4xl font-extrabold mt-2 text-white leading-tight">
               Witaj w swojej strefie nauki!
             </h2>
-            <p className="text-slate-400 mt-3 text-sm leading-relaxed max-w-lg">
+            <p className="text-[var(--text-secondary)] mt-3 text-sm leading-relaxed max-w-lg">
               Poświęć kilka minut dziennie na powtórkę angielskiego. Systematyczność to najkrótsza droga do płynnego mówienia.
             </p>
             
             {/* XP Progress Bar */}
-            <div className="mt-5 max-w-md bg-black/30 border border-white/5 rounded-2xl p-4">
+            <div className="mt-5 max-w-md bg-[var(--bg-input)] border border-[var(--border-light)] rounded-2xl p-4">
               <div className="flex justify-between items-center text-xs mb-1.5">
                 <div className="flex items-center gap-1.5">
-                  <span className="px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-400 font-extrabold text-[10px]">POZIOM {stats.level || 1}</span>
-                  <span className="text-slate-300 font-bold">
+                  <span className="px-2 py-0.5 rounded-md bg-indigo-500/10 text-[var(--primary)] font-extrabold text-[10px]">POZIOM {stats.level || 1}</span>
+                  <span className="text-[var(--text-primary)] font-bold">
                     {(() => {
                       const lvl = stats.level || 1;
                       if (lvl >= 100) return "Tytan Słownictwa 🌋";
@@ -166,15 +166,15 @@ export default function Dashboard({
                     })()}
                   </span>
                 </div>
-                <span className="text-slate-400 font-black">{(stats.xp || 0) % 300} / 300 XP</span>
+                <span className="text-[var(--text-secondary)] font-black">{(stats.xp || 0) % 300} / 300 XP</span>
               </div>
-              <div className="bg-white/5 h-2 rounded-full overflow-hidden border border-white/5 relative">
+              <div className="bg-white/5 h-2 rounded-full overflow-hidden border border-[var(--border-light)] relative">
                 <div 
                   className="bg-gradient-to-r from-indigo-500 to-cyan-500 h-full rounded-full transition-all duration-500"
                   style={{ width: `${((stats.xp || 0) % 300) / 300 * 100}%` }}
                 />
               </div>
-              <div className="text-[10px] text-slate-500 font-medium mt-1">
+              <div className="text-[10px] text-[var(--text-secondary)] font-medium mt-1">
                 Brakuje {300 - ((stats.xp || 0) % 300)} XP do następnego poziomu
               </div>
             </div>
@@ -237,14 +237,14 @@ export default function Dashboard({
             </svg>
             <div className="absolute flex flex-col items-center">
               <span className="text-2xl font-black text-white">{progressPercent}%</span>
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Opanowane</span>
+              <span className="text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-wider">Opanowane</span>
             </div>
           </div>
           
           <div className="flex-1 text-center sm:text-left">
-            <h4 className="text-slate-500 text-xs uppercase font-extrabold tracking-widest">Całkowity postęp</h4>
+            <h4 className="text-[var(--text-secondary)] text-xs uppercase font-extrabold tracking-widest">Całkowity postęp</h4>
             <p className="text-3xl font-black text-white mt-1">
-              {learnedCount} <span className="text-sm font-semibold text-slate-500">/ {totalCards} słówek</span>
+              {learnedCount} <span className="text-sm font-semibold text-[var(--text-secondary)]">/ {totalCards} słówek</span>
             </p>
             <div className="flex items-center justify-center sm:justify-start gap-1.5 mt-3 text-xs text-emerald-400 font-bold bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-xl w-max">
               <Icons.TrendingUp size={14} />
@@ -268,22 +268,22 @@ export default function Dashboard({
               <span className="text-[10px] text-amber-500 font-extrabold uppercase tracking-widest block">Słówko Dnia (Nauka w pigułce)</span>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <h3 className="text-xl font-extrabold text-white tracking-tight">{wordOfTheDay.english}</h3>
-                <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-white/5 text-slate-400 border border-white/10 uppercase tracking-wider font-mono">
+                <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-white/5 text-[var(--text-secondary)] border border-[var(--border-light)] uppercase tracking-wider font-mono">
                   {getCardLevel(wordOfTheDay)}
                 </span>
-                <span className="text-xs text-slate-500 font-semibold italic">{wordOfTheDay.pronunciation}</span>
+                <span className="text-xs text-[var(--text-secondary)] font-semibold italic">{wordOfTheDay.pronunciation}</span>
                 <button 
                   onClick={() => playTTS(wordOfTheDay.english)}
-                  className="p-1 rounded bg-white/5 hover:bg-amber-500/10 text-slate-400 hover:text-amber-500 border border-white/5 hover:border-amber-500/20 transition-all ml-1"
+                  className="p-1 rounded bg-white/5 hover:bg-amber-500/10 text-[var(--text-secondary)] hover:text-amber-500 border border-[var(--border-light)] hover:border-amber-500/20 transition-all ml-1"
                   title="Odsłuchaj wymowę"
                 >
                   <Icons.Volume2 size={12} />
                 </button>
               </div>
-              <p className="text-slate-400 text-sm font-bold mt-1">
-                {wordOfTheDay.polish} <span className="text-[10px] text-slate-500 font-bold font-mono">({wordOfTheDay.partOfSpeech})</span>
+              <p className="text-[var(--text-secondary)] text-sm font-bold mt-1">
+                {wordOfTheDay.polish} <span className="text-[10px] text-[var(--text-secondary)] font-bold font-mono">({wordOfTheDay.partOfSpeech})</span>
               </p>
-              <p className="text-xs text-slate-500 mt-2 italic leading-relaxed">
+              <p className="text-xs text-[var(--text-secondary)] mt-2 italic leading-relaxed">
                 Przykład: "{wordOfTheDay.exampleEnglish}" – {wordOfTheDay.examplePolish}
               </p>
             </div>
@@ -306,7 +306,7 @@ export default function Dashboard({
             className={`btn text-xs py-2.5 px-4 flex items-center gap-1.5 font-bold hover:scale-105 transition-transform shrink-0 self-start md:self-auto ${
               stats.starredCards?.[wordOfTheDay.id] 
                 ? "bg-amber-500/10 border-amber-500/20 text-amber-500" 
-                : "bg-white/5 border-white/10 text-slate-300 hover:text-white"
+                : "bg-white/5 border-[var(--border-light)] text-[var(--text-primary)] hover:text-white"
             }`}
           >
             <Icons.Star size={14} className={stats.starredCards?.[wordOfTheDay.id] ? "fill-amber-500" : ""} />
@@ -333,7 +333,7 @@ export default function Dashboard({
                 ? `Masz dzisiaj ${srsDueCards.length} powtórek do wykonania!` 
                 : "Świetna robota! Brak oczekujących powtórek na dziś"}
             </h3>
-            <p className="text-slate-400 text-xs mt-2 leading-relaxed">
+            <p className="text-[var(--text-secondary)] text-xs mt-2 leading-relaxed">
               Algorytm SRS automatycznie wyznacza momenty, w których powinieneś powtórzyć słówka, aby trwale zapisać je w pamięci długotrwałej.
             </p>
           </div>
@@ -364,9 +364,9 @@ export default function Dashboard({
 
             <button 
               onClick={() => onNavigate("referrals")}
-              className="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1 font-bold"
+              className="text-xs text-[var(--text-secondary)] hover:text-white transition-colors flex items-center gap-1 font-bold"
             >
-              <Icons.Gift size={14} className="text-indigo-400" /> Poleć aplikację
+              <Icons.Gift size={14} className="text-[var(--primary)]" /> Poleć aplikację
             </button>
           </div>
         </div>
@@ -374,10 +374,10 @@ export default function Dashboard({
         {/* SRS distribution breakdown and calendar */}
         <div className="glass-card p-6 flex flex-col justify-between relative overflow-hidden">
           <div>
-            <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">Podział pamięciowy</h4>
+            <h4 className="text-xs font-extrabold text-[var(--text-secondary)] uppercase tracking-wider mb-3">Podział pamięciowy</h4>
             
             {/* Segmented Bar */}
-            <div className="bg-white/5 h-3 rounded-lg overflow-hidden flex w-full border border-white/5">
+            <div className="bg-white/5 h-3 rounded-lg overflow-hidden flex w-full border border-[var(--border-light)]">
               <div 
                 className="bg-slate-600 h-full transition-all" 
                 style={{ width: `${totalCardsCount > 0 ? (newCardsCount / totalCardsCount) * 100 : 100}%` }}
@@ -396,26 +396,26 @@ export default function Dashboard({
             </div>
 
             {/* Legend */}
-            <div className="grid grid-cols-3 gap-1 text-[9px] font-bold mt-2 text-slate-400">
+            <div className="grid grid-cols-3 gap-1 text-[9px] font-bold mt-2 text-[var(--text-secondary)]">
               <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-slate-600 block" /> Nowe ({newCardsCount})</span>
               <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-indigo-500 block" /> W nauce ({learningCount})</span>
               <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 block" /> Opan. ({masteredCount})</span>
             </div>
           </div>
 
-          <div className="mt-5 pt-4 border-t border-white/5">
-            <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2.5">Kalendarz powtórek</h4>
+          <div className="mt-5 pt-4 border-t border-[var(--border-light)]">
+            <h4 className="text-xs font-extrabold text-[var(--text-secondary)] uppercase tracking-wider mb-2.5">Kalendarz powtórek</h4>
             <div className="grid grid-cols-3 gap-2 text-center text-xs">
-              <div className="bg-black/30 p-2 rounded-xl border border-white/5">
-                <span className="text-[9px] text-slate-500 font-bold block">JUTRO</span>
+              <div className="bg-[var(--bg-input)] p-2 rounded-xl border border-[var(--border-light)]">
+                <span className="text-[9px] text-[var(--text-secondary)] font-bold block">JUTRO</span>
                 <strong className="text-white text-sm block mt-0.5">{dueTomorrow}</strong>
               </div>
-              <div className="bg-black/30 p-2 rounded-xl border border-white/5">
-                <span className="text-[9px] text-slate-500 font-bold block">3 DNI</span>
+              <div className="bg-[var(--bg-input)] p-2 rounded-xl border border-[var(--border-light)]">
+                <span className="text-[9px] text-[var(--text-secondary)] font-bold block">3 DNI</span>
                 <strong className="text-white text-sm block mt-0.5">{due3Days}</strong>
               </div>
-              <div className="bg-black/30 p-2 rounded-xl border border-white/5">
-                <span className="text-[9px] text-slate-500 font-bold block">7 DNI</span>
+              <div className="bg-[var(--bg-input)] p-2 rounded-xl border border-[var(--border-light)]">
+                <span className="text-[9px] text-[var(--text-secondary)] font-bold block">7 DNI</span>
                 <strong className="text-white text-sm block mt-0.5">{due7Days}</strong>
               </div>
             </div>
@@ -431,23 +431,23 @@ export default function Dashboard({
             <Icons.Flame size={24} className="fill-amber-500/15" />
           </div>
           <div>
-            <span className="text-xs text-slate-500 uppercase font-extrabold tracking-wider">Seria dni (Streak)</span>
+            <span className="text-xs text-[var(--text-secondary)] uppercase font-extrabold tracking-wider">Seria dni (Streak)</span>
             <p className="text-2xl font-black text-white mt-0.5">{formatDays(stats.streak || 0)}</p>
-            <span className="text-[9px] text-slate-400 font-bold uppercase">Rekord: {formatDays(stats.bestStreak || stats.streak || 0)}</span>
+            <span className="text-[9px] text-[var(--text-secondary)] font-bold uppercase">Rekord: {formatDays(stats.bestStreak || stats.streak || 0)}</span>
           </div>
         </div>
 
         {/* Daily Goal */}
         <div className="glass-card p-6 flex items-center gap-4 hover:border-indigo-500/30">
-          <div className="p-3.5 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+          <div className="p-3.5 rounded-2xl bg-indigo-500/10 text-[var(--primary)] border border-indigo-500/20">
             <Icons.Calendar size={24} />
           </div>
           <div className="flex-grow">
-            <span className="text-xs text-slate-500 uppercase font-extrabold tracking-wider block mb-1">
+            <span className="text-xs text-[var(--text-secondary)] uppercase font-extrabold tracking-wider block mb-1">
               Cel dzienny ({dailyProgress}/{dailyTarget})
             </span>
             <div className="flex items-center gap-3">
-              <div className="flex-grow bg-white/5 h-2 rounded-full overflow-hidden border border-white/5">
+              <div className="flex-grow bg-white/5 h-2 rounded-full overflow-hidden border border-[var(--border-light)]">
                 <div 
                   className="bg-indigo-500 h-full rounded-full transition-all duration-500"
                   style={{ width: `${dailyPercent}%` }}
@@ -464,7 +464,7 @@ export default function Dashboard({
             <Icons.Award size={24} />
           </div>
           <div>
-            <span className="text-xs text-slate-500 uppercase font-extrabold tracking-wider">Skuteczność quizu</span>
+            <span className="text-xs text-[var(--text-secondary)] uppercase font-extrabold tracking-wider">Skuteczność quizu</span>
             <p className="text-2xl font-black text-white mt-0.5">
               {stats.quizTotal > 0 ? `${Math.round((stats.quizCorrect / stats.quizTotal) * 100)}%` : "0%"}
             </p>
@@ -477,7 +477,7 @@ export default function Dashboard({
             <Icons.Trophy size={24} />
           </div>
           <div>
-            <span className="text-xs text-slate-500 uppercase font-extrabold tracking-wider">Wygrane gry w pary</span>
+            <span className="text-xs text-[var(--text-secondary)] uppercase font-extrabold tracking-wider">Wygrane gry w pary</span>
             <p className="text-2xl font-black text-white mt-0.5">{stats.matchesWon || 0}</p>
           </div>
         </div>
@@ -490,7 +490,7 @@ export default function Dashboard({
             <Icons.Flame size={18} className="text-amber-500 fill-amber-500/15" />
             <div>
               <h4 className="text-sm font-extrabold text-white">Kalendarz Aktywności (Ostatnie 28 dni)</h4>
-              <p className="text-[11px] text-slate-400">Ucz się codziennie, aby utrzymać streak i zwiększyć moc płomienia!</p>
+              <p className="text-[11px] text-[var(--text-secondary)]">Ucz się codziennie, aby utrzymać streak i zwiększyć moc płomienia!</p>
             </div>
           </div>
           
@@ -539,7 +539,7 @@ export default function Dashboard({
                         ? "bg-cyan-500/10 border-cyan-500/40 text-cyan-400 shadow-[0_0_6px_rgba(6,182,212,0.2)]"
                         : "bg-amber-500/10 border-amber-500/40 text-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.2)]"
                     : day.isToday
-                      ? "bg-white/5 border-indigo-500/40 text-indigo-400"
+                      ? "bg-white/5 border-indigo-500/40 text-[var(--primary)]"
                       : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-muted)] hover:border-[var(--border-active)]"
                 }`}
               >
@@ -556,7 +556,7 @@ export default function Dashboard({
                 )}
                 
                 {/* Tooltip */}
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 hidden group-hover:block bg-slate-955 border border-white/10 px-2 py-0.5 rounded text-[8px] text-white font-bold whitespace-nowrap z-20 pointer-events-none shadow-xl">
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 hidden group-hover:block bg-slate-955 border border-[var(--border-light)] px-2 py-0.5 rounded text-[8px] text-white font-bold whitespace-nowrap z-20 pointer-events-none shadow-xl">
                   {day.date} {day.hasStudied ? "• Aktywność! 🔥" : "• Brak nauki"}
                 </div>
               </div>
@@ -565,13 +565,13 @@ export default function Dashboard({
         </div>
 
         {/* Horizontal Divider */}
-        <div className="border-t border-white/5 my-1" />
+        <div className="border-t border-[var(--border-light)] my-1" />
         
         {/* Milestones Panel */}
         <div className="flex flex-col gap-3">
           <div className="flex justify-between items-center">
-            <h5 className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Odznaczenia za Serię Dni (Milestones)</h5>
-            <span className="text-[9px] font-bold text-slate-500">Najlepszy streak: {formatDays(stats.bestStreak || stats.streak || 0)}</span>
+            <h5 className="text-[11px] font-extrabold text-[var(--text-secondary)] uppercase tracking-widest">Odznaczenia za Serię Dni (Milestones)</h5>
+            <span className="text-[9px] font-bold text-[var(--text-secondary)]">Najlepszy streak: {formatDays(stats.bestStreak || stats.streak || 0)}</span>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -592,7 +592,7 @@ export default function Dashboard({
                   </div>
                   <div className="min-w-0 flex-grow">
                     <span className="text-[11px] font-bold text-white block truncate">Brązowy Płomień</span>
-                    <span className="text-[9px] font-medium text-slate-400 block mt-0.5">Seria 5 dni nauki</span>
+                    <span className="text-[9px] font-medium text-[var(--text-secondary)] block mt-0.5">Seria 5 dni nauki</span>
                   </div>
                   {unlocked ? (
                     <Icons.CheckCircle size={12} className="text-amber-500 shrink-0" />
@@ -611,19 +611,19 @@ export default function Dashboard({
                 <div 
                   className={`p-3 rounded-xl border flex items-center gap-3 transition-all duration-300 ${
                     unlocked 
-                      ? "bg-slate-400/5 border-slate-400/30 text-slate-300 shadow-[0_0_12px_rgba(148,163,184,0.1)] hover:border-slate-300/40" 
+                      ? "bg-slate-400/5 border-slate-400/30 text-[var(--text-primary)] shadow-[0_0_12px_rgba(148,163,184,0.1)] hover:border-slate-300/40" 
                       : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-muted)] opacity-60"
                   }`}
                 >
                   <div className={`p-2 rounded-lg border flex items-center justify-center shrink-0 ${unlocked ? "border-slate-300/20 bg-slate-300/10" : "border-transparent bg-white/5"}`}>
-                    <Icons.Shield size={16} className={unlocked ? "text-slate-300" : "text-slate-600"} />
+                    <Icons.Shield size={16} className={unlocked ? "text-[var(--text-primary)]" : "text-slate-600"} />
                   </div>
                   <div className="min-w-0 flex-grow">
                     <span className="text-[11px] font-bold text-white block truncate">Srebrny Płomień</span>
-                    <span className="text-[9px] font-medium text-slate-400 block mt-0.5">Seria 10 dni nauki</span>
+                    <span className="text-[9px] font-medium text-[var(--text-secondary)] block mt-0.5">Seria 10 dni nauki</span>
                   </div>
                   {unlocked ? (
-                    <Icons.CheckCircle size={12} className="text-slate-300 shrink-0" />
+                    <Icons.CheckCircle size={12} className="text-[var(--text-primary)] shrink-0" />
                   ) : (
                     <Icons.Lock size={12} className="text-slate-600 shrink-0" />
                   )}
@@ -648,7 +648,7 @@ export default function Dashboard({
                   </div>
                   <div className="min-w-0 flex-grow">
                     <span className="text-[11px] font-bold text-white block truncate">Złoty Płomień</span>
-                    <span className="text-[9px] font-medium text-slate-400 block mt-0.5">Seria 20 dni nauki</span>
+                    <span className="text-[9px] font-medium text-[var(--text-secondary)] block mt-0.5">Seria 20 dni nauki</span>
                   </div>
                   {unlocked ? (
                     <Icons.CheckCircle size={12} className="text-yellow-500 shrink-0" />
@@ -676,7 +676,7 @@ export default function Dashboard({
                   </div>
                   <div className="min-w-0 flex-grow">
                     <span className="text-[11px] font-bold text-white block truncate">Diamentowy Płomień</span>
-                    <span className="text-[9px] font-medium text-slate-400 block mt-0.5">Seria 30 dni (Miesiąc)</span>
+                    <span className="text-[9px] font-medium text-[var(--text-secondary)] block mt-0.5">Seria 30 dni (Miesiąc)</span>
                   </div>
                   {unlocked ? (
                     <Icons.CheckCircle size={12} className="text-cyan-400 shrink-0" />
@@ -694,12 +694,12 @@ export default function Dashboard({
       <div>
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-xl font-bold text-white flex items-center gap-2.5">
-            <Icons.BookOpen size={20} className="text-indigo-400" />
+            <Icons.BookOpen size={20} className="text-[var(--primary)]" />
             Twoje Talie Fiszek
           </h3>
           <button 
             onClick={() => onNavigate("creator")}
-            className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1 font-bold bg-indigo-500/5 hover:bg-indigo-500/10 px-3.5 py-2 rounded-xl border border-indigo-500/15"
+            className="text-xs text-[var(--primary)] hover:text-indigo-300 transition-colors flex items-center gap-1 font-bold bg-indigo-500/5 hover:bg-indigo-500/10 px-3.5 py-2 rounded-xl border border-indigo-500/15"
           >
             <Icons.Plus size={14} /> Stwórz nową talię
           </button>
@@ -707,10 +707,10 @@ export default function Dashboard({
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {realDecks.length === 0 ? (
-            <div className="col-span-full glass-card p-10 text-center flex flex-col items-center gap-4 border border-dashed border-white/10">
-              <Icons.Compass size={48} className="text-indigo-400 animate-pulse" />
+            <div className="col-span-full glass-card p-10 text-center flex flex-col items-center gap-4 border border-dashed border-[var(--border-light)]">
+              <Icons.Compass size={48} className="text-[var(--primary)] animate-pulse" />
               <h4 className="text-lg font-bold text-white">Twój pulpit jest pusty</h4>
-              <p className="text-slate-400 text-xs max-w-sm mx-auto">
+              <p className="text-[var(--text-secondary)] text-xs max-w-sm mx-auto">
                 Przejdź do Katalogu Talii, aby wybrać i dodać interesujące Cię tematy do nauki! 🧭
               </p>
               <button 
@@ -745,7 +745,7 @@ export default function Dashboard({
                   key={deck.id} 
                   className={`glass-card p-6 flex flex-col justify-between border-t-4 transition-all duration-300 ${
                     isDeckLocked
-                      ? "border-white/5 opacity-40 grayscale-[60%] hover:opacity-50 transition-opacity"
+                      ? "border-[var(--border-light)] opacity-40 grayscale-[60%] hover:opacity-50 transition-opacity"
                       : "hover:-translate-y-1 scale-hover " + (isCompleted100 
                         ? "gold-deck-outline" 
                         : stats.deckMedals?.[deck.id] === 'gold' 
@@ -769,7 +769,7 @@ export default function Dashboard({
                         <IconComponent size={22} />
                       </div>
                       <div className="flex flex-col items-end gap-1">
-                        <span className="text-[10px] bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full font-bold text-slate-400 uppercase tracking-wider">
+                        <span className="text-[10px] bg-white/5 border border-[var(--border-light)] px-2.5 py-0.5 rounded-full font-bold text-[var(--text-secondary)] uppercase tracking-wider">
                           {deckCardsCount} fiszek
                         </span>
                         {isDeckLocked && (
@@ -788,7 +788,7 @@ export default function Dashboard({
                             stats.deckMedals[deck.id] === 'gold' 
                               ? "bg-yellow-500/15 border-yellow-500/30 text-yellow-400 shadow-[0_0_8px_rgba(234,179,8,0.2)]" 
                               : stats.deckMedals[deck.id] === 'silver'
-                                ? "bg-slate-300/15 border-slate-300/30 text-slate-300"
+                                ? "bg-slate-300/15 border-slate-300/30 text-[var(--text-primary)]"
                                 : "bg-amber-600/15 border-amber-600/30 text-amber-500"
                           }`}>
                             {stats.deckMedals[deck.id] === 'gold' ? "🥇 Złoto" : stats.deckMedals[deck.id] === 'silver' ? "🥈 Srebro" : "🥉 Brąz"}
@@ -799,17 +799,17 @@ export default function Dashboard({
 
                     <h4 className="text-lg font-bold text-white mt-4 tracking-tight">{deck.title}</h4>
                     <span className="text-xs text-indigo-300 font-semibold">{deck.polishTitle}</span>
-                    <p className="text-slate-400 text-xs mt-3 line-clamp-2 leading-relaxed">
+                    <p className="text-[var(--text-secondary)] text-xs mt-3 line-clamp-2 leading-relaxed">
                       {deck.description}
                     </p>
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-white/5">
+                  <div className="mt-6 pt-4 border-t border-[var(--border-light)]">
                     <div className="flex justify-between items-center text-xs mb-2">
-                      <span className="text-slate-500 font-bold uppercase">Opanowane</span>
+                      <span className="text-[var(--text-secondary)] font-bold uppercase">Opanowane</span>
                       <span className="text-white font-extrabold">{deckProgress}%</span>
                     </div>
-                    <div className="bg-white/5 h-1.5 rounded-full overflow-hidden mb-5 border border-white/5">
+                    <div className="bg-white/5 h-1.5 rounded-full overflow-hidden mb-5 border border-[var(--border-light)]">
                       <div 
                         className="h-full rounded-full transition-all duration-500"
                         style={{ 
@@ -856,7 +856,7 @@ export default function Dashboard({
                           {onUpdateDeck && systemDeckIds && !systemDeckIds.has(deck.id) && (
                             <button
                               onClick={() => setEditorDeck(deck)}
-                              className="btn text-xs py-2.5 px-2.5 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform text-slate-400 hover:text-white shrink-0"
+                              className="btn text-xs py-2.5 px-2.5 flex items-center justify-center gap-1.5 font-bold hover:scale-[1.02] transition-transform text-[var(--text-secondary)] hover:text-white shrink-0"
                               title="Rejestr słów"
                             >
                               <Icons.List size={12} />
@@ -865,7 +865,7 @@ export default function Dashboard({
                           {onDeleteDeck && systemDeckIds && !systemDeckIds.has(deck.id) && (
                             <button
                               onClick={() => setConfirmDeleteId(deck.id)}
-                              className="btn text-xs py-2.5 px-2.5 flex items-center justify-center font-bold hover:scale-[1.02] transition-transform text-slate-500 hover:text-rose-400 hover:border-rose-500/30 shrink-0"
+                              className="btn text-xs py-2.5 px-2.5 flex items-center justify-center font-bold hover:scale-[1.02] transition-transform text-[var(--text-secondary)] hover:text-rose-400 hover:border-rose-500/30 shrink-0"
                               title="Usuń talię"
                             >
                               <Icons.Trash2 size={12} />
@@ -885,7 +885,7 @@ export default function Dashboard({
                             </button>
                             <button
                               onClick={() => setConfirmDeleteId(null)}
-                              className="btn btn-secondary text-xs py-2.5 px-4 flex items-center justify-center gap-1.5 font-bold text-slate-400 hover:text-white rounded-lg transition-all"
+                              className="btn btn-secondary text-xs py-2.5 px-4 flex items-center justify-center gap-1.5 font-bold text-[var(--text-secondary)] hover:text-white rounded-lg transition-all"
                               title="Anuluj"
                             >
                               <Icons.X size={12} /> Nie

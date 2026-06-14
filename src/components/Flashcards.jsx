@@ -172,12 +172,12 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
   if (!selectedDeck) {
     return (
       <div className="glass-card p-12 text-center flex flex-col items-center gap-6 max-w-md mx-auto animate-slide-in">
-        <div className="w-16 h-16 bg-indigo-500/10 text-indigo-400 rounded-2xl flex items-center justify-center border border-indigo-500/20">
+        <div className="w-16 h-16 bg-indigo-500/10 text-[var(--primary)] rounded-2xl flex items-center justify-center border border-indigo-500/20">
           <Icons.BookOpen size={32} />
         </div>
         <div>
           <h3 className="text-xl font-bold text-white">Nie wybrano talii</h3>
-          <p className="text-slate-400 mt-2 text-sm leading-relaxed">Wybierz jedną z przygotowanych talii na pulpicie, aby rozpocząć naukę fiszek.</p>
+          <p className="text-[var(--text-secondary)] mt-2 text-sm leading-relaxed">Wybierz jedną z przygotowanych talii na pulpicie, aby rozpocząć naukę fiszek.</p>
         </div>
         <button onClick={() => onNavigate("dashboard")} className="btn btn-primary w-full">
           Przejdź do Pulpitu
@@ -594,7 +594,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
           <h3 className="text-xl font-bold text-white">
             {srsOnly ? "Talia w pełni opanowana! 🎉" : "Ta talia jest pusta"}
           </h3>
-          <p className="text-slate-400 mt-2 text-sm leading-relaxed">
+          <p className="text-[var(--text-secondary)] mt-2 text-sm leading-relaxed">
             {srsOnly 
               ? "Brak oczekujących powtórek SRS w tej talii na dziś. Twoja pamięć działa świetnie!"
               : "Dodaj słówka w menedżerze lub zaznacz je gwiazdką, aby zapełnić tę talię."}
@@ -630,17 +630,17 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
         <div>
           <button 
             onClick={() => onNavigate("dashboard")}
-            className="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 font-bold"
+            className="text-xs text-[var(--text-secondary)] hover:text-white transition-colors flex items-center gap-1.5 font-bold"
           >
             <Icons.ChevronLeft size={16} /> Powrót do pulpitu
           </button>
           <h2 className="text-2xl font-black mt-2 text-white tracking-tight">
-            Talia: <span className="text-indigo-400 font-extrabold">{selectedDeck.title}</span>
+            Talia: <span className="text-[var(--primary)] font-extrabold">{selectedDeck.title}</span>
           </h2>
         </div>
         <div className="flex items-center gap-2">
           {/* Session Timer */}
-          <div className="bg-white/5 border border-white/8 rounded-xl px-3 py-1.5 text-xs font-mono text-slate-400 flex items-center gap-1.5">
+          <div className="bg-white/5 border border-[var(--border-light)] rounded-xl px-3 py-1.5 text-xs font-mono text-[var(--text-secondary)] flex items-center gap-1.5">
             <Icons.Clock size={13} />
             <span>{formatTime(sessionElapsed)}</span>
           </div>
@@ -650,7 +650,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
             className={`p-3 rounded-2xl transition-all scale-hover ${
               reversedMode
                 ? "bg-purple-500/10 text-purple-400 border border-purple-500/20"
-                : "bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white"
+                : "bg-white/5 hover:bg-white/10 text-[var(--text-primary)] hover:text-white"
             }`}
             title={reversedMode ? "Tryb PL → EN (aktywny)" : "Przełącz na tryb PL → EN"}
           >
@@ -663,14 +663,14 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
               className={`p-3 rounded-2xl transition-all scale-hover ${
                 ambientSound
                   ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                  : "bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white"
+                  : "bg-white/5 hover:bg-white/10 text-[var(--text-primary)] hover:text-white"
               }`}
               title="Dźwięki otoczenia"
             >
               <Icons.Headphones size={18} />
             </button>
             {showAmbientMenu && (
-              <div className="absolute right-0 top-full mt-2 z-50 glass-card p-2 rounded-xl min-w-[170px] border border-white/10 shadow-xl">
+              <div className="absolute right-0 top-full mt-2 z-50 glass-card p-2 rounded-xl min-w-[170px] border border-[var(--border-light)] shadow-xl">
                 {[
                   { id: 'rain', label: '🌧️ Deszcz' },
                   { id: 'forest', label: '🌲 Las' },
@@ -692,7 +692,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                     className={`w-full text-left text-xs font-bold px-3 py-2 rounded-lg transition-all ${
                       ambientSound === item.id
                         ? "bg-emerald-500/10 text-emerald-400"
-                        : "text-slate-300 hover:bg-white/5 hover:text-white"
+                        : "text-[var(--text-primary)] hover:bg-white/5 hover:text-white"
                     }`}
                   >
                     {item.label}
@@ -705,7 +705,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                       setAmbientSound(null);
                       setShowAmbientMenu(false);
                     }}
-                    className="w-full text-left text-xs font-bold px-3 py-2 rounded-lg text-rose-400 hover:bg-rose-500/10 transition-all mt-1 border-t border-white/5 pt-2"
+                    className="w-full text-left text-xs font-bold px-3 py-2 rounded-lg text-rose-400 hover:bg-rose-500/10 transition-all mt-1 border-t border-[var(--border-light)] pt-2"
                   >
                     ✕ Wyłącz dźwięk
                   </button>
@@ -715,7 +715,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
           </div>
           <button 
             onClick={handleShuffle}
-            className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-slate-300 hover:text-white transition-all scale-hover"
+            className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-[var(--text-primary)] hover:text-white transition-all scale-hover"
             title="Przetasuj fiszki"
             disabled={completed}
           >
@@ -723,7 +723,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
           </button>
           <button 
             onClick={handleRestart}
-            className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-slate-300 hover:text-white transition-all scale-hover"
+            className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-[var(--text-primary)] hover:text-white transition-all scale-hover"
             title="Zacznij od nowa"
           >
             <Icons.RotateCcw size={18} />
@@ -733,13 +733,13 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
 
       {/* SRS Toggle bar */}
       {selectedDeck.id !== "starred" && selectedDeck.id !== "srs" && (
-        <div className="w-full bg-black/20 p-1.5 rounded-2xl border border-white/5 flex gap-1">
+        <div className="w-full bg-[var(--bg-input)] p-1.5 rounded-2xl border border-[var(--border-light)] flex gap-1">
           <button
             onClick={() => setSrsOnly(false)}
             className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 border ${
               !srsOnly 
-                ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-sm font-extrabold" 
-                : "text-slate-400 hover:text-white border-transparent"
+                ? "bg-indigo-500/10 text-[var(--primary)] border-indigo-500/20 shadow-sm font-extrabold" 
+                : "text-[var(--text-secondary)] hover:text-white border-transparent"
             }`}
           >
             <Icons.Layers size={14} /> Nauka całej talii
@@ -749,7 +749,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
             className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 border ${
               srsOnly 
                 ? "bg-pink-500/10 text-pink-400 border-pink-500/20 shadow-sm font-extrabold" 
-                : "text-slate-400 hover:text-white border-transparent"
+                : "text-[var(--text-secondary)] hover:text-white border-transparent"
             }`}
           >
             <Icons.BrainCircuit size={14} /> Powtórki SRS
@@ -764,7 +764,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
             <Icons.Zap size={16} className="fill-yellow-400/15" />
             <span className="text-xs font-black">Tylko 3 fiszki do końca! Dasz radę! 🎯</span>
           </div>
-          <span className="text-[10px] text-slate-400 font-extrabold uppercase">+100 XP Bonus czeka!</span>
+          <span className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase">+100 XP Bonus czeka!</span>
         </div>
       )}
 
@@ -772,11 +772,11 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
         <>
           {/* Card progress tracker */}
           <div className="w-full">
-            <div className="flex justify-between text-xs text-slate-400 font-bold mb-2">
+            <div className="flex justify-between text-xs text-[var(--text-secondary)] font-bold mb-2">
               <span>FISZKA {currentIndex + 1} Z {cards.length}</span>
-              <span className="text-indigo-400">Postęp sesji: {Math.round((currentIndex / cards.length) * 100)}%</span>
+              <span className="text-[var(--primary)]">Postęp sesji: {Math.round((currentIndex / cards.length) * 100)}%</span>
             </div>
-            <div className="bg-white/5 h-2 rounded-full overflow-hidden w-full border border-white/5">
+            <div className="bg-white/5 h-2 rounded-full overflow-hidden w-full border border-[var(--border-light)]">
               <div 
                 className="bg-gradient-to-r from-indigo-500 to-cyan-400 h-full rounded-full transition-all duration-300"
                 style={{ width: `${(currentIndex / cards.length) * 100}%` }}
@@ -794,12 +794,12 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
               <div className="flashcard-front">
                 <div className="flex justify-between items-center w-full">
                   <div className="flex gap-2 items-center flex-wrap">
-                    <span className="text-[10px] font-extrabold tracking-wider text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 rounded-full uppercase">
+                    <span className="text-[10px] font-extrabold tracking-wider text-[var(--primary)] bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 rounded-full uppercase">
                       {reversedMode ? "Polskie słowo" : (currentCard.partOfSpeech || "word")}
                     </span>
 
                     {/* CEFR level badge */}
-                    <span className="text-[10px] font-extrabold tracking-wider text-slate-400 bg-white/5 border border-white/10 px-3 py-1 rounded-full uppercase font-mono">
+                    <span className="text-[10px] font-extrabold tracking-wider text-[var(--text-secondary)] bg-white/5 border border-[var(--border-light)] px-3 py-1 rounded-full uppercase font-mono">
                       {getCardLevel(currentCard)}
                     </span>
 
@@ -807,12 +807,12 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                     {(() => {
                       const srs = stats.srsData?.[currentCard.id];
                       if (!srs) return (
-                        <span className="text-[9px] font-bold tracking-wider text-slate-400 bg-slate-500/10 border border-slate-500/20 px-2.5 py-0.5 rounded-full uppercase flex items-center gap-1">
+                        <span className="text-[9px] font-bold tracking-wider text-[var(--text-secondary)] bg-slate-500/10 border border-slate-500/20 px-2.5 py-0.5 rounded-full uppercase flex items-center gap-1">
                           <Icons.Sparkles size={10} /> Nowe
                         </span>
                       );
                       if (srs.interval < 7) return (
-                        <span className="text-[9px] font-bold tracking-wider text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2.5 py-0.5 rounded-full uppercase flex items-center gap-1">
+                        <span className="text-[9px] font-bold tracking-wider text-[var(--primary)] bg-indigo-500/10 border border-indigo-500/20 px-2.5 py-0.5 rounded-full uppercase flex items-center gap-1">
                           <Icons.Hourglass size={10} /> W nauce ({srs.interval} d)
                         </span>
                       );
@@ -829,7 +829,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                       className="p-1.5 rounded-lg hover:bg-white/5 text-amber-500 transition-colors"
                       title={isStarred ? "Usuń z ulubionych" : "Dodaj do ulubionych"}
                     >
-                      <Icons.Star size={16} className={isStarred ? "fill-amber-500" : "text-slate-500"} />
+                      <Icons.Star size={16} className={isStarred ? "fill-amber-500" : "text-[var(--text-secondary)]"} />
                     </button>
                   </div>
                   
@@ -848,7 +848,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                         className={`p-2.5 rounded-xl transition-all scale-hover ${
                           speakingType === "word" 
                             ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30" 
-                            : "bg-white/5 text-slate-400 hover:text-white"
+                            : "bg-white/5 text-[var(--text-secondary)] hover:text-white"
                         }`}
                         title="Odsłuchaj wymowę"
                       >
@@ -926,7 +926,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                     </span>
 
                     {/* CEFR level badge */}
-                    <span className="text-[10px] font-extrabold tracking-wider text-slate-400 bg-white/5 border border-white/10 px-3 py-1 rounded-full uppercase font-mono">
+                    <span className="text-[10px] font-extrabold tracking-wider text-[var(--text-secondary)] bg-white/5 border border-[var(--border-light)] px-3 py-1 rounded-full uppercase font-mono">
                       {getCardLevel(currentCard)}
                     </span>
                     <button 
@@ -934,7 +934,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                       className="p-1.5 rounded-lg hover:bg-white/5 text-amber-500 transition-colors"
                       title={isStarred ? "Usuń z ulubionych" : "Dodaj do ulubionych"}
                     >
-                      <Icons.Star size={16} className={isStarred ? "fill-amber-500" : "text-slate-500"} />
+                      <Icons.Star size={16} className={isStarred ? "fill-amber-500" : "text-[var(--text-secondary)]"} />
                     </button>
                   </div>
                   
@@ -953,7 +953,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                         className={`p-2.5 rounded-xl transition-all scale-hover ${
                           speakingType === "word" 
                             ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30" 
-                            : "bg-white/5 text-slate-400 hover:text-white"
+                            : "bg-white/5 text-[var(--text-secondary)] hover:text-white"
                         }`}
                         title="Odsłuchaj wymowę"
                       >
@@ -1078,7 +1078,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
             <h3 className="text-2xl font-black text-white">
               {awardedMedal === 'gold' ? "Perfect Deck! ✨" : "Talia ukończona!"}
             </h3>
-            <p className="text-slate-400 text-sm mt-1">Świetna robota, przejrzałeś wszystkie fiszki.</p>
+            <p className="text-[var(--text-secondary)] text-sm mt-1">Świetna robota, przejrzałeś wszystkie fiszki.</p>
           </div>
 
           {awardedMedal && (
@@ -1087,39 +1087,39 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                 {awardedMedal === 'gold' ? "🥇" : awardedMedal === 'silver' ? "🥈" : "🥉"}
               </span>
               <span className={`text-xs font-black uppercase tracking-wider ${
-                awardedMedal === 'gold' ? "text-yellow-400" : awardedMedal === 'silver' ? "text-slate-300" : "text-amber-500"
+                awardedMedal === 'gold' ? "text-yellow-400" : awardedMedal === 'silver' ? "text-[var(--text-primary)]" : "text-amber-500"
               }`}>
                 Zdobyto medal: {awardedMedal === 'gold' ? "Złoty" : awardedMedal === 'silver' ? "Srebrny" : "Brązowy"}!
               </span>
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-4 w-full bg-black/30 p-4 rounded-2xl border border-white/5">
+          <div className="grid grid-cols-2 gap-4 w-full bg-[var(--bg-input)] p-4 rounded-2xl border border-[var(--border-light)]">
             <div className="text-center py-1">
-              <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">Opanowane</span>
+              <span className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block">Opanowane</span>
               <span className="text-2xl font-black text-emerald-400 mt-1 block">{sessionResults.known}</span>
             </div>
-            <div className="text-center py-1 border-l border-white/5">
-              <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">Do powtórki</span>
+            <div className="text-center py-1 border-l border-[var(--border-light)]">
+              <span className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block">Do powtórki</span>
               <span className="text-2xl font-black text-rose-400 mt-1 block">{sessionResults.unknown}</span>
             </div>
           </div>
 
           {/* Enhanced stats row */}
           <div className="grid grid-cols-3 gap-3 w-full">
-            <div className="bg-black/20 p-3 rounded-xl border border-white/5 text-center">
-              <Icons.Clock size={16} className="mx-auto text-slate-400 mb-1" />
-              <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">Czas</span>
+            <div className="bg-[var(--bg-input)] p-3 rounded-xl border border-[var(--border-light)] text-center">
+              <Icons.Clock size={16} className="mx-auto text-[var(--text-secondary)] mb-1" />
+              <span className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block">Czas</span>
               <span className="text-sm font-black text-white mt-0.5 block">{formatTime(sessionElapsed)}</span>
             </div>
-            <div className="bg-black/20 p-3 rounded-xl border border-white/5 text-center">
-              <Icons.Target size={16} className="mx-auto text-slate-400 mb-1" />
-              <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">Skuteczność</span>
+            <div className="bg-[var(--bg-input)] p-3 rounded-xl border border-[var(--border-light)] text-center">
+              <Icons.Target size={16} className="mx-auto text-[var(--text-secondary)] mb-1" />
+              <span className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block">Skuteczność</span>
               <span className="text-sm font-black text-white mt-0.5 block">{cards.length > 0 ? Math.round((sessionResults.known / cards.length) * 100) : 0}%</span>
             </div>
-            <div className="bg-black/20 p-3 rounded-xl border border-white/5 text-center">
+            <div className="bg-[var(--bg-input)] p-3 rounded-xl border border-[var(--border-light)] text-center">
               <Icons.Flame size={16} className="mx-auto text-orange-400 mb-1" />
-              <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">Najdłuższa seria</span>
+              <span className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block">Najdłuższa seria</span>
               <span className="text-sm font-black text-white mt-0.5 block">{bestStreak}</span>
             </div>
           </div>
@@ -1133,9 +1133,9 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
               </div>
               <div className="flex flex-col gap-2">
                 {missedCards.slice(0, 3).map((card, i) => (
-                  <div key={card.id || i} className="flex items-center justify-between bg-black/20 px-3 py-2 rounded-lg">
+                  <div key={card.id || i} className="flex items-center justify-between bg-[var(--bg-input)] px-3 py-2 rounded-lg">
                     <span className="text-sm font-bold text-white">{card.english}</span>
-                    <span className="text-sm text-slate-400">→ {card.polish}</span>
+                    <span className="text-sm text-[var(--text-secondary)]">→ {card.polish}</span>
                   </div>
                 ))}
               </div>

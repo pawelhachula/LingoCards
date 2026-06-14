@@ -1202,10 +1202,10 @@ export default function App() {
           </div>
           <div>
             <h2 className="text-2xl font-black text-white tracking-tight">Konto Zablokowane</h2>
-            <p className="text-slate-400 text-sm mt-3 leading-relaxed">
+            <p className="text-[var(--text-secondary)] text-sm mt-3 leading-relaxed">
               Twoje konto zostało zawieszone przez administratora.
             </p>
-            <p className="text-slate-500 text-xs mt-2">
+            <p className="text-[var(--text-secondary)] text-xs mt-2">
               Skontaktuj się z nami pod adresem p.hachula89@wp.pl w celu wyjaśnienia sprawy.
             </p>
           </div>
@@ -1285,7 +1285,7 @@ export default function App() {
       )}
 
       {/* Top Navbar */}
-      <nav className="glass-card sticky top-0 z-50 rounded-none border-t-0 border-x-0 border-b border-white/5 bg-opacity-80 backdrop-blur-md px-5 md:px-8 py-3 flex items-center justify-between">
+      <nav className="glass-card sticky top-0 z-50 rounded-none border-t-0 border-x-0 border-b border-[var(--border-light)] bg-opacity-80 backdrop-blur-md px-5 md:px-8 py-3 flex items-center justify-between">
         
         {/* Brand Logo */}
         <div className="flex items-center gap-3 cursor-pointer select-none group shrink-0" onClick={() => setView("dashboard")}>
@@ -1297,10 +1297,10 @@ export default function App() {
               LingoCards {stats.isPro ? (
                 <span className="text-[9px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full font-black border border-amber-500/20 shadow-sm shadow-amber-500/5">PRO</span>
               ) : (
-                <span className="text-[9px] bg-white/5 text-slate-400 px-2 py-0.5 rounded-full font-bold border border-white/10">FREE</span>
+                <span className="text-[9px] bg-white/5 text-[var(--text-secondary)] px-2 py-0.5 rounded-full font-bold border border-[var(--border-light)]">FREE</span>
               )}
             </h1>
-            <p className="text-[8px] text-slate-500 uppercase tracking-widest font-black mt-0.5 whitespace-nowrap">Premium Language Learning</p>
+            <p className="text-[8px] text-[var(--text-secondary)] uppercase tracking-widest font-black mt-0.5 whitespace-nowrap">Premium Language Learning</p>
           </div>
         </div>
 
@@ -1440,11 +1440,11 @@ export default function App() {
       </nav>
 
       {/* Bottom Nav Bar for Mobile Screens */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-xl border-t border-white/5 px-2 py-2 flex items-center justify-around shadow-2xl">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-xl border-t border-[var(--border-light)] px-2 py-2 flex items-center justify-around shadow-2xl">
         <button 
           onClick={() => setView("dashboard")} 
           className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
-            view === "dashboard" ? "text-indigo-400" : "text-slate-500 hover:text-slate-300"
+            view === "dashboard" ? "text-[var(--primary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           }`}
         >
           <Icons.LayoutDashboard size={20} />
@@ -1453,7 +1453,7 @@ export default function App() {
         <button 
           onClick={() => setView("library")} 
           className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
-            view === "library" ? "text-indigo-400" : "text-slate-500 hover:text-slate-300"
+            view === "library" ? "text-[var(--primary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           }`}
         >
           <Icons.Compass size={20} />
@@ -1462,7 +1462,7 @@ export default function App() {
         <button 
           onClick={() => setView("learn")} 
           className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
-            view === "learn" ? "text-indigo-400" : "text-slate-500 hover:text-slate-300"
+            view === "learn" ? "text-[var(--primary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           }`}
         >
           <Icons.Layers size={20} />
@@ -1471,7 +1471,7 @@ export default function App() {
         <button 
           onClick={() => setView("quiz")} 
           className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
-            view === "quiz" ? "text-indigo-400" : "text-slate-500 hover:text-slate-300"
+            view === "quiz" ? "text-[var(--primary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           }`}
         >
           <Icons.Award size={20} />
@@ -1480,7 +1480,7 @@ export default function App() {
         <button 
           onClick={() => setView("match")} 
           className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
-            view === "match" ? "text-indigo-400" : "text-slate-500 hover:text-slate-300"
+            view === "match" ? "text-[var(--primary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           }`}
         >
           <Icons.Zap size={20} />
@@ -1490,7 +1490,7 @@ export default function App() {
           <button 
             onClick={() => setView("admin")} 
             className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
-              view === "admin" ? "text-rose-400 font-extrabold" : "text-slate-500 hover:text-slate-300"
+              view === "admin" ? "text-rose-400 font-extrabold" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
           >
             <Icons.ShieldAlert size={20} />
@@ -1500,7 +1500,7 @@ export default function App() {
         <button 
           onClick={() => setView("profile")} 
           className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
-            view === "profile" ? "text-indigo-400" : "text-slate-500 hover:text-slate-300"
+            view === "profile" ? "text-[var(--primary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           }`}
         >
           {currentUser.avatar && currentUser.avatar.startsWith("data:") ? (
@@ -1716,23 +1716,23 @@ export default function App() {
             className="fixed inset-0 bg-slate-950/45 backdrop-blur-xs animate-fade-in cursor-pointer"
           />
           {/* Drawer Body */}
-          <div className="glass-card rounded-l-[32px] rounded-r-none fixed inset-y-0 right-0 z-[150] w-full sm:w-[440px] border-y-0 border-r-0 border-l border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] flex flex-col animate-slide-left h-full overflow-hidden">
+          <div className="glass-card rounded-l-[32px] rounded-r-none fixed inset-y-0 right-0 z-[150] w-full sm:w-[440px] border-y-0 border-r-0 border-l border-[var(--border-light)] shadow-[0_0_50px_rgba(0,0,0,0.5)] flex flex-col animate-slide-left h-full overflow-hidden">
             <div className="p-6 md:p-8 flex flex-col gap-6 h-full">
               
               {/* Header */}
-              <div className="flex justify-between items-center border-b border-white/10 pb-4">
+              <div className="flex justify-between items-center border-b border-[var(--border-light)] pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
+                  <div className="p-2 rounded-lg bg-indigo-500/10 text-[var(--primary)]">
                     <Icons.Bell size={22} className="animate-pulse" />
                   </div>
                   <div>
                     <h3 className="text-xl font-extrabold text-white">Wiadomości i Ogłoszenia</h3>
-                    <p className="text-slate-400 text-xs mt-0.5">Komunikaty od administratora aplikacji</p>
+                    <p className="text-[var(--text-secondary)] text-xs mt-0.5">Komunikaty od administratora aplikacji</p>
                   </div>
                 </div>
                 <button 
                   onClick={() => setShowNotifications(false)}
-                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition-all"
+                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-[var(--border-light)] text-[var(--text-secondary)] hover:text-white transition-all"
                 >
                   <Icons.X size={18} />
                 </button>
@@ -1742,12 +1742,12 @@ export default function App() {
               <div className="flex-grow overflow-y-auto space-y-4 pr-1 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                 {notifications.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
-                    <div className="p-4 rounded-full bg-white/5 text-slate-500">
+                    <div className="p-4 rounded-full bg-white/5 text-[var(--text-secondary)]">
                       <Icons.MailOpen size={36} />
                     </div>
                     <div>
-                      <h4 className="text-slate-300 font-bold">Brak powiadomień</h4>
-                      <p className="text-slate-500 text-xs mt-1 max-w-xs">Brak wiadomości od administratora. Gdy się pojawią, zobaczysz je tutaj!</p>
+                      <h4 className="text-[var(--text-primary)] font-bold">Brak powiadomień</h4>
+                      <p className="text-[var(--text-secondary)] text-xs mt-1 max-w-xs">Brak wiadomości od administratora. Gdy się pojawią, zobaczysz je tutaj!</p>
                     </div>
                   </div>
                 ) : (
@@ -1768,7 +1768,7 @@ export default function App() {
                         }}
                         className={`p-4 rounded-xl border transition-all duration-300 relative group overflow-hidden cursor-pointer ${
                           notif.read 
-                            ? "bg-white/[0.02] border-white/5 opacity-70" 
+                            ? "bg-white/[0.02] border-[var(--border-light)] opacity-70" 
                             : "bg-gradient-to-r from-indigo-500/5 to-cyan-500/5 border-indigo-500/20 shadow-[0_4px_20px_rgba(99,102,241,0.05)] hover:border-indigo-500/30"
                         }`}
                       >
@@ -1791,16 +1791,16 @@ export default function App() {
 
                         <div className="flex flex-col gap-2">
                           <div className="flex justify-between items-start gap-4">
-                            <h4 className={`font-bold pr-6 ${notif.read ? "text-slate-300" : "text-white text-base"}`}>
+                            <h4 className={`font-bold pr-6 ${notif.read ? "text-[var(--text-primary)]" : "text-white text-base"}`}>
                               {notif.title || "Ogłoszenie systemowe"}
                             </h4>
                           </div>
                           
-                          <p className="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed pr-2">
+                          <p className="text-sm text-[var(--text-primary)] whitespace-pre-wrap leading-relaxed pr-2">
                             {notif.message}
                           </p>
                           
-                          <div className="flex justify-between items-center mt-2 pt-2 border-t border-white/5 text-slate-500 text-[11px] font-medium">
+                          <div className="flex justify-between items-center mt-2 pt-2 border-t border-[var(--border-light)] text-[var(--text-secondary)] text-[11px] font-medium">
                             <span className="flex items-center gap-1">
                               <Icons.Calendar size={12} />
                               {dateStr}
@@ -1827,7 +1827,7 @@ export default function App() {
               </div>
               
               {/* Footer */}
-              <div className="border-t border-white/10 pt-4 flex justify-between items-center text-xs text-slate-500 font-medium">
+              <div className="border-t border-[var(--border-light)] pt-4 flex justify-between items-center text-xs text-[var(--text-secondary)] font-medium">
                 <span>Wszystkich wiadomości: {notifications.length}</span>
                 {notifications.filter(n => !n.read).length > 0 && (
                   <button
@@ -1838,7 +1838,7 @@ export default function App() {
                         }
                       });
                     }}
-                    className="text-indigo-400 hover:text-indigo-300 font-bold transition-colors"
+                    className="text-[var(--primary)] hover:text-indigo-300 font-bold transition-colors"
                   >
                     Oznacz wszystkie jako przeczytane
                   </button>
@@ -1857,7 +1857,7 @@ export default function App() {
             
             <button 
               onClick={() => setShowPremiumModal(false)}
-              className="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors"
+              className="absolute top-3 right-3 text-[var(--text-secondary)] hover:text-white transition-colors"
             >
               <Icons.X size={18} />
             </button>
@@ -1872,31 +1872,31 @@ export default function App() {
                 {premiumTriggerDeck ? "Odblokuj zaawansowane lekcje" : "Odblokuj wersję PRO"}
               </h3>
               {premiumTriggerDeck ? (
-                <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
-                  Talia <strong className="text-white">"{premiumTriggerDeck?.title}"</strong> zawiera zaawansowane słownictwo na poziomie <strong className="text-indigo-400">{premiumTriggerDeck?.level}</strong> i wymaga konta premium.
+                <p className="text-[var(--text-secondary)] text-xs mt-1.5 leading-relaxed">
+                  Talia <strong className="text-white">"{premiumTriggerDeck?.title}"</strong> zawiera zaawansowane słownictwo na poziomie <strong className="text-[var(--primary)]">{premiumTriggerDeck?.level}</strong> i wymaga konta premium.
                 </p>
               ) : (
-                <p className="text-slate-400 text-xs mt-1.5 leading-relaxed">
+                <p className="text-[var(--text-secondary)] text-xs mt-1.5 leading-relaxed">
                   Uzyskaj pełny dostęp do wszystkich talii (od poziomu B1 do C2), specjalistycznego słownictwa oraz dodatkowych motywów graficznych.
                 </p>
               )}
             </div>
 
             {/* Benefits list */}
-            <div className="w-full bg-black/40 border border-white/5 rounded-xl p-3.5 text-left flex flex-col gap-2">
-              <div className="flex items-start gap-2 text-xs text-slate-300">
+            <div className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl p-3.5 text-left flex flex-col gap-2">
+              <div className="flex items-start gap-2 text-xs text-[var(--text-primary)]">
                 <Icons.CheckCircle2 size={14} className="text-amber-400 shrink-0 mt-0.5" />
                 <span><strong>Poziomy B1-C2:</strong> Opanuj średnio- i zaawansowany język angielski.</span>
               </div>
-              <div className="flex items-start gap-2 text-xs text-slate-300">
+              <div className="flex items-start gap-2 text-xs text-[var(--text-primary)]">
                 <Icons.CheckCircle2 size={14} className="text-amber-400 shrink-0 mt-0.5" />
                 <span><strong>Talie specjalistyczne:</strong> Business English, IT/Technologia, Idiomy.</span>
               </div>
-              <div className="flex items-start gap-2 text-xs text-slate-300">
+              <div className="flex items-start gap-2 text-xs text-[var(--text-primary)]">
                 <Icons.CheckCircle2 size={14} className="text-amber-400 shrink-0 mt-0.5" />
                 <span><strong>Nielimitowane efekty i motywy:</strong> Odblokuj wszystkie szaty graficzne premium.</span>
               </div>
-              <div className="flex items-start gap-2 text-xs text-slate-300">
+              <div className="flex items-start gap-2 text-xs text-[var(--text-primary)]">
                 <Icons.CheckCircle2 size={14} className="text-amber-400 shrink-0 mt-0.5" />
                 <span><strong>Synchronizacja Firestore:</strong> Twoje słówka i statystyki bezpieczne w chmurze.</span>
               </div>

@@ -195,12 +195,12 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
       <div>
         <button 
           onClick={() => onNavigate("dashboard")}
-          className="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 font-bold"
+          className="text-xs text-[var(--text-secondary)] hover:text-white transition-colors flex items-center gap-1.5 font-bold"
         >
           <Icons.ChevronLeft size={16} /> Powrót do pulpitu
         </button>
         <h2 className="text-3xl font-black mt-2 text-white tracking-tight">Analityka i Statystyki</h2>
-        <p className="text-slate-400 text-sm mt-1">Śledź swoje postępy w czasie rzeczywistym i przeglądaj zgromadzoną wiedzę.</p>
+        <p className="text-[var(--text-secondary)] text-sm mt-1">Śledź swoje postępy w czasie rzeczywistym i przeglądaj zgromadzoną wiedzę.</p>
       </div>
 
       {/* Main Stats Grid */}
@@ -208,72 +208,72 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
         {/* Learned Words */}
         <div className="glass-card p-5 border-indigo-500/10 flex flex-col justify-between">
           <div>
-            <Icons.BookOpen className="text-indigo-400 w-5 h-5 mb-3" />
-            <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">Opanowane słówka</span>
+            <Icons.BookOpen className="text-[var(--primary)] w-5 h-5 mb-3" />
+            <span className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block">Opanowane słówka</span>
             <h3 className="text-3xl font-black text-white mt-1">{learnedCount}</h3>
           </div>
-          <span className="text-[10px] text-slate-400 font-bold block mt-3">Z {totalCardsCount} wszystkich fiszek</span>
+          <span className="text-[10px] text-[var(--text-secondary)] font-bold block mt-3">Z {totalCardsCount} wszystkich fiszek</span>
         </div>
 
         {/* Total Decks & Words */}
         <div className="glass-card p-5 border-purple-500/10 flex flex-col justify-between">
           <div>
             <Icons.Layers className="text-purple-400 w-5 h-5 mb-3" />
-            <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">Zasoby aplikacji</span>
+            <span className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block">Zasoby aplikacji</span>
             <div className="flex flex-col gap-1.5 mt-2">
               <div className="flex justify-between items-baseline">
-                <span className="text-slate-400 text-xs font-semibold">Talie łącznie:</span>
+                <span className="text-[var(--text-secondary)] text-xs font-semibold">Talie łącznie:</span>
                 <span className="text-base font-black text-white">{realDecks.length}</span>
               </div>
               <div className="flex justify-between items-baseline">
-                <span className="text-slate-400 text-xs font-semibold">Słówka łącznie:</span>
+                <span className="text-[var(--text-secondary)] text-xs font-semibold">Słówka łącznie:</span>
                 <span className="text-base font-black text-white">{totalCardsCount}</span>
               </div>
             </div>
           </div>
-          <span className="text-[10px] text-slate-400 font-bold block mt-3">Talie systemowe i własne</span>
+          <span className="text-[10px] text-[var(--text-secondary)] font-bold block mt-3">Talie systemowe i własne</span>
         </div>
 
         {/* Total Reviews */}
         <div className="glass-card p-5 border-pink-500/10 flex flex-col justify-between">
           <div>
             <Icons.RefreshCw className="text-pink-400 w-5 h-5 mb-3" />
-            <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">Liczba powtórek</span>
+            <span className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block">Liczba powtórek</span>
             <h3 className="text-3xl font-black text-white mt-1">{stats.reviewsCount || 0}</h3>
           </div>
-          <span className="text-[10px] text-slate-400 font-bold block mt-3">Sesje nauki algorytmem SRS</span>
+          <span className="text-[10px] text-[var(--text-secondary)] font-bold block mt-3">Sesje nauki algorytmem SRS</span>
         </div>
 
         {/* Study Time */}
         <div className="glass-card p-5 border-amber-500/10 flex flex-col justify-between">
           <div>
             <Icons.Clock className="text-amber-500 w-5 h-5 mb-3" />
-            <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">Łączny czas nauki</span>
+            <span className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block">Łączny czas nauki</span>
             <h3 className="text-3xl font-black text-white mt-1">{formatStudyTime(stats.studyTime)}</h3>
           </div>
-          <span className="text-[10px] text-slate-400 font-bold block mt-3">Czas aktywnej nauki w aplikacji</span>
+          <span className="text-[10px] text-[var(--text-secondary)] font-bold block mt-3">Czas aktywnej nauki w aplikacji</span>
         </div>
 
         {/* Average Accuracy */}
         <div className="glass-card p-5 border-emerald-500/10 flex flex-col justify-between">
           <div>
             <Icons.Percent className="text-emerald-400 w-5 h-5 mb-3" />
-            <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">Skuteczność quizu</span>
+            <span className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block">Skuteczność quizu</span>
             <h3 className="text-3xl font-black text-white mt-1">
               {stats.quizTotal > 0 ? `${Math.round((stats.quizCorrect / stats.quizTotal) * 100)}%` : "0%"}
             </h3>
           </div>
-          <span className="text-[10px] text-slate-400 font-bold block mt-3">{`Z ${stats.quizTotal || 0} rozwiązanych pytań`}</span>
+          <span className="text-[10px] text-[var(--text-secondary)] font-bold block mt-3">{`Z ${stats.quizTotal || 0} rozwiązanych pytań`}</span>
         </div>
 
         {/* Best Day */}
         <div className="glass-card p-5 border-cyan-500/10 flex flex-col justify-between">
           <div>
             <Icons.CalendarDays className="text-cyan-400 w-5 h-5 mb-3" />
-            <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">Najlepszy dzień</span>
+            <span className="text-[10px] text-[var(--text-secondary)] font-extrabold uppercase tracking-wider block">Najlepszy dzień</span>
             <h3 className="text-base font-extrabold text-white mt-2 truncate">{formatBestDay(bestDayStr)}</h3>
           </div>
-          <span className="text-[10px] text-slate-400 font-bold block mt-3">Dzień z największą liczbą powtórek</span>
+          <span className="text-[10px] text-[var(--text-secondary)] font-bold block mt-3">Dzień z największą liczbą powtórek</span>
         </div>
       </div>
 
@@ -282,16 +282,16 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h4 className="text-base font-extrabold text-white">Miesięczny Progres Wiedzy</h4>
-            <p className="text-xs text-slate-400 mt-1">Przyrost liczby opanowanych słówek w ciągu ostatnich 30 dni.</p>
+            <p className="text-xs text-[var(--text-secondary)] mt-1">Przyrost liczby opanowanych słówek w ciągu ostatnich 30 dni.</p>
           </div>
           
           {/* Custom comparison text card */}
           <div className="bg-indigo-500/10 border border-indigo-500/20 px-4 py-2.5 rounded-2xl flex items-center gap-3 self-start md:self-auto">
-            <div className="p-1.5 rounded-lg bg-indigo-500/20 text-indigo-400">
+            <div className="p-1.5 rounded-lg bg-indigo-500/20 text-[var(--primary)]">
               <Icons.TrendingUp size={16} />
             </div>
-            <p className="text-xs text-slate-300 font-semibold leading-tight">
-              Miesiąc temu znałeś <span className="text-indigo-400 font-black">{wordsMonthAgo}</span> {getWordsPlural(wordsMonthAgo)}.<br />
+            <p className="text-xs text-[var(--text-primary)] font-semibold leading-tight">
+              Miesiąc temu znałeś <span className="text-[var(--primary)] font-black">{wordsMonthAgo}</span> {getWordsPlural(wordsMonthAgo)}.<br />
               Teraz znasz już <span className="text-emerald-400 font-black">{learnedCount}</span>!
             </p>
           </div>
@@ -436,26 +436,26 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
             <Icons.AlertTriangle className="text-rose-400" size={18} />
             <div>
               <h4 className="text-sm font-extrabold text-white">Najtrudniejsze słówka</h4>
-              <p className="text-[10px] text-slate-400">Wyrazy z największą liczbą pomyłek w nauce i testach.</p>
+              <p className="text-[10px] text-[var(--text-secondary)]">Wyrazy z największą liczbą pomyłek w nauce i testach.</p>
             </div>
           </div>
 
           {hardestCardsList.length === 0 ? (
-            <div className="text-center py-10 border border-dashed border-white/10 rounded-2xl bg-black/10 flex-grow flex flex-col justify-center items-center">
+            <div className="text-center py-10 border border-dashed border-[var(--border-light)] rounded-2xl bg-[var(--bg-input)] flex-grow flex flex-col justify-center items-center">
               <Icons.CheckCircle2 className="text-emerald-500/40 mb-2" size={32} />
-              <p className="text-xs text-slate-500 font-bold">Wszystko jasne! ✨</p>
+              <p className="text-xs text-[var(--text-secondary)] font-bold">Wszystko jasne! ✨</p>
               <p className="text-[10px] text-slate-600 mt-1 max-w-[200px] mx-auto">Rozpocznij testy lub naukę fiszek, by algorytm zebrał trudne słowa.</p>
             </div>
           ) : (
             <div className="flex flex-col gap-3 flex-grow">
               {hardestCardsList.map(({ card, count }) => (
-                <div key={card.id} className="bg-black/30 border border-white/5 p-3 rounded-xl flex items-center justify-between gap-3">
+                <div key={card.id} className="bg-[var(--bg-input)] border border-[var(--border-light)] p-3 rounded-xl flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <strong className="text-xs text-white truncate block">{card.english}</strong>
-                      <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-white/5 text-slate-400 border border-white/10">{getCardLevel(card)}</span>
+                      <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-white/5 text-[var(--text-secondary)] border border-[var(--border-light)]">{getCardLevel(card)}</span>
                     </div>
-                    <span className="text-[10px] text-slate-400 truncate block mt-0.5">{card.polish}</span>
+                    <span className="text-[10px] text-[var(--text-secondary)] truncate block mt-0.5">{card.polish}</span>
                   </div>
                   <div className="shrink-0 flex items-center gap-1.5 bg-rose-500/10 border border-rose-500/20 px-2 py-1 rounded-lg">
                     <Icons.XCircle size={10} className="text-rose-400" />
@@ -474,7 +474,7 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
               <Icons.Star className="text-amber-400 fill-amber-400/10" size={18} />
               <div>
                 <h4 className="text-sm font-extrabold text-white">Rejestr Ulubionych Słówek</h4>
-                <p className="text-[10px] text-slate-400">Przeglądaj, odsłuchuj i zarządzaj swoimi ulubionymi fiszkami.</p>
+                <p className="text-[10px] text-[var(--text-secondary)]">Przeglądaj, odsłuchuj i zarządzaj swoimi ulubionymi fiszkami.</p>
               </div>
             </div>
             
@@ -486,35 +486,35 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
                   placeholder="Wyszukaj słowo..."
                   value={favoritesSearch}
                   onChange={(e) => setFavoritesSearch(e.target.value)}
-                  className="w-full bg-black/40 border border-white/8 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/60 font-semibold"
+                  className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[var(--primary)] font-semibold"
                 />
-                <Icons.Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" size={12} />
+                <Icons.Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" size={12} />
               </div>
             )}
           </div>
 
           {starredCards.length === 0 ? (
-            <div className="text-center py-12 border border-dashed border-white/10 rounded-2xl bg-black/10 flex-grow flex flex-col justify-center items-center">
+            <div className="text-center py-12 border border-dashed border-[var(--border-light)] rounded-2xl bg-[var(--bg-input)] flex-grow flex flex-col justify-center items-center">
               <Icons.Star className="text-slate-600 mb-2" size={32} />
-              <p className="text-xs text-slate-500 font-bold">Brak ulubionych słówek 🌟</p>
+              <p className="text-xs text-[var(--text-secondary)] font-bold">Brak ulubionych słówek 🌟</p>
               <p className="text-[10px] text-slate-600 mt-1 max-w-[240px] mx-auto">Podczas przeglądania fiszek kliknij gwiazdkę w rogu karty, aby dodać ją do tego rejestru.</p>
             </div>
           ) : filteredStarred.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-xs text-slate-500 font-bold">Brak wyników wyszukiwania</p>
+              <p className="text-xs text-[var(--text-secondary)] font-bold">Brak wyników wyszukiwania</p>
               <p className="text-[10px] text-slate-600 mt-0.5">Spróbuj wpisać inną frazę.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-1">
               {filteredStarred.map((card) => (
-                <div key={card.id} className="bg-black/30 border border-white/5 p-3.5 rounded-xl flex items-center justify-between gap-3 group">
+                <div key={card.id} className="bg-[var(--bg-input)] border border-[var(--border-light)] p-3.5 rounded-xl flex items-center justify-between gap-3 group">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <strong className="text-xs text-white truncate block">{card.english}</strong>
-                      <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-white/5 text-slate-400 border border-white/10">{getCardLevel(card)}</span>
+                      <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-white/5 text-[var(--text-secondary)] border border-[var(--border-light)]">{getCardLevel(card)}</span>
                     </div>
-                    <span className="text-[9px] text-slate-500 font-semibold block italic mt-0.5">{card.pronunciation}</span>
-                    <span className="text-[10px] text-slate-400 truncate block mt-1">{card.polish}</span>
+                    <span className="text-[9px] text-[var(--text-secondary)] font-semibold block italic mt-0.5">{card.pronunciation}</span>
+                    <span className="text-[10px] text-[var(--text-secondary)] truncate block mt-1">{card.polish}</span>
                   </div>
                   
                   {/* Action Buttons */}
@@ -522,7 +522,7 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
                     {/* TTS Button */}
                     <button 
                       onClick={() => playTTS(card.english)}
-                      className="p-2 rounded-lg bg-white/5 hover:bg-indigo-500/10 border border-white/8 hover:border-indigo-500/20 text-slate-400 hover:text-indigo-400 transition-all"
+                      className="p-2 rounded-lg bg-white/5 hover:bg-indigo-500/10 border border-[var(--border-light)] hover:border-indigo-500/20 text-[var(--text-secondary)] hover:text-[var(--primary)] transition-all"
                       title="Odsłuchaj wymowę"
                     >
                       <Icons.Volume2 size={13} />
