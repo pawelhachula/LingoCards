@@ -910,7 +910,6 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                       )}
                     </div>
                   )}
-                </div>
 
                 <div className="text-xs text-[var(--text-muted)] font-bold flex items-center justify-center gap-2 opacity-80 mt-auto">
                   <Icons.Sparkles size={14} className="text-[var(--primary)]" />
@@ -988,7 +987,6 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
                       </p>
                     </div>
                   )}
-                </div>
 
                 <div className="text-xs text-[var(--text-muted)] font-bold flex items-center justify-center gap-2 opacity-80">
                   {reversedMode ? "Kliknij w kartę, aby zobaczyć polskie słówko" : "Kliknij w kartę, aby zobaczyć słówko"}
