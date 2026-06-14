@@ -131,7 +131,7 @@ export default function Referrals({ stats, onUpdateStats, onNavigate }) {
           </div>
 
           <div className="mt-6 flex flex-col gap-2.5">
-            <div className="bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-xs font-mono text-indigo-300 break-all select-all flex justify-between items-center">
+            <div className="bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-4 py-3 text-xs font-mono text-[var(--text-primary)] break-all select-all flex justify-between items-center">
               <span>{referralLink}</span>
             </div>
             
@@ -171,7 +171,7 @@ export default function Referrals({ stats, onUpdateStats, onNavigate }) {
               placeholder="Imię lub pseudonim znajomego..."
               value={simName}
               onChange={(e) => setSimName(e.target.value)}
-              className="flex-grow bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-cyan-500 font-medium"
+              className="flex-grow bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-4 py-3 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-active)] font-medium"
             />
             <button 
               type="submit" 

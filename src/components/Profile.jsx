@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import * as Icons from "lucide-react";
+import { defaultDecks } from "../data/defaultDecks";
+import { formatDays } from "../utils/date";
+
+const systemDeckIds = new Set(defaultDecks.map(d => d.id));
 
 export default function Profile({ user, onLogout, stats, decks, onUpdateProfile }) {
   const [usernameInput, setUsernameInput] = useState(user.username);
@@ -173,7 +177,7 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
       title: "Twórca wiedzy",
       desc: "Dodano własną talię z min. 5 fiszkami",
       icon: "PlusCircle",
-      unlocked: decks.some(d => !d.isSystem && (d.cards || []).length >= 5),
+      unlocked: decks.some(d => !systemDeckIds.has(d.id) && (d.cards || []).length >= 5),
       color: "text-pink-400 bg-pink-500/10 border-pink-500/20"
     },
     {
@@ -532,7 +536,7 @@ export default function Profile({ user, onLogout, stats, decks, onUpdateProfile 
 
             <div className="bg-black/30 p-4 rounded-2xl border border-white/5 text-center">
               <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Dni z rzędu</span>
-              <span className="text-2xl font-black text-amber-500 mt-1.5 block">{stats.streak || 0} dni</span>
+              <span className="text-2xl font-black text-amber-500 mt-1.5 block">{formatDays(stats.streak || 0)}</span>
             </div>
 
             <div className="bg-black/30 p-4 rounded-2xl border border-white/5 text-center">

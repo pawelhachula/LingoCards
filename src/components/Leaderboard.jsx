@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as Icons from "lucide-react";
+import { formatDays } from "../utils/date";
 
 export default function Leaderboard({ stats, onNavigate, loadAllUsers, systemConfig, currentUser }) {
   const [activeTab, setActiveTab] = useState("xp"); // 'xp' | 'streak' | 'words'
@@ -301,7 +302,7 @@ export default function Leaderboard({ stats, onNavigate, loadAllUsers, systemCon
 
                 {/* Name & Title */}
                 <div className="min-w-0">
-                  <h4 className={`text-xs font-extrabold truncate flex items-center gap-1.5 ${player.isCurrentUser ? 'text-white' : 'text-slate-200'}`}>
+                  <h4 className={`text-xs font-extrabold truncate flex items-center gap-1.5 ${player.isCurrentUser ? 'text-white' : 'text-[var(--text-primary)]'}`}>
                     {player.username}
                     {player.isCurrentUser && (
                       <span className="text-[8px] bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 px-1.5 py-0.5 rounded-full font-black uppercase">Ja</span>
@@ -323,7 +324,7 @@ export default function Leaderboard({ stats, onNavigate, loadAllUsers, systemCon
                 )}
                 {activeTab === "streak" && (
                   <div className="flex items-center gap-1">
-                    <span className="text-xs font-black text-amber-500">{player.streak} dni</span>
+                    <span className="text-xs font-black text-amber-500">{formatDays(player.streak)}</span>
                     <Icons.Flame size={14} className="text-amber-500 fill-amber-500/20" />
                   </div>
                 )}

@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { defaultDecks } from "./data/defaultDecks";
+import { formatDays } from "./utils/date";
 import Dashboard from "./components/Dashboard";
 import Flashcards from "./components/Flashcards";
 import Quiz from "./components/Quiz";
@@ -1483,7 +1484,7 @@ export default function App() {
           {/* Daily streak indicator */}
           <div className="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 text-amber-500 px-3 py-1.5 rounded-xl font-mono text-xs font-bold shadow-sm whitespace-nowrap shrink-0" title="Twój codzienny streak nauki!">
             <Icons.Flame size={14} className="fill-amber-500/15 shrink-0" />
-            <span className="whitespace-nowrap shrink-0">{stats.streak || 0} dni</span>
+            <span className="whitespace-nowrap shrink-0">{formatDays(stats.streak || 0)}</span>
           </div>
 
           <button 

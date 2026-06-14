@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import * as Icons from "lucide-react";
 import DeckEditor from "./DeckEditor";
-import { getLocalDateString } from "../utils/date";
+import { getLocalDateString, formatDays } from "../utils/date";
 import { playSound } from "../utils/effects";
 
 export default function Dashboard({ 
@@ -432,8 +432,8 @@ export default function Dashboard({
           </div>
           <div>
             <span className="text-xs text-slate-500 uppercase font-extrabold tracking-wider">Seria dni (Streak)</span>
-            <p className="text-2xl font-black text-white mt-0.5">{stats.streak || 0} dni</p>
-            <span className="text-[9px] text-slate-400 font-bold uppercase">Rekord: {stats.bestStreak || stats.streak || 0} dni</span>
+            <p className="text-2xl font-black text-white mt-0.5">{formatDays(stats.streak || 0)}</p>
+            <span className="text-[9px] text-slate-400 font-bold uppercase">Rekord: {formatDays(stats.bestStreak || stats.streak || 0)}</span>
           </div>
         </div>
 
@@ -571,7 +571,7 @@ export default function Dashboard({
         <div className="flex flex-col gap-3">
           <div className="flex justify-between items-center">
             <h5 className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Odznaczenia za Serię Dni (Milestones)</h5>
-            <span className="text-[9px] font-bold text-slate-500">Najlepszy streak: {stats.bestStreak || stats.streak || 0} dni</span>
+            <span className="text-[9px] font-bold text-slate-500">Najlepszy streak: {formatDays(stats.bestStreak || stats.streak || 0)}</span>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">

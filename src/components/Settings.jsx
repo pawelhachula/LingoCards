@@ -100,7 +100,7 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
             <select
               value={dailyGoal}
               onChange={(e) => setDailyGoal(e.target.value)}
-              className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500/60 w-32"
+              className="bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-3 py-2 text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-active)] w-32"
             >
               <option value="3">3 słówka</option>
               <option value="5">5 słówek</option>
@@ -123,7 +123,7 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
             <select
               value={speechSpeed}
               onChange={handleSpeedChange}
-              className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500/60 w-32"
+              className="bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-3 py-2 text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-active)] w-32"
             >
               <option value="0.8">Zwolnione (0.8x)</option>
               <option value="1.0">Standardowe (1.0x)</option>

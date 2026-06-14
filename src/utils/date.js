@@ -12,3 +12,11 @@ export const getLocalDateString = (d = new Date()) => {
   const day = String(d.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 };
+
+/**
+ * Formatowanie liczby dni z odpowiednią odmianą (1 dzień, 2 dni, 0 dni)
+ */
+export const formatDays = (count) => {
+  if (count === 1) return "1 dzień";
+  return `${count} dni`;
+};
