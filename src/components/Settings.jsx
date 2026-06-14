@@ -285,6 +285,39 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
             Zapisz ustawienia
           </button>
         </form>
+
+      {/* Narzędzie odzyskiwania danych */}
+      <div className="glass-card p-5 mt-6 border-amber-500/30 bg-amber-500/5">
+        <div className="flex items-center gap-3 mb-4 cursor-pointer" onClick={() => setShowRecovery(!showRecovery)}>
+          <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400">
+            <Icons.DatabaseBackup size={20} />
+          </div>
+          <div className="flex-1">
+            <h3 className="font-bold text-white text-sm">Narzędzie odzyskiwania danych (Awaryjne)</h3>
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">Użyj w przypadku awarii, by przywrócić usunięty streak</p>
+          </div>
+          <Icons.ChevronDown size={16} className={`text-slate-400 transition-transform ${showRecovery ? "rotate-180" : ""}`} />
+        </div>
+        {showRecovery && (
+          <div className="flex flex-col gap-3 mt-4 border-t border-amber-500/10 pt-4">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] text-amber-300 font-bold uppercase tracking-wider">Streak (dni)</label>
+                <input type="number" value={recoveryStreak} onChange={e => setRecoveryStreak(parseInt(e.target.value)||0)} className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500/60 font-semibold" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] text-amber-300 font-bold uppercase tracking-wider">XP</label>
+                <input type="number" value={recoveryXp} onChange={e => setRecoveryXp(parseInt(e.target.value)||0)} className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500/60 font-semibold" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] text-amber-300 font-bold uppercase tracking-wider">Poziom</label>
+                <input type="number" value={recoveryLevel} onChange={e => setRecoveryLevel(parseInt(e.target.value)||1)} className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500/60 font-semibold" />
+              </div>
+            </div>
+            <button type="button" onClick={() => { onUpdateStats({...stats, streak: recoveryStreak, bestStreak: Math.max(stats.bestStreak || 0, recoveryStreak), xp: recoveryXp, level: recoveryLevel}); setSuccessMsg("Dane awaryjne przywrócone!"); }} className="btn bg-amber-600 hover:bg-amber-700 text-white text-xs py-2 px-4 mt-2">Zapisz i przywróć</button>
+          </div>
+        )}
+      </div>
       </div>
 
       {/* Danger Zone: Reset Data */}
