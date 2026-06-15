@@ -738,8 +738,8 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
             onClick={() => setSrsOnly(false)}
             className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 border ${
               !srsOnly 
-                ? "bg-indigo-500/10 text-[var(--primary)] border-indigo-500/20 shadow-sm font-extrabold" 
-                : "text-[var(--text-secondary)] hover:text-white border-transparent"
+                ? "bg-[var(--bg-card)] text-[var(--primary)] border-[var(--border-active)] shadow-[0_0_10px_var(--primary-glow)] font-extrabold" 
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent"
             }`}
           >
             <Icons.Layers size={14} /> Nauka całej talii
@@ -748,8 +748,8 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
             onClick={() => setSrsOnly(true)}
             className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 border ${
               srsOnly 
-                ? "bg-pink-500/10 text-pink-400 border-pink-500/20 shadow-sm font-extrabold" 
-                : "text-[var(--text-secondary)] hover:text-white border-transparent"
+                ? "bg-[var(--bg-card)] text-[var(--primary)] border-[var(--border-active)] shadow-[0_0_10px_var(--primary-glow)] font-extrabold" 
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent"
             }`}
           >
             <Icons.BrainCircuit size={14} /> Powtórki SRS
