@@ -1392,11 +1392,12 @@ export default function App() {
           </button>
           
           <div className="relative group">
-            <button className={`px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${["stats", "referrals", "admin"].includes(view) ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent hover:bg-[var(--bg-input)]"}`}>
+            <button className={`px-2.5 py-1.5 rounded-xl transition-all border flex items-center gap-1 whitespace-nowrap shrink-0 ${["stats", "referrals", "leaderboard", "admin"].includes(view) ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-transparent hover:bg-[var(--bg-input)]"}`}>
               <Icons.MoreHorizontal size={14} /> Więcej
             </button>
             <div className="absolute top-full left-0 mt-1 w-44 bg-[var(--bg-card)] border border-[var(--border-light)] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col p-1 z-50">
               <button onClick={() => setView("stats")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "stats" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.BarChart2 size={16} /> Statystyki</button>
+              <button onClick={() => setView("leaderboard")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "leaderboard" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.Trophy size={16} /> Ranking</button>
               <button onClick={() => setView("referrals")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "referrals" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.Users size={16} /> Polecenia</button>
               {currentUser?.role === "admin" && <button onClick={() => setView("admin")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "admin" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-rose-400"}`}><Icons.ShieldAlert size={16} /> Admin Panel</button>}
             </div>
@@ -1476,7 +1477,7 @@ export default function App() {
 
             <div className="absolute top-full right-0 mt-1 w-56 bg-[var(--bg-card)] border border-[var(--border-light)] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col p-1 z-50">
               <button onClick={() => setView("profile")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "profile" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.User size={14} className="text-[var(--text-muted)]" /> Mój Profil</button>
-              <button onClick={() => setView("leaderboard")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "leaderboard" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.Trophy size={14} className="text-[var(--text-muted)]" /> Ranking</button>
+
               <button onClick={() => setView("settings")} className={`flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "settings" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.Settings size={14} className="text-[var(--text-muted)]" /> Ustawienia</button>
               
               <div className="my-1 border-t border-[var(--border-light)]" />
