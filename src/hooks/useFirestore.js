@@ -326,6 +326,8 @@ export function useFirestore() {
       const { doc, deleteDoc } = ops;
       await deleteDoc(doc(db, "users", uid, "data", "stats"));
       await deleteDoc(doc(db, "users", uid, "data", "decks"));
+      await deleteDoc(doc(db, "users", uid, "data", "settings"));
+      await deleteDoc(doc(db, "users", uid, "data", "profile"));
       await deleteDoc(doc(db, "users", uid)); // optional: delete user document itself
     } catch (e) {
       console.warn("[Firestore] Failed to delete user data:", e.message);

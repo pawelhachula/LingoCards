@@ -1018,15 +1018,25 @@ export default function App() {
       }
       
       // 2. Clear local storage
-      const userStatsKey = `lingocards_stats_${username.toLowerCase()}`;
-      const userDecksKey = `lingocards_decks_${username.toLowerCase()}`;
-      const activeDecksKey = `lingocards_active_decks_${username.toLowerCase()}`;
-      const userAvatarKey = `lingocards_avatar_${uidKey}`;
+      const userStatsKeyLegacy = `lingocards_stats_${username.toLowerCase()}`;
+      const userDecksKeyLegacy = `lingocards_decks_${username.toLowerCase()}`;
+      const activeDecksKeyLegacy = `lingocards_active_decks_${username.toLowerCase()}`;
+      
+      const userStatsKey = `lingocards_stats_${uidKey.toLowerCase()}`;
+      const userDecksKey = `lingocards_decks_${uidKey.toLowerCase()}`;
+      const activeDecksKey = `lingocards_active_decks_${uidKey.toLowerCase()}`;
+      const userAvatarKey = `lingocards_avatar_${uidKey.toLowerCase()}`;
+      const userSettingsKey = `lingocards_settings_${uidKey.toLowerCase()}`;
+      
+      localStorage.removeItem(userStatsKeyLegacy);
+      localStorage.removeItem(userDecksKeyLegacy);
+      localStorage.removeItem(activeDecksKeyLegacy);
       
       localStorage.removeItem(userStatsKey);
       localStorage.removeItem(userDecksKey);
       localStorage.removeItem(activeDecksKey);
       localStorage.removeItem(userAvatarKey);
+      localStorage.removeItem(userSettingsKey);
       
       // 3. Delete from Firebase Auth and sign out
       if (isFirebaseConfigured) {
