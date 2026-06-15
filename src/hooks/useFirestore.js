@@ -316,6 +316,22 @@ export function useFirestore() {
     }
   }, []);
 
+  /**
+   * Usuń wszystkie dane użytkownika z Firestore
+   */
+  const deleteUserData = useCallback(async (uid) => {
+    const ops = await getFirestoreOps();
+    if (!ops) return;
+    try {
+      const { doc, deleteDoc } = ops;
+      await deleteDoc(doc(db, "users", uid, "data", "stats"));
+      await deleteDoc(doc(db, "users", uid, "data", "decks"));
+      await deleteDoc(doc(db, "users", uid)); // optional: delete user document itself
+    } catch (e) {
+      console.warn("[Firestore] Failed to delete user data:", e.message);
+    }
+  }, []);
+
   return {
     saveStats,
     loadStats,
@@ -331,6 +347,7 @@ export function useFirestore() {
     loadNotifications,
     markNotificationAsRead,
     deleteNotification,
+    deleteUserData,
     loadSystemConfig,
     updateSystemConfig
   };
