@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as Icons from "lucide-react";
 
-export default function Settings({ stats, onUpdateStats, theme, onThemeChange, onResetData, DEFAULT_THEMES = [], PREMIUM_THEMES = [] }) {
+export default function Settings({ stats, onUpdateStats, theme, onThemeChange, onResetData, DEFAULT_THEMES = [], PREMIUM_THEMES = [], currentUser }) {
   const isPro = !!stats.isPro;
   const [dailyGoal, setDailyGoal] = useState(stats.dailyTarget || 10);
   const [speechSpeed, setSpeechSpeed] = useState(localStorage.getItem("lingocards_speech_speed") || "1.0");
@@ -116,13 +116,13 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
           </div>
 
           {/* Speech speed */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[var(--border-light)]">
             <div>
-              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+              <h4 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <Icons.Volume2 size={16} className="text-cyan-500" />
                 Prędkość lektora (TTS)
               </h4>
-              <p className="text-[11px] text-slate-500 mt-0.5">Tempo wymowy lektora w języku angielskim</p>
+              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">Tempo wymowy lektora w języku angielskim</p>
             </div>
             <select
               value={speechSpeed}
@@ -137,13 +137,13 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
           </div>
 
           {/* Autoplay Audio Toggle */}
-          <div className="flex items-center justify-between gap-4 pb-5 border-b border-white/5">
+          <div className="flex items-center justify-between gap-4 pb-5 border-b border-[var(--border-light)]">
             <div>
-              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+              <h4 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <Icons.PlayCircle size={16} className="text-indigo-400" />
                 Autoodtwarzanie audio
               </h4>
-              <p className="text-[11px] text-slate-500 mt-0.5">Odtwarzaj lektora automatycznie po odwróceniu karty</p>
+              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">Odtwarzaj lektora automatycznie po odwróceniu karty</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -152,18 +152,18 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
                 onChange={handleToggleAutoplay}
                 className="sr-only peer"
               />
-              <div className="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500 peer-checked:after:bg-white"></div>
+              <div className="w-9 h-5 bg-[var(--border-light)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500 peer-checked:after:bg-white"></div>
             </label>
           </div>
 
           {/* Mute interface sounds */}
-          <div className="flex items-center justify-between gap-4 pb-5 border-b border-white/5">
+          <div className="flex items-center justify-between gap-4 pb-5 border-b border-[var(--border-light)]">
             <div>
-              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+              <h4 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <Icons.VolumeX size={16} className="text-rose-500" />
                 Wycisz dźwięki interfejsu
               </h4>
-              <p className="text-[11px] text-slate-500 mt-0.5">Wycisz sygnały dźwiękowe poprawnej/błędnej odpowiedzi</p>
+              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">Wycisz sygnały dźwiękowe poprawnej/błędnej odpowiedzi</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -172,23 +172,23 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
                 onChange={handleToggleMute}
                 className="sr-only peer"
               />
-              <div className="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500 peer-checked:after:bg-white"></div>
+              <div className="w-9 h-5 bg-[var(--border-light)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500 peer-checked:after:bg-white"></div>
             </label>
           </div>
 
           {/* Audio Synth Style Selector */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[var(--border-light)]">
             <div>
-              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+              <h4 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <Icons.Sparkles size={16} className="text-indigo-400" />
                 Styl dźwięków sukcesu (Synth)
               </h4>
-              <p className="text-[11px] text-slate-500 mt-0.5">Styl retro arpeggio generowany w locie syntezatorem</p>
+              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">Styl retro arpeggio generowany w locie syntezatorem</p>
             </div>
             <select
               value={audioStyle}
               onChange={(e) => setAudioStyle(e.target.value)}
-              className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500/60 w-36"
+              className="bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-3 py-2 text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:border-indigo-500/60 w-36"
             >
               {!isPro ? (
                 <>
@@ -207,18 +207,18 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
           </div>
 
           {/* Confetti Style Selector */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[var(--border-light)]">
             <div>
-              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+              <h4 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <Icons.Layers size={16} className="text-cyan-400" />
                 Styl efektów wizualnych (Konfetti)
               </h4>
-              <p className="text-[11px] text-slate-500 mt-0.5">Styl cząsteczek przy ukończeniu talii lub osiągnięciu</p>
+              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">Styl cząsteczek przy ukończeniu talii lub osiągnięciu</p>
             </div>
             <select
               value={confettiStyle}
               onChange={(e) => setConfettiStyle(e.target.value)}
-              className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500/60 w-36"
+              className="bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-3 py-2 text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:border-indigo-500/60 w-36"
             >
               {!isPro ? (
                 <>
@@ -237,13 +237,13 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
           </div>
 
           {/* Quick Theme Picker */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[var(--border-light)]">
             <div>
-              <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                <Icons.Palette size={16} className="text-pink-500" />
+              <h4 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+                <Icons.Palette size={16} className="text-pink-400" />
                 Motyw graficzny
               </h4>
-              <p className="text-[11px] text-slate-500 mt-0.5">Wybierz kolorystykę aplikacji</p>
+              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">Wybierz kolorystykę aplikacji</p>
             </div>
             <select
               value={selectedTheme}
@@ -252,7 +252,7 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
                 setSelectedTheme(nt);
                 onThemeChange(nt);
               }}
-              className="bg-black/40 border border-white/8 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500/60 w-52"
+              className="bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-3 py-2 text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:border-pink-500/60 w-52"
             >
               <optgroup label="Motywy podstawowe" className="bg-[var(--bg-main)] text-slate-400">
                 {DEFAULT_THEMES.map(t => (
@@ -312,10 +312,13 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
               </h4>
               <div className="flex flex-col gap-2">
                 {(() => {
+                  const isAdmin = currentUser?.role === "admin";
+                  const userKeyPart = currentUser?.username?.toLowerCase() || currentUser?.uid?.toLowerCase() || "guest";
                   const found = [];
                   for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
                     if (key && key.startsWith("lingocards_stats_")) {
+                      if (!isAdmin && key !== `lingocards_stats_${userKeyPart}`) continue;
                       try {
                         const data = JSON.parse(localStorage.getItem(key));
                         if (data && (data.streak > 0 || data.xp > 0 || Object.keys(data.learnedCards || {}).length > 0)) {
@@ -328,15 +331,18 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
                     return <p className="text-xs text-amber-500/70">Nie znaleziono żadnych pełnych kopii (jeśli używałeś innej przeglądarki lub wyczyszczono dane, skaner nic nie znajdzie).</p>;
                   }
                   return found.map(b => (
-                    <div key={b.key} className="flex items-center justify-between bg-black/20 p-2 rounded-lg border border-amber-500/10">
+                    <div key={b.key} className="flex items-center justify-between bg-[var(--bg-input)] p-2 rounded-lg border border-amber-500/20">
                       <div className="flex flex-col">
-                        <span className="text-[10px] text-amber-300 font-bold">{b.key.replace("lingocards_stats_", "")}</span>
-                        <span className="text-xs text-[var(--text-primary)]">Streak: {b.data.streak} dni | XP: {b.data.xp || 0}</span>
+                        <span className="text-[10px] text-amber-400 font-bold">{b.key.replace("lingocards_stats_", "")}</span>
+                        <span className="text-xs text-[var(--text-primary)] font-medium">Streak: {b.data.streak} dni | XP: {b.data.xp || 0}</span>
                       </div>
                       <button 
                         type="button" 
-                        onClick={() => { onUpdateStats(b.data); setSuccessMsg("Przywrócono pełną kopię zapasową!"); }}
-                        className="btn bg-amber-600 hover:bg-amber-700 text-white text-[10px] py-1.5 px-3"
+                        onClick={() => { 
+                          onUpdateStats(b.data); 
+                          alert("Przywrócono pełną kopię zapasową! Twoje statystyki, XP oraz kalendarz zostały zaktualizowane."); 
+                        }}
+                        className="btn bg-amber-600 hover:bg-amber-700 text-white text-[10px] py-1.5 px-3 shadow-md border-0"
                       >
                         Przywróć to
                       </button>
@@ -350,15 +356,15 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
               <h4 className="text-xs font-bold text-amber-500 mb-2">Lub wpisz ręcznie (odbuduje też kalendarz):</h4>
               <div className="grid grid-cols-3 gap-3">
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] text-amber-300 font-bold uppercase tracking-wider">Streak</label>
+                  <label className="text-[10px] text-amber-400 font-bold uppercase tracking-wider">Streak</label>
                   <input type="number" value={recoveryStreak} onChange={e => setRecoveryStreak(parseInt(e.target.value)||0)} className="bg-[var(--bg-input)] border border-amber-500/30 rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-amber-500/80 font-semibold" />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] text-amber-300 font-bold uppercase tracking-wider">XP</label>
+                  <label className="text-[10px] text-amber-400 font-bold uppercase tracking-wider">XP</label>
                   <input type="number" value={recoveryXp} onChange={e => setRecoveryXp(parseInt(e.target.value)||0)} className="bg-[var(--bg-input)] border border-amber-500/30 rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-amber-500/80 font-semibold" />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] text-amber-300 font-bold uppercase tracking-wider">Poziom</label>
+                  <label className="text-[10px] text-amber-400 font-bold uppercase tracking-wider">Poziom</label>
                   <input type="number" value={recoveryLevel} onChange={e => setRecoveryLevel(parseInt(e.target.value)||1)} className="bg-[var(--bg-input)] border border-amber-500/30 rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-amber-500/80 font-semibold" />
                 </div>
               </div>
@@ -371,8 +377,8 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
                   dates.push(d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2, '0') + "-" + String(d.getDate()).padStart(2, '0'));
                 }
                 onUpdateStats({...stats, streak: recoveryStreak, bestStreak: Math.max(stats.bestStreak || 0, recoveryStreak), xp: recoveryXp, level: recoveryLevel, studyDates: [...new Set([...(stats.studyDates || []), ...dates])]}); 
-                setSuccessMsg("Dane ręczne przywrócone!"); 
-              }} className="btn bg-amber-600 hover:bg-amber-700 text-white text-xs py-2 px-4 mt-3 w-full">Odbuduj statystyki</button>
+                alert("Statystyki ręczne przywrócone i kalendarz przebudowany! Możesz opuścić ustawienia."); 
+              }} className="btn bg-amber-600 hover:bg-amber-700 text-white text-xs py-2 px-4 mt-3 w-full font-bold shadow-md border-0">Odbuduj statystyki</button>
             </div>
           </div>
         )}

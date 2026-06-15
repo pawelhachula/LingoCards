@@ -258,6 +258,9 @@ export default function App() {
   const handleThemeChange = (newTheme) => {
     setTheme(newTheme);
     localStorage.setItem("lingocards_theme", newTheme);
+    if (currentUser) {
+      handleSetStats({ theme: newTheme });
+    }
   };
 
   const getFirestoreUidKey = (uid = currentUser?.uid || currentUser?.username) => {
@@ -1615,6 +1618,7 @@ export default function App() {
             onResetData={handleResetData}
             DEFAULT_THEMES={DEFAULT_THEMES}
             PREMIUM_THEMES={PREMIUM_THEMES}
+            currentUser={currentUser}
           />
         )}
 
