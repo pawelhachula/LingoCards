@@ -17,7 +17,7 @@ import Library from "./components/Library";
 import AdminPanel from "./components/AdminPanel";
 import { playSound, triggerConfetti, triggerFireworks } from "./utils/effects";
 import { useFirestore } from "./hooks/useFirestore";
-import { auth, db, onAuthStateChanged, signOutUser, isFirebaseConfigured } from "./firebase";
+import { auth, db, onAuthStateChanged, signOutUser, isFirebaseConfigured, deleteUserAccount } from "./firebase";
 import { getLocalDateString } from "./utils/date";
 import * as Icons from "lucide-react";
 
@@ -76,7 +76,7 @@ export default function App() {
   const { 
     saveStats, loadStats, saveDecks, loadDecks,
     syncUserMeta, loadAllUsers, updateUserField,
-    sendSystemNotification, loadNotifications, markNotificationAsRead, deleteNotification,
+    sendSystemNotification, loadNotifications, markNotificationAsRead, deleteNotification, deleteUserData,
     loadSystemConfig, updateSystemConfig
   } = useFirestore();
 
@@ -1005,6 +1005,47 @@ export default function App() {
     setSelectedDeck(activeDecks[0] || defaultDecks[0]);
   };
 
+  const handleDeleteAccount = async () => {
+    if (!currentUser) return;
+    
+    try {
+      const uidKey = getFirestoreUidKey();
+      const username = currentUser.username;
+      
+      // 1. Delete from Firestore if configured
+      if (isFirebaseConfigured && uidKey) {
+        await deleteUserData(uidKey);
+      }
+      
+      // 2. Clear local storage
+      const userStatsKey = `lingocards_stats_${username.toLowerCase()}`;
+      const userDecksKey = `lingocards_decks_${username.toLowerCase()}`;
+      const activeDecksKey = `lingocards_active_decks_${username.toLowerCase()}`;
+      const userAvatarKey = `lingocards_avatar_${uidKey}`;
+      
+      localStorage.removeItem(userStatsKey);
+      localStorage.removeItem(userDecksKey);
+      localStorage.removeItem(activeDecksKey);
+      localStorage.removeItem(userAvatarKey);
+      
+      // 3. Delete from Firebase Auth and sign out
+      if (isFirebaseConfigured) {
+        await deleteUserAccount();
+      }
+      
+      // Clear state and sign out
+      await handleSignOut();
+      return true;
+    } catch (error) {
+      console.error("Błąd podczas usuwania konta:", error);
+      // Jeśli requires-recent-login, zwracamy error do UI by poprosić o ponowne logowanie
+      if (error.code === 'auth/requires-recent-login') {
+        throw new Error("Ze względów bezpieczeństwa musisz się zalogować ponownie, aby usunąć konto.");
+      }
+      throw error;
+    }
+  };
+
   const handleToggleActiveDeck = (deckId) => {
     if (!currentUser) return;
     
@@ -1616,6 +1657,7 @@ export default function App() {
             theme={theme}
             onThemeChange={handleThemeChange}
             onResetData={handleResetData}
+            onDeleteAccount={handleDeleteAccount}
             DEFAULT_THEMES={DEFAULT_THEMES}
             PREMIUM_THEMES={PREMIUM_THEMES}
             currentUser={currentUser}

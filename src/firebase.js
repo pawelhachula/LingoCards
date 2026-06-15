@@ -11,7 +11,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
-  onAuthStateChanged
+  onAuthStateChanged,
+  deleteUser
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
@@ -83,6 +84,13 @@ export const signInWithEmail = async (email, password) => {
 // ─── Wylogowanie ──────────────────────────────────────────────────────────────
 export const signOutUser = async () => {
   if (auth) await signOut(auth);
+};
+
+// ─── Usunięcie konta ────────────────────────────────────────────────────────────
+export const deleteUserAccount = async () => {
+  if (auth && auth.currentUser) {
+    await deleteUser(auth.currentUser);
+  }
 };
 
 export default app;

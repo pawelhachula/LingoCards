@@ -8,8 +8,8 @@ import { isFirebaseConfigured, db } from "../firebase";
 // Dynamiczny import Firestore operations — unikamy błędów gdy db jest undefined
 const getFirestoreOps = () => {
   if (!isFirebaseConfigured || !db) return null;
-  return import("firebase/firestore").then(({ doc, getDoc, setDoc, updateDoc }) => ({
-    doc, getDoc, setDoc, updateDoc
+  return import("firebase/firestore").then(({ doc, getDoc, setDoc, updateDoc, deleteDoc }) => ({
+    doc, getDoc, setDoc, updateDoc, deleteDoc
   }));
 };
 

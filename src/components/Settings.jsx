@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as Icons from "lucide-react";
 
-export default function Settings({ stats, onUpdateStats, theme, onThemeChange, onResetData, DEFAULT_THEMES = [], PREMIUM_THEMES = [], currentUser }) {
+export default function Settings({ stats, onUpdateStats, theme, onThemeChange, onResetData, onDeleteAccount, DEFAULT_THEMES = [], PREMIUM_THEMES = [], currentUser }) {
   const isPro = !!stats.isPro;
   const [dailyGoal, setDailyGoal] = useState(stats.dailyTarget || 10);
   const [speechSpeed, setSpeechSpeed] = useState(localStorage.getItem("lingocards_speech_speed") || "1.0");
@@ -10,11 +10,13 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
   const [audioStyle, setAudioStyle] = useState(isPro ? (stats.audioStyle || "synth") : (stats.audioStyle === "off" ? "off" : "synth"));
   const [confettiStyle, setConfettiStyle] = useState(isPro ? (stats.confettiStyle || "standard") : (stats.confettiStyle === "off" ? "off" : "standard"));
   const [showConfirmReset, setShowConfirmReset] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showRecovery, setShowRecovery] = useState(false);
   const [recoveryStreak, setRecoveryStreak] = useState(stats.streak || 0);
   const [recoveryXp, setRecoveryXp] = useState(stats.xp || 0);
   const [recoveryLevel, setRecoveryLevel] = useState(stats.level || 1);
   const [resetConfirmText, setResetConfirmText] = useState("");
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [selectedTheme, setSelectedTheme] = useState(theme);
 
@@ -75,6 +77,18 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
       setResetConfirmText("");
       setSuccessMsg("Wszystkie dane zostały zresetowane!");
       setTimeout(() => setSuccessMsg(""), 3000);
+    }
+  };
+
+  const handleDeleteAccountConfirm = async () => {
+    if (deleteConfirmText.toLowerCase() === "usuń") {
+      setDeleteErrorMsg("");
+      try {
+        await onDeleteAccount();
+        // If successful, App.jsx handles signout and redirect.
+      } catch (err) {
+        setDeleteErrorMsg(err.message || "Wystąpił błąd podczas usuwania konta.");
+      }
     }
   };
 
@@ -443,6 +457,63 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
             </div>
           </div>
         )}
+
+        <div className="h-px bg-rose-500/10 my-6"></div>
+
+        {!showConfirmDelete ? (
+          <button
+            type="button"
+            onClick={() => setShowConfirmDelete(true)}
+            className="btn py-2.5 text-xs font-bold text-white border border-rose-600 bg-rose-600 hover:bg-rose-700 transition-colors w-full sm:w-auto"
+          >
+            Trwale usuń konto
+          </button>
+        ) : (
+          <div className="bg-rose-900/20 border border-rose-500/20 p-4 rounded-xl flex flex-col gap-3">
+            <span className="text-[10px] text-rose-300 font-bold uppercase tracking-wider">
+              Ta akcja usunie CAŁKOWICIE twoje konto oraz dane ze wszystkich baz. Wpisz słowo <strong className="text-white">USUŃ</strong> poniżej:
+            </span>
+            <div className="flex gap-2 flex-col sm:flex-row">
+              <input
+                type="text"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                placeholder="wpisz 'USUŃ'"
+                style={{ backgroundColor: 'var(--bg-input)' }}
+                className="border border-rose-500/30 rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-rose-500/60 font-semibold"
+              />
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleDeleteAccountConfirm}
+                  disabled={deleteConfirmText.toLowerCase() !== "usuń"}
+                  className={`btn py-2 px-4 text-xs font-bold shadow-md ${
+                    deleteConfirmText.toLowerCase() === "usuń"
+                      ? "bg-rose-600 hover:bg-rose-700 text-white"
+                      : "bg-slate-700 text-slate-400 cursor-not-allowed border-0"
+                  }`}
+                >
+                  Usuń konto
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowConfirmDelete(false);
+                    setDeleteConfirmText("");
+                    setDeleteErrorMsg("");
+                  }}
+                  className="btn bg-transparent border border-rose-500/20 text-rose-300 hover:bg-rose-500/10 py-2 px-4 text-xs"
+                >
+                  Anuluj
+                </button>
+              </div>
+            </div>
+            {deleteErrorMsg && (
+              <p className="text-rose-400 text-xs mt-2 font-medium">{deleteErrorMsg}</p>
+            )}
+          </div>
+        )}
+
       </div>
     </div>
   );
