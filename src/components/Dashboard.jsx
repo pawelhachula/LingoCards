@@ -306,7 +306,7 @@ export default function Dashboard({
             className={`btn text-xs py-2.5 px-4 flex items-center gap-1.5 font-bold hover:scale-105 transition-transform shrink-0 self-start md:self-auto ${
               stats.starredCards?.[wordOfTheDay.id] 
                 ? "bg-amber-500/10 border-amber-500/20 text-amber-500" 
-                : "bg-[var(--bg-input)] border border-current text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                : "bg-[var(--bg-input)] border border-[var(--border-active)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
           >
             <Icons.Star size={14} className={stats.starredCards?.[wordOfTheDay.id] ? "fill-amber-500" : ""} />
