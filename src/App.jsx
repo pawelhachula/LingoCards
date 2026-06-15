@@ -1034,7 +1034,7 @@ export default function App() {
       }
       
       // Clear state and sign out
-      await handleSignOut();
+      await handleLogout();
       return true;
     } catch (error) {
       console.error("Błąd podczas usuwania konta:", error);
