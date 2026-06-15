@@ -17,6 +17,7 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
   const [recoveryLevel, setRecoveryLevel] = useState(stats.level || 1);
   const [resetConfirmText, setResetConfirmText] = useState("");
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deleteErrorMsg, setDeleteErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [selectedTheme, setSelectedTheme] = useState(theme);
 
