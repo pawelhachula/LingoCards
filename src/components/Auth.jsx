@@ -67,16 +67,16 @@ export default function Auth({ onLogin }) {
     setError("");
     setSuccess("");
 
-    if (!email.trim() || !password.trim() || !username.trim()) {
-      setError("Wszystkie pola są wymagane.");
+    if (!username.trim()) {
+      setError("Nazwa użytkownika jest wymagana.");
       return;
     }
-    if (username.trim().length < 3) {
-      setError("Nazwa użytkownika musi mieć co najmniej 3 znaki.");
+    if (!email.trim() || !password.trim()) {
+      setError("Email i hasło są wymagane.");
       return;
     }
     if (password.length < 6) {
-      setError("Hasło musi mieć co najmniej 6 znaków.");
+      setError("Hasło musi mieć min. 6 znaków.");
       return;
     }
 
@@ -84,54 +84,18 @@ export default function Auth({ onLogin }) {
     try {
       if (isFirebaseConfigured) {
         const user = await registerWithEmail(email.trim(), password, username.trim(), selectedAvatar);
-        // Zapisz awatar lokalnie (Firebase Auth nie przechowuje emoji)
-        localStorage.setItem(`lingocards_avatar_${user.uid}`, selectedAvatar);
         user.avatar = selectedAvatar;
-        setSuccess("Konto zostało utworzone!");
+        setSuccess("Konto utworzone!");
         setTimeout(() => onLogin(user), 700);
       } else {
         setError("Firebase nie jest skonfigurowany.");
       }
     } catch (err) {
       const msg = err.code === "auth/email-already-in-use"
-        ? "Ten email jest już zajęty. Spróbuj się zalogować."
-        : err.code === "auth/invalid-email"
-        ? "Niepoprawny format adresu email."
+        ? "Ten email jest już zarejestrowany."
         : err.code === "auth/weak-password"
-        ? "Hasło jest za słabe. Użyj co najmniej 6 znaków."
+        ? "Hasło jest zbyt słabe (min. 6 znaków)."
         : "Błąd rejestracji: " + err.message;
-      setError(msg);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // ─── Odzyskiwanie hasła ────────────────────────────────────────────────────
-  const handleResetPassword = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-
-    if (!email.trim()) {
-      setError("Podaj swój adres e-mail.");
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      await sendPasswordResetEmail(auth, email.trim());
-      setSuccess("Link do zresetowania hasła został wysłany na Twój adres e-mail!");
-    } catch (err) {
-      let msg = "Błąd wysyłania linku: ";
-      if (err.code === "auth/user-not-found" || err.message.includes("user-not-found")) {
-        msg = "Nie znaleziono użytkownika o tym adresie e-mail.";
-      } else if (err.code === "auth/invalid-email") {
-        msg = "Niepoprawny format adresu e-mail.";
-      } else if (err.code === "auth/missing-email") {
-        msg = "Podaj adres e-mail.";
-      } else {
-        msg += err.message;
-      }
       setError(msg);
     } finally {
       setIsLoading(false);
@@ -144,11 +108,17 @@ export default function Auth({ onLogin }) {
     setSuccess("");
     setIsLoading(true);
     try {
-      const user = await signInWithGoogle();
-      setSuccess(`Zalogowano jako ${user.username}!`);
-      setTimeout(() => onLogin(user), 700);
+      if (isFirebaseConfigured) {
+        const user = await signInWithGoogle();
+        const savedAvatar = localStorage.getItem(`lingocards_avatar_${user.uid}`);
+        if (savedAvatar) user.avatar = savedAvatar;
+        setSuccess("Zalogowano przez Google!");
+        setTimeout(() => onLogin(user), 700);
+      } else {
+        setError("Firebase nie jest skonfigurowany.");
+      }
     } catch (err) {
-      if (err.code !== "auth/popup-closed-by-user") {
+      if (err.code !== "auth/popup-closed-by-user" && err.code !== "auth/cancelled-popup-request") {
         setError("Błąd logowania Google: " + err.message);
       }
     } finally {
@@ -156,34 +126,54 @@ export default function Auth({ onLogin }) {
     }
   };
 
+  // ─── Reset hasła ───────────────────────────────────────────────────────────
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    if (!email.trim()) {
+      setError("Wpisz adres email.");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      await sendPasswordResetEmail(auth, email.trim());
+      setSuccess("Link do zresetowania hasła został wysłany na podany adres e-mail.");
+    } catch (err) {
+      setError("Nie udało się wysłać linku. Sprawdź adres e-mail.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="glass-card w-full max-w-md p-8 relative overflow-hidden border-indigo-500/10">
+      <div className="glass-card w-full max-w-md p-8 relative overflow-hidden border-[var(--border-light)]">
 
         {/* Decorative glow */}
-        <div className="absolute -left-20 -top-20 w-48 h-48 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -right-20 -bottom-20 w-48 h-48 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -left-20 -top-20 w-48 h-48 bg-[var(--bg-grad-1)] rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -right-20 -bottom-20 w-48 h-48 bg-[var(--bg-grad-2)] rounded-full blur-3xl pointer-events-none" />
 
         {/* Brand */}
         <div className="text-center mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-cyan-500 flex items-center justify-center mx-auto shadow-lg shadow-indigo-500/20 mb-3">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[var(--primary)] to-[var(--secondary)] flex items-center justify-center mx-auto shadow-lg shadow-[var(--primary-glow)] mb-3">
             <Icons.BookOpen className="text-white w-6 h-6" />
           </div>
-          <h2 className="text-2xl font-black text-white tracking-tight">LingoCards</h2>
-          <p className="text-slate-400 text-xs mt-1">Naucz się angielskiego z fiszkami</p>
+          <h2 className="text-2xl font-black text-[var(--text-primary)] tracking-tight">LingoCards</h2>
+          <p className="text-[var(--text-secondary)] text-xs mt-1">Naucz się angielskiego z fiszkami</p>
         </div>
 
         {/* Tabs */}
         {!forgotMode && (
-          <div className="flex bg-black/40 p-1.5 rounded-xl border border-white/5 gap-2 mb-6">
+          <div className="flex bg-[var(--bg-input)] p-1.5 rounded-xl border border-[var(--border-light)] gap-2 mb-6">
             {["login", "register"].map(t => (
               <button
                 key={t}
                 onClick={() => { setTab(t); resetForm(); }}
                 className={`flex-1 btn text-xs font-bold py-2.5 rounded-lg transition-all ${
                   tab === t
-                    ? "bg-indigo-500/10 text-indigo-300 border border-indigo-500/25"
-                    : "bg-transparent text-slate-500 hover:text-white border-transparent"
+                    ? "bg-[var(--primary-glow)] text-[var(--primary)] border border-[var(--border-active)]"
+                    : "bg-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)] border-transparent"
                 }`}
               >
                 {t === "login" ? "Logowanie" : "Rejestracja"}
@@ -194,13 +184,13 @@ export default function Auth({ onLogin }) {
 
         {/* Error / Success */}
         {error && (
-          <div className="mb-5 bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs p-3.5 rounded-xl flex items-center gap-2">
+          <div className="mb-5 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs p-3.5 rounded-xl flex items-center gap-2">
             <Icons.AlertCircle size={16} />
             <span>{error}</span>
           </div>
         )}
         {success && (
-          <div className="mb-5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs p-3.5 rounded-xl flex items-center gap-2">
+          <div className="mb-5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs p-3.5 rounded-xl flex items-center gap-2">
             <Icons.CheckCircle2 size={16} />
             <span>{success}</span>
           </div>
@@ -209,22 +199,22 @@ export default function Auth({ onLogin }) {
         {forgotMode ? (
           /* ── ODZYSKIWANIE HASŁA ────────────────────────────────────────── */
           <form onSubmit={handleResetPassword} className="flex flex-col gap-4">
-            <div className="text-slate-400 text-xs leading-relaxed mb-1">
+            <div className="text-[var(--text-secondary)] text-xs leading-relaxed mb-1">
               Wpisz swój adres e-mail, a wyślemy Ci link do zresetowania hasła.
             </div>
             <div>
-              <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+              <label className="text-[10px] text-[var(--text-muted)] font-extrabold uppercase tracking-wider block mb-2">
                 Adres email
               </label>
               <div className="relative">
-                <Icons.Mail size={16} className="absolute left-3.5 top-3.5 text-slate-500" />
+                <Icons.Mail size={16} className="absolute left-3.5 top-3.5 text-[var(--text-muted)]" />
                 <input
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="twoj@email.com"
                   autoComplete="email"
-                  className="w-full bg-black/40 border border-white/8 rounded-xl pl-11 pr-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
+                  className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl pl-11 pr-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-active)] font-semibold placeholder-[var(--text-muted)]"
                 />
               </div>
             </div>
@@ -241,7 +231,7 @@ export default function Auth({ onLogin }) {
             <button
               type="button"
               onClick={() => { setForgotMode(false); setError(""); setSuccess(""); }}
-              className="text-xs text-slate-500 hover:text-white font-bold text-center mt-2 transition-colors"
+              className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] font-bold text-center mt-2 transition-colors"
             >
               Wróć do logowania
             </button>
@@ -250,50 +240,50 @@ export default function Auth({ onLogin }) {
           /* ── LOGOWANIE ─────────────────────────────────────────────────── */
           <form onSubmit={handleLoginSubmit} className="flex flex-col gap-4">
             <div>
-              <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+              <label className="text-[10px] text-[var(--text-muted)] font-extrabold uppercase tracking-wider block mb-2">
                 Adres email
               </label>
               <div className="relative">
-                <Icons.Mail size={16} className="absolute left-3.5 top-3.5 text-slate-500" />
+                <Icons.Mail size={16} className="absolute left-3.5 top-3.5 text-[var(--text-muted)]" />
                 <input
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="twoj@email.com"
                   autoComplete="email"
-                  className="w-full bg-black/40 border border-white/8 rounded-xl pl-11 pr-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
+                  className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl pl-11 pr-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-active)] font-semibold placeholder-[var(--text-muted)]"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex justify-between items-center mb-2">
-                <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block">
+                <label className="text-[10px] text-[var(--text-muted)] font-extrabold uppercase tracking-wider block">
                   Hasło
                 </label>
                 <button
                   type="button"
                   onClick={() => { setForgotMode(true); setError(""); setSuccess(""); }}
-                  className="text-[10px] text-indigo-400 hover:text-indigo-300 font-bold transition-colors"
+                  className="text-[10px] text-[var(--primary)] hover:opacity-80 font-bold transition-colors"
                   tabIndex={-1}
                 >
                   Zapomniałeś hasła?
                 </button>
               </div>
               <div className="relative">
-                <Icons.Lock size={16} className="absolute left-3.5 top-3.5 text-slate-500" />
+                <Icons.Lock size={16} className="absolute left-3.5 top-3.5 text-[var(--text-muted)]" />
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
                   autoComplete="current-password"
-                  className="w-full bg-black/40 border border-white/8 rounded-xl pl-11 pr-11 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
+                  className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl pl-11 pr-11 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-active)] font-semibold placeholder-[var(--text-muted)]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(p => !p)}
-                  className="absolute right-3.5 top-3.5 text-slate-500 hover:text-slate-300 transition-colors"
+                  className="absolute right-3.5 top-3.5 text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
                   tabIndex={-1}
                 >
                   {showPassword ? <Icons.EyeOff size={16} /> : <Icons.Eye size={16} />}
@@ -314,57 +304,57 @@ export default function Auth({ onLogin }) {
           /* ── REJESTRACJA ───────────────────────────────────────────────── */
           <form onSubmit={handleRegisterSubmit} className="flex flex-col gap-4">
             <div>
-              <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+              <label className="text-[10px] text-[var(--text-muted)] font-extrabold uppercase tracking-wider block mb-2">
                 Nazwa użytkownika
               </label>
               <div className="relative">
-                <Icons.User size={16} className="absolute left-3.5 top-3.5 text-slate-500" />
+                <Icons.User size={16} className="absolute left-3.5 top-3.5 text-[var(--text-muted)]" />
                 <input
                   type="text"
                   value={username}
                   onChange={e => setUsername(e.target.value)}
                   placeholder="np. pawel123"
                   autoComplete="username"
-                  className="w-full bg-black/40 border border-white/8 rounded-xl pl-11 pr-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
+                  className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl pl-11 pr-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-active)] font-semibold placeholder-[var(--text-muted)]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+              <label className="text-[10px] text-[var(--text-muted)] font-extrabold uppercase tracking-wider block mb-2">
                 Adres email
               </label>
               <div className="relative">
-                <Icons.Mail size={16} className="absolute left-3.5 top-3.5 text-slate-500" />
+                <Icons.Mail size={16} className="absolute left-3.5 top-3.5 text-[var(--text-muted)]" />
                 <input
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="twoj@email.com"
                   autoComplete="email"
-                  className="w-full bg-black/40 border border-white/8 rounded-xl pl-11 pr-4 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
+                  className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl pl-11 pr-4 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-active)] font-semibold placeholder-[var(--text-muted)]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
-                Hasło <span className="text-slate-600 normal-case font-normal">(min. 6 znaków)</span>
+              <label className="text-[10px] text-[var(--text-muted)] font-extrabold uppercase tracking-wider block mb-2">
+                Hasło <span className="text-[var(--text-muted)] normal-case font-normal opacity-70">(min. 6 znaków)</span>
               </label>
               <div className="relative">
-                <Icons.Lock size={16} className="absolute left-3.5 top-3.5 text-slate-500" />
+                <Icons.Lock size={16} className="absolute left-3.5 top-3.5 text-[var(--text-muted)]" />
                 <input
                   type={showPasswordReg ? "text" : "password"}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   placeholder="Min. 6 znaków"
                   autoComplete="new-password"
-                  className="w-full bg-black/40 border border-white/8 rounded-xl pl-11 pr-11 py-3 text-white focus:outline-none focus:border-indigo-500/60 font-semibold placeholder-slate-700"
+                  className="w-full bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl pl-11 pr-11 py-3 text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-active)] font-semibold placeholder-[var(--text-muted)]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPasswordReg(p => !p)}
-                  className="absolute right-3.5 top-3.5 text-slate-500 hover:text-slate-300 transition-colors"
+                  className="absolute right-3.5 top-3.5 text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
                   tabIndex={-1}
                 >
                   {showPasswordReg ? <Icons.EyeOff size={16} /> : <Icons.Eye size={16} />}
@@ -374,17 +364,17 @@ export default function Auth({ onLogin }) {
 
             {/* Avatar */}
             <div>
-              <label className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider block mb-2">
+              <label className="text-[10px] text-[var(--text-muted)] font-extrabold uppercase tracking-wider block mb-2">
                 Wybierz awatar ({selectedAvatar})
               </label>
-              <div className="grid grid-cols-5 gap-2 bg-black/20 p-2.5 rounded-xl border border-white/5">
+              <div className="grid grid-cols-5 gap-2 bg-[var(--bg-input)] p-2.5 rounded-xl border border-[var(--border-light)]">
                 {avatarsList.map(av => (
                   <button
                     key={av}
                     type="button"
                     onClick={() => setSelectedAvatar(av)}
                     className={`text-2xl p-2 rounded-lg transition-all hover:scale-110 ${
-                      selectedAvatar === av ? "bg-indigo-500/20 border border-indigo-500/30" : "bg-transparent"
+                      selectedAvatar === av ? "bg-[var(--primary-glow)] border border-[var(--border-active)]" : "bg-transparent"
                     }`}
                   >
                     {av}
@@ -396,7 +386,7 @@ export default function Auth({ onLogin }) {
             <button
               type="submit"
               disabled={isLoading}
-              className="btn btn-primary w-full py-3.5 mt-2 bg-gradient-to-r from-indigo-500 to-cyan-500 disabled:opacity-50"
+              className="btn btn-primary w-full py-3.5 mt-2 bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] disabled:opacity-50"
             >
               {isLoading ? "Tworzenie konta..." : "Stwórz konto"}
               {!isLoading && <Icons.UserPlus size={18} />}
@@ -406,16 +396,16 @@ export default function Auth({ onLogin }) {
 
         {/* Separator */}
         <div className="flex items-center my-6">
-          <div className="flex-grow border-t border-white/5" />
-          <span className="text-[9px] text-slate-500 font-bold uppercase mx-3 tracking-widest">lub</span>
-          <div className="flex-grow border-t border-white/5" />
+          <div className="flex-grow border-t border-[var(--border-light)]" />
+          <span className="text-[9px] text-[var(--text-muted)] font-bold uppercase mx-3 tracking-widest">lub</span>
+          <div className="flex-grow border-t border-[var(--border-light)]" />
         </div>
 
         {/* Google */}
         <button
           onClick={handleGoogleClick}
           disabled={isLoading}
-          className="w-full btn btn-secondary py-3 flex items-center justify-center gap-3 border border-white/10 hover:border-white/20 transition-all font-bold text-white bg-black/20 disabled:opacity-50"
+          className="w-full btn btn-secondary py-3 flex items-center justify-center gap-3 border border-[var(--border-light)] hover:border-[var(--text-muted)] transition-all font-bold text-[var(--text-primary)] bg-[var(--bg-input)] disabled:opacity-50"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -426,7 +416,7 @@ export default function Auth({ onLogin }) {
           {isLoading ? "Łączenie..." : "Kontynuuj przez Google"}
         </button>
 
-        <p className="text-center text-[10px] text-slate-600 mt-5">
+        <p className="text-center text-[10px] text-[var(--text-muted)] mt-5">
           Dane są bezpiecznie przechowywane przez Firebase (Google)
         </p>
       </div>

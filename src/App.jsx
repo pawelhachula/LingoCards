@@ -144,9 +144,8 @@ export default function App() {
 
   // Firebase Auth — automatyczne przywracanie sesji po odświeżeniu strony
   useEffect(() => {
-    // Wczytaj motyw
-    const savedTheme = localStorage.getItem("lingocards_theme") || "navy";
-    setTheme(savedTheme);
+    // Motyw jest wczytywany per-użytkownik w loadUserData, tu ustawiamy domyślny
+    setTheme("navy");
 
     // Wczytaj konfigurację systemową
     loadSystemConfig().then(cfg => {
@@ -257,7 +256,11 @@ export default function App() {
 
   const handleThemeChange = (newTheme) => {
     setTheme(newTheme);
-    localStorage.setItem("lingocards_theme", newTheme);
+    // Zapisz motyw per-użytkownik (scoped do UID)
+    const uidKey = getFirestoreUidKey();
+    if (uidKey) {
+      localStorage.setItem(`lingocards_theme_${uidKey}`, newTheme);
+    }
     if (currentUser) {
       handleSetStats({ theme: newTheme });
     }
@@ -715,10 +718,10 @@ export default function App() {
     else if (activeDecks.length > 0) setSelectedDeck(activeDecks[0]);
     else if (loadedDecks.length > 0) setSelectedDeck(loadedDecks[0]);
 
-    // Zsynchronizuj motyw graficzny z wczytanych statystyk
-    const themeToSet = loadedStats.theme || "navy";
+    // Zsynchronizuj motyw graficzny z wczytanych statystyk (scoped per user)
+    const themeToSet = loadedStats.theme || localStorage.getItem(`lingocards_theme_${uidKey}`) || "navy";
     setTheme(themeToSet);
-    localStorage.setItem("lingocards_theme", themeToSet);
+    localStorage.setItem(`lingocards_theme_${uidKey}`, themeToSet);
     setIsDataLoaded(true);
   };
 
@@ -743,6 +746,18 @@ export default function App() {
     setDecks([]);
     setActiveDeckIds([]);
     setSelectedDeck(null);
+    setIsDataLoaded(false);
+    // Reset stats do domyślnych — zapobiega wyciekaniu danych między kontami
+    setStats({
+      streak: 0, dailyCount: 0, lastActiveDate: "", learnedCards: {},
+      starredCards: {}, quizTotal: 0, quizCorrect: 0, matchesWon: 0,
+      srsData: {}, bestStreak: 0, referrals: [], xp: 0, level: 1,
+      studyDates: [], deckMedals: {}, completedDecks: {}, audioStyle: "synth",
+      confettiStyle: "standard", reviewsCount: 0, cardMistakes: {},
+      dailyHistory: {}, studyTime: 0
+    });
+    // Reset motywu do domyślnego na ekranie logowania
+    setTheme("navy");
   };
 
   const handleUpdateProfile = (newUsername, newAvatar) => {
@@ -992,10 +1007,10 @@ export default function App() {
 
     // Reset theme local state
     setTheme("navy");
-    localStorage.setItem("lingocards_theme", "navy");
+    const uidKey = getFirestoreUidKey();
+    if (uidKey) localStorage.setItem(`lingocards_theme_${uidKey}`, "navy");
 
     // Sync resets to Firestore
-    const uidKey = getFirestoreUidKey();
     if (uidKey) {
       saveStats(uidKey, defaultStatsObj);
       saveDecks(uidKey, defaultDecks);
