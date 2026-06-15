@@ -127,7 +127,8 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
             <select
               value={speechSpeed}
               onChange={handleSpeedChange}
-              className="bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-3 py-2 text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-active)] w-32"
+              style={{ backgroundColor: 'var(--bg-input)' }}
+              className="border border-[var(--border-light)] rounded-xl px-3 py-2 text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-active)] w-32"
             >
               <option value="0.8">Zwolnione (0.8x)</option>
               <option value="1.0">Standardowe (1.0x)</option>
@@ -188,7 +189,8 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
             <select
               value={audioStyle}
               onChange={(e) => setAudioStyle(e.target.value)}
-              className="bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-3 py-2 text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:border-indigo-500/60 w-36"
+              style={{ backgroundColor: 'var(--bg-input)' }}
+              className="border border-[var(--border-light)] rounded-xl px-3 py-2 text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:border-indigo-500/60 w-36"
             >
               {!isPro ? (
                 <>
@@ -218,7 +220,8 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
             <select
               value={confettiStyle}
               onChange={(e) => setConfettiStyle(e.target.value)}
-              className="bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-3 py-2 text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:border-indigo-500/60 w-36"
+              style={{ backgroundColor: 'var(--bg-input)' }}
+              className="border border-[var(--border-light)] rounded-xl px-3 py-2 text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:border-indigo-500/60 w-36"
             >
               {!isPro ? (
                 <>
@@ -252,7 +255,8 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
                 setSelectedTheme(nt);
                 onThemeChange(nt);
               }}
-              className="bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-3 py-2 text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:border-pink-500/60 w-52"
+              style={{ backgroundColor: 'var(--bg-input)' }}
+              className="border border-[var(--border-light)] rounded-xl px-3 py-2 text-xs font-semibold text-[var(--text-primary)] focus:outline-none focus:border-pink-500/60 w-52"
             >
               <optgroup label="Motywy podstawowe" className="bg-[var(--bg-main)] text-slate-400">
                 {DEFAULT_THEMES.map(t => (
@@ -331,7 +335,7 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
                     return <p className="text-xs text-amber-500/70">Nie znaleziono żadnych pełnych kopii (jeśli używałeś innej przeglądarki lub wyczyszczono dane, skaner nic nie znajdzie).</p>;
                   }
                   return found.map(b => (
-                    <div key={b.key} className="flex items-center justify-between bg-[var(--bg-input)] p-2 rounded-lg border border-amber-500/20">
+                    <div key={b.key} style={{ backgroundColor: 'var(--bg-input)' }} className="flex items-center justify-between p-2 rounded-lg border border-amber-500/20">
                       <div className="flex flex-col">
                         <span className="text-[10px] text-amber-400 font-bold">{b.key.replace("lingocards_stats_", "")}</span>
                         <span className="text-xs text-[var(--text-primary)] font-medium">Streak: {b.data.streak} dni | XP: {b.data.xp || 0}</span>
@@ -357,15 +361,15 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
               <div className="grid grid-cols-3 gap-3">
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] text-amber-400 font-bold uppercase tracking-wider">Streak</label>
-                  <input type="number" value={recoveryStreak} onChange={e => setRecoveryStreak(parseInt(e.target.value)||0)} className="bg-[var(--bg-input)] border border-amber-500/30 rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-amber-500/80 font-semibold" />
+                  <input type="number" value={recoveryStreak} onChange={e => setRecoveryStreak(parseInt(e.target.value)||0)} style={{ backgroundColor: 'var(--bg-input)' }} className="border border-amber-500/30 rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-amber-500/80 font-semibold" />
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] text-amber-400 font-bold uppercase tracking-wider">XP</label>
-                  <input type="number" value={recoveryXp} onChange={e => setRecoveryXp(parseInt(e.target.value)||0)} className="bg-[var(--bg-input)] border border-amber-500/30 rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-amber-500/80 font-semibold" />
+                  <input type="number" value={recoveryXp} onChange={e => setRecoveryXp(parseInt(e.target.value)||0)} style={{ backgroundColor: 'var(--bg-input)' }} className="border border-amber-500/30 rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-amber-500/80 font-semibold" />
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] text-amber-400 font-bold uppercase tracking-wider">Poziom</label>
-                  <input type="number" value={recoveryLevel} onChange={e => setRecoveryLevel(parseInt(e.target.value)||1)} className="bg-[var(--bg-input)] border border-amber-500/30 rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-amber-500/80 font-semibold" />
+                  <input type="number" value={recoveryLevel} onChange={e => setRecoveryLevel(parseInt(e.target.value)||1)} style={{ backgroundColor: 'var(--bg-input)' }} className="border border-amber-500/30 rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-none focus:border-amber-500/80 font-semibold" />
                 </div>
               </div>
               <button type="button" onClick={() => { 
