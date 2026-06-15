@@ -1011,32 +1011,38 @@ export default function App() {
     try {
       const uidKey = getFirestoreUidKey();
       const username = currentUser.username;
+      const uid = currentUser.uid;
       
       // 1. Delete from Firestore if configured
       if (isFirebaseConfigured && uidKey) {
         await deleteUserData(uidKey);
       }
       
-      // 2. Clear local storage
-      const userStatsKeyLegacy = `lingocards_stats_${username.toLowerCase()}`;
-      const userDecksKeyLegacy = `lingocards_decks_${username.toLowerCase()}`;
-      const activeDecksKeyLegacy = `lingocards_active_decks_${username.toLowerCase()}`;
+      // 2. Nuclear localStorage cleanup — remove ALL keys associated with this user
+      // We match by UID (case-sensitive), UID lowercase, username, and username lowercase
+      const identifiers = [
+        uid, 
+        uid?.toLowerCase(), 
+        uidKey, 
+        uidKey?.toLowerCase(), 
+        username, 
+        username?.toLowerCase()
+      ].filter(Boolean);
       
-      const userStatsKey = `lingocards_stats_${uidKey.toLowerCase()}`;
-      const userDecksKey = `lingocards_decks_${uidKey.toLowerCase()}`;
-      const activeDecksKey = `lingocards_active_decks_${uidKey.toLowerCase()}`;
-      const userAvatarKey = `lingocards_avatar_${uidKey.toLowerCase()}`;
-      const userSettingsKey = `lingocards_settings_${uidKey.toLowerCase()}`;
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && identifiers.some(id => key.includes(id))) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(key => localStorage.removeItem(key));
       
-      localStorage.removeItem(userStatsKeyLegacy);
-      localStorage.removeItem(userDecksKeyLegacy);
-      localStorage.removeItem(activeDecksKeyLegacy);
+      // Also remove any lingocards global keys that might cause issues
+      localStorage.removeItem("lingocards_current_user");
+      localStorage.removeItem("lingocards_theme");
       
-      localStorage.removeItem(userStatsKey);
-      localStorage.removeItem(userDecksKey);
-      localStorage.removeItem(activeDecksKey);
-      localStorage.removeItem(userAvatarKey);
-      localStorage.removeItem(userSettingsKey);
+      console.log("[DeleteAccount] Removed localStorage keys:", keysToRemove);
       
       // 3. Delete from Firebase Auth and sign out
       if (isFirebaseConfigured) {
