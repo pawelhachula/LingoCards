@@ -470,9 +470,9 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
             Trwale usuń konto
           </button>
         ) : (
-          <div className="bg-rose-900/20 border border-rose-500/20 p-4 rounded-xl flex flex-col gap-3">
-            <span className="text-[10px] text-rose-300 font-bold uppercase tracking-wider">
-              Ta akcja usunie CAŁKOWICIE twoje konto oraz dane ze wszystkich baz. Wpisz słowo <strong className="text-white">USUŃ</strong> poniżej:
+          <div className="bg-rose-500/10 border border-rose-500/30 p-4 rounded-xl flex flex-col gap-3">
+            <span className="text-[10px] text-rose-600 dark:text-rose-300 font-bold uppercase tracking-wider">
+              Ta akcja usunie CAŁKOWICIE twoje konto oraz dane ze wszystkich baz. Wpisz słowo <strong className="text-rose-700 dark:text-white">USUŃ</strong> poniżej:
             </span>
             <div className="flex gap-2 flex-col sm:flex-row">
               <input
@@ -488,10 +488,10 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
                   type="button"
                   onClick={handleDeleteAccountConfirm}
                   disabled={deleteConfirmText.toLowerCase() !== "usuń"}
-                  className={`btn py-2 px-4 text-xs font-bold shadow-md ${
+                  className={`btn py-2 px-4 text-xs font-bold shadow-md transition-colors ${
                     deleteConfirmText.toLowerCase() === "usuń"
                       ? "bg-rose-600 hover:bg-rose-700 text-white"
-                      : "bg-slate-700 text-slate-400 cursor-not-allowed border-0"
+                      : "bg-[var(--bg-input)] text-[var(--text-secondary)] opacity-60 cursor-not-allowed border border-[var(--border-light)]"
                   }`}
                 >
                   Usuń konto
@@ -503,14 +503,14 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
                     setDeleteConfirmText("");
                     setDeleteErrorMsg("");
                   }}
-                  className="btn bg-transparent border border-rose-500/20 text-rose-300 hover:bg-rose-500/10 py-2 px-4 text-xs"
+                  className="btn bg-[var(--bg-input)] border border-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] py-2 px-4 text-xs transition-colors"
                 >
                   Anuluj
                 </button>
               </div>
             </div>
             {deleteErrorMsg && (
-              <p className="text-rose-400 text-xs mt-2 font-medium">{deleteErrorMsg}</p>
+              <p className="text-rose-600 dark:text-rose-400 text-xs mt-2 font-bold">{deleteErrorMsg}</p>
             )}
           </div>
         )}
