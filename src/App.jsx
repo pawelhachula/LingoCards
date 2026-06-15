@@ -1461,17 +1461,17 @@ export default function App() {
 
           {/* User Profile Dropdown */}
           <div className="relative group">
-            <button className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border whitespace-nowrap shrink-0 transition-colors ${view === "profile" ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:bg-[var(--bg-card)]"}`}>
+            <button className={`flex items-center gap-2.5 px-3.5 py-2 rounded-xl border whitespace-nowrap shrink-0 transition-all duration-200 ${view === "profile" ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-md" : "bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-primary)] hover:border-[var(--primary-glow)] hover:shadow-[0_0_12px_var(--primary-glow)]"}`}>
               {currentUser.avatar && currentUser.avatar.startsWith("data:") ? (
-                <img src={currentUser.avatar} alt="Avatar" className="w-6 h-6 rounded-md object-cover border border-[var(--border-light)] shrink-0" />
+                <img src={currentUser.avatar} alt="Avatar" className="w-8 h-8 rounded-lg object-cover border border-[var(--border-light)] shrink-0 shadow-sm" />
               ) : (
-                <span className="text-base shrink-0">{currentUser.avatar || "👑"}</span>
+                <span className="text-xl shrink-0 drop-shadow-sm">{currentUser.avatar || "👑"}</span>
               )}
-              <div className="hidden md:flex flex-col items-start">
-                <span className="text-[10px] font-bold text-[var(--text-primary)] leading-tight">{currentUser.username || "Gość"}</span>
-                <span className="text-[8px] text-[var(--text-muted)] leading-tight capitalize">{currentUser?.role || "User"}</span>
+              <div className="hidden md:flex flex-col items-start mr-1">
+                <span className="text-sm font-extrabold text-[var(--text-primary)] leading-tight tracking-wide">{currentUser.username || "Gość"}</span>
+                <span className="text-[10px] font-medium text-[var(--text-secondary)] leading-tight capitalize mt-0.5 opacity-90">{currentUser?.role || "User"}</span>
               </div>
-              <Icons.ChevronDown size={12} className="text-[var(--text-muted)] group-hover:rotate-180 transition-transform hidden md:block" />
+              <Icons.ChevronDown size={14} className="text-[var(--text-secondary)] group-hover:rotate-180 transition-transform duration-300 hidden md:block" />
             </button>
 
             <div className="absolute top-full right-0 mt-1 w-56 bg-[var(--bg-card)] border border-[var(--border-light)] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col p-1 z-50">
