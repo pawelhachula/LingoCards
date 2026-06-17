@@ -5,7 +5,6 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
   const isPro = !!stats.isPro;
   const [dailyGoal, setDailyGoal] = useState(stats.dailyTarget || 10);
   const [speechSpeed, setSpeechSpeed] = useState(localStorage.getItem("lingocards_speech_speed") || "1.0");
-  const [autoplayAudio, setAutoplayAudio] = useState(localStorage.getItem("lingocards_autoplay") === "true");
   const [muteInterface, setMuteInterface] = useState(localStorage.getItem("lingocards_mute") === "true");
   const [audioStyle, setAudioStyle] = useState(isPro ? (stats.audioStyle || "synth") : (stats.audioStyle === "off" ? "off" : "synth"));
   const [confettiStyle, setConfettiStyle] = useState(isPro ? (stats.confettiStyle || "standard") : (stats.confettiStyle === "off" ? "off" : "standard"));
@@ -36,12 +35,6 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
     localStorage.setItem("lingocards_speech_speed", newVal);
   };
 
-  const handleToggleAutoplay = () => {
-    const newVal = !autoplayAudio;
-    setAutoplayAudio(newVal);
-    localStorage.setItem("lingocards_autoplay", newVal.toString());
-  };
-
   const handleToggleMute = () => {
     const newVal = !muteInterface;
     setMuteInterface(newVal);
@@ -62,9 +55,8 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
     };
     onUpdateStats(updatedStats);
 
-    // Save speech speed, autoplay, and mute to localStorage
+    // Save speech speed and mute to localStorage
     localStorage.setItem("lingocards_speech_speed", speechSpeed);
-    localStorage.setItem("lingocards_autoplay", autoplayAudio.toString());
     localStorage.setItem("lingocards_mute", muteInterface.toString());
 
     setSuccessMsg("Ustawienia zostały pomyślnie zapisane!");
@@ -152,25 +144,6 @@ export default function Settings({ stats, onUpdateStats, theme, onThemeChange, o
             </select>
           </div>
 
-          {/* Autoplay Audio Toggle */}
-          <div className="flex items-center justify-between gap-4 pb-5 border-b border-[var(--border-light)]">
-            <div>
-              <h4 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
-                <Icons.PlayCircle size={16} className="text-indigo-400" />
-                Autoodtwarzanie audio
-              </h4>
-              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">Odtwarzaj lektora automatycznie po odwróceniu karty</p>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={autoplayAudio}
-                onChange={handleToggleAutoplay}
-                className="sr-only peer"
-              />
-              <div className="w-9 h-5 bg-[var(--border-light)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500 peer-checked:after:bg-white"></div>
-            </label>
-          </div>
 
           {/* Mute interface sounds */}
           <div className="flex items-center justify-between gap-4 pb-5 border-b border-[var(--border-light)]">

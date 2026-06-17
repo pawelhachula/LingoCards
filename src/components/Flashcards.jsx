@@ -54,6 +54,9 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
   const ambientAudioRef = useRef(null);
   const [canRate, setCanRate] = useState(false);
 
+  // Autoplay audio (lektor)
+  const [autoplayAudio, setAutoplayAudio] = useState(() => localStorage.getItem("lingocards_autoplay") === "true");
+
   // Refs to fix stale closure bug in setTimeout
   const currentIndexRef = useRef(0);
   const cardsRef = useRef([]);
@@ -143,7 +146,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
         setCanRate(true);
       }, 300);
 
-      if (localStorage.getItem("lingocards_autoplay") === "true") {
+      if (autoplayAudio) {
         if (reversedMode) {
           if (currentCard?.english) {
             playTTS(currentCard.english, "word", null, "en-US");
@@ -159,7 +162,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
 
   // Autoplay on card change (front side)
   useEffect(() => {
-    if (!isFlipped && localStorage.getItem("lingocards_autoplay") === "true") {
+    if (!isFlipped && autoplayAudio) {
       if (!reversedMode && currentCard?.english) {
         const timer = setTimeout(() => {
           playTTS(currentCard.english, "word", null, "en-US");
@@ -167,7 +170,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
         return () => clearTimeout(timer);
       }
     }
-  }, [currentIndex, reversedMode, currentCard]);
+  }, [currentIndex, reversedMode, currentCard, autoplayAudio]);
 
   if (!selectedDeck) {
     return (
@@ -483,7 +486,9 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
         setAmbientSound(null);
         
         // Calculate completion medal
-        const total = cardsRef.current.length;
+        // Użyj liczby unikalnych kart (firstTryStats), nie cardsRef.current.length
+        // bo cardsRef zawiera powtórki kart oznaczonych "again" (zawyża total)
+        const total = Object.keys(updatedFirstTryStats).length;
         const firstTryCorrect = Object.values(updatedFirstTryStats).filter(v => v === "known").length;
         const pct = total > 0 ? (firstTryCorrect / total) * 100 : 0;
         
@@ -650,7 +655,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
             className={`p-3 rounded-2xl transition-all scale-hover ${
               reversedMode
                 ? "bg-purple-500/10 text-purple-400 border border-purple-500/20"
-                : "bg-white/5 hover:bg-white/10 text-[var(--text-primary)] hover:text-white"
+                : "bg-[var(--bg-input)] hover:bg-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
             title={reversedMode ? "Tryb PL → EN (aktywny)" : "Przełącz na tryb PL → EN"}
           >
@@ -663,7 +668,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
               className={`p-3 rounded-2xl transition-all scale-hover ${
                 ambientSound
                   ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                  : "bg-white/5 hover:bg-white/10 text-[var(--text-primary)] hover:text-white"
+                  : "bg-[var(--bg-input)] hover:bg-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               }`}
               title="Dźwięki otoczenia"
             >
@@ -713,9 +718,25 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
               </div>
             )}
           </div>
+          {/* Autoplay audio toggle */}
+          <button 
+            onClick={() => {
+              const newVal = !autoplayAudio;
+              setAutoplayAudio(newVal);
+              localStorage.setItem("lingocards_autoplay", newVal.toString());
+            }}
+            className={`p-3 rounded-2xl transition-all scale-hover ${
+              autoplayAudio
+                ? "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"
+                : "bg-[var(--bg-input)] hover:bg-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            }`}
+            title={autoplayAudio ? "Autolektor: WŁĄCZONY" : "Autolektor: WYŁĄCZONY"}
+          >
+            <Icons.PlayCircle size={18} />
+          </button>
           <button 
             onClick={handleShuffle}
-            className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-[var(--text-primary)] hover:text-white transition-all scale-hover"
+            className="p-3 bg-[var(--bg-input)] hover:bg-[var(--border-light)] rounded-2xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all scale-hover"
             title="Przetasuj fiszki"
             disabled={completed}
           >
@@ -723,7 +744,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
           </button>
           <button 
             onClick={handleRestart}
-            className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-[var(--text-primary)] hover:text-white transition-all scale-hover"
+            className="p-3 bg-[var(--bg-input)] hover:bg-[var(--border-light)] rounded-2xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all scale-hover"
             title="Zacznij od nowa"
           >
             <Icons.RotateCcw size={18} />

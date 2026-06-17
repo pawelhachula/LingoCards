@@ -1460,9 +1460,26 @@ export default function App() {
           </button>
 
           {/* Notifications Bell */}
-          <button onClick={() => setShowNotifications(true)} className={`relative flex items-center justify-center p-2.5 rounded-xl border scale-hover shrink-0 ${showNotifications ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"}`} title="Powiadomienia">
-            <Icons.Bell size={16} className={notifications.filter(n => !n.read).length > 0 ? "animate-wiggle" : ""} />
-            {notifications.filter(n => !n.read).length > 0 && <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-rose-500 text-[8px] font-black text-white shadow-md animate-pulse">{notifications.filter(n => !n.read).length}</span>}
+          <button 
+            onClick={() => setShowNotifications(true)} 
+            className={`relative flex items-center justify-center p-2.5 rounded-xl border scale-hover shrink-0 ${
+              showNotifications 
+                ? "bg-[var(--primary-glow)] text-[var(--primary)] border-[var(--border-active)] shadow-sm" 
+                : notifications.filter(n => !n.read).length > 0 
+                  ? "bg-rose-500/10 border-rose-500/30 text-rose-500 hover:text-rose-400 hover:bg-rose-500/20"
+                  : "bg-[var(--bg-input)] border-[var(--border-light)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            }`} 
+            title="Powiadomienia"
+          >
+            <Icons.Bell 
+              size={16} 
+              className={notifications.filter(n => !n.read).length > 0 ? "animate-bounce drop-shadow-[0_0_5px_rgba(244,63,94,0.5)] fill-rose-500/20" : ""} 
+            />
+            {notifications.filter(n => !n.read).length > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-rose-500 text-[8px] font-black text-white shadow-[0_0_8px_rgba(244,63,94,0.8)] animate-pulse">
+                {notifications.filter(n => !n.read).length}
+              </span>
+            )}
           </button>
 
           {/* Premium / PRO Status Button */}

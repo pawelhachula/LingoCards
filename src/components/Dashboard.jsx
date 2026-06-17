@@ -72,6 +72,7 @@ export default function Dashboard({
     const savedDate = localStorage.getItem("lingocards_wod_date");
     const savedWordJson = localStorage.getItem("lingocards_wod_word");
     
+    // Jeśli mamy zapisane słówko na dziś — użyj go (nawet gdy talie nie są jeszcze załadowane)
     if (savedDate === today && savedWordJson) {
       try {
         return JSON.parse(savedWordJson);
@@ -80,10 +81,16 @@ export default function Dashboard({
       }
     }
     
-    // Pick a new random word from real decks
-    const realDecks = decks.filter(d => d.id !== "srs" && d.id !== "starred");
-    const allCards = realDecks.flatMap(d => d.cards || []);
-    if (allCards.length === 0) return null;
+    // Pick a new random word from ALL decks (not just active ones)
+    const allDecks = decks.filter(d => d.id !== "srs" && d.id !== "starred");
+    const allCards = allDecks.flatMap(d => d.cards || []);
+    if (allCards.length === 0) {
+      // Fallback: jeśli nie ma żadnych kart, ale jest zapisane stare słówko — pokaż je
+      if (savedWordJson) {
+        try { return JSON.parse(savedWordJson); } catch (e) { /* ignore */ }
+      }
+      return null;
+    }
     
     const randomCard = allCards[Math.floor(Math.random() * allCards.length)];
     localStorage.setItem("lingocards_wod_date", today);
@@ -246,10 +253,27 @@ export default function Dashboard({
             <p className="text-3xl font-black text-white mt-1">
               {learnedCount} <span className="text-sm font-semibold text-[var(--text-secondary)]">/ {totalCards} słówek</span>
             </p>
-            <div className="flex items-center justify-center sm:justify-start gap-1.5 mt-3 text-xs text-emerald-400 font-bold bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-xl w-max">
-              <Icons.TrendingUp size={14} />
-              <span>Opanowujesz materiał!</span>
-            </div>
+            {progressPercent === 0 && learnedCount === 0 ? (
+              <div className="flex items-center justify-center sm:justify-start gap-1.5 mt-3 text-xs text-[var(--text-secondary)] font-bold bg-[var(--bg-input)] border border-[var(--border-light)] px-3 py-1 rounded-xl w-max">
+                <Icons.Sparkles size={14} className="text-[var(--primary)]" />
+                <span>Zacznij naukę i śledź swoje postępy!</span>
+              </div>
+            ) : progressPercent < 25 ? (
+              <div className="flex items-center justify-center sm:justify-start gap-1.5 mt-3 text-xs text-amber-400 font-bold bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-xl w-max">
+                <Icons.Flame size={14} />
+                <span>Dobry początek! Tak trzymaj!</span>
+              </div>
+            ) : progressPercent < 75 ? (
+              <div className="flex items-center justify-center sm:justify-start gap-1.5 mt-3 text-xs text-cyan-400 font-bold bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 rounded-xl w-max">
+                <Icons.TrendingUp size={14} />
+                <span>Świetny postęp! Opanowujesz materiał!</span>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center sm:justify-start gap-1.5 mt-3 text-xs text-emerald-400 font-bold bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-xl w-max">
+                <Icons.Trophy size={14} />
+                <span>Mistrz! Prawie wszystko opanowane!</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -356,9 +380,12 @@ export default function Dashboard({
                 Rozpocznij powtórkę SRS ({srsDueCards.length})
               </button>
             ) : (
-              <div className="flex items-center gap-2 text-emerald-400 text-xs font-bold bg-emerald-500/10 border border-emerald-500/15 px-3 py-2 rounded-xl">
-                <Icons.CheckCircle size={14} />
-                <span>Twój umysł jest w pełni zsynchronizowany!</span>
+              <div className={`flex items-center gap-2 text-xs font-bold px-3 py-2 rounded-xl ${learnedCount === 0 ? "text-[var(--text-secondary)] bg-[var(--bg-input)] border border-[var(--border-light)]" : "text-emerald-400 bg-emerald-500/10 border border-emerald-500/15"}`}>
+                {learnedCount === 0 ? (
+                  <><Icons.BookOpen size={14} className="text-[var(--primary)]" /><span>Ucz się słówek, a system SRS zaplanuje powtórki!</span></>
+                ) : (
+                  <><Icons.CheckCircle size={14} /><span>Twój umysł jest w pełni zsynchronizowany!</span></>
+                )}
               </div>
             )}
 
