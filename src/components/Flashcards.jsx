@@ -269,7 +269,8 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     if (e) e.stopPropagation();
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
+      const cleanText = text.split('=')[0].split('-')[0].replace(/^\d+\.\s*/, '').trim();
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.lang = lang;
       
       const voices = window.speechSynthesis.getVoices();

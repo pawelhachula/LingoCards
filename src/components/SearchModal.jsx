@@ -117,7 +117,8 @@ export default function SearchModal({ decks, stats, setStats, onNavigate, onSele
   const playTTS = (text) => {
     if ("speechSynthesis" in window) {
       window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
+      const cleanText = text.split('=')[0].split('-')[0].replace(/^\d+\.\s*/, '').trim();
+      const u = new SpeechSynthesisUtterance(cleanText);
       u.lang = "en-US";
       const speed = localStorage.getItem("lingocards_speech_speed") || "1.0";
       u.rate = parseFloat(speed);

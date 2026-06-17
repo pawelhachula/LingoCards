@@ -189,7 +189,8 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
   const playTTS = (text) => {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
+      const cleanText = text.split('=')[0].split('-')[0].replace(/^\d+\.\s*/, '').trim();
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.lang = 'en-US';
       const speed = localStorage.getItem("lingocards_speech_speed") || "1.0";
       utterance.rate = parseFloat(speed);
