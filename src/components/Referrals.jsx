@@ -15,15 +15,19 @@ export default function Referrals({ stats, onUpdateStats, onNavigate, loadAllUse
     if (loadAllUsers) {
       loadAllUsers().then(users => {
         const referredUsers = users.filter(u => u.referredBy === referralCode);
-        const newReferrals = referredUsers.map(u => u.username);
+        const currentReferrals = stats.referrals || [];
+        const activeReferredNames = referredUsers.map(u => u.username);
+        
+        // Złącz obecne i pobrane (aby nie tracić usuniętych kont), usuwając duplikaty
+        const mergedReferrals = Array.from(new Set([...currentReferrals, ...activeReferredNames]));
         
         // Zaktualizuj stan lokalny
-        setReferrals(newReferrals);
+        setReferrals(mergedReferrals);
         
-        // Jeśli lista z bazy różni się rozmiarem, zapisz ją do statystyk 
+        // Jeśli lista się powiększyła, zapisz ją do statystyk 
         // by odblokować UI nagród (Awatary, Ranga) w locie
-        if ((stats.referrals?.length || 0) !== newReferrals.length) {
-          onUpdateStats({ ...stats, referrals: newReferrals });
+        if (currentReferrals.length !== mergedReferrals.length) {
+          onUpdateStats({ ...stats, referrals: mergedReferrals });
         }
       });
     }
