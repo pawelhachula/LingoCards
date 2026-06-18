@@ -1,16 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as Icons from "lucide-react";
 
-export default function Referrals({ stats, onUpdateStats, onNavigate }) {
+export default function Referrals({ stats, onUpdateStats, onNavigate, loadAllUsers, currentUser }) {
   const [copied, setCopied] = useState(false);
-  const [simName, setSimName] = useState("");
   const [toastMsg, setToastMsg] = useState("");
+  const [referrals, setReferrals] = useState(stats.referrals || []);
 
-  const referralCode = `${(stats.username || "USER").toUpperCase()}${stats.streak > 0 ? stats.streak : "7"}PRO`;
+  const referralCode = `${(stats.username || currentUser?.username || "USER").toUpperCase()}PRO`;
   const referralLink = `${window.location.origin}/ref?code=${referralCode}`;
 
-  const referrals = stats.referrals || [];
   const refCount = referrals.length;
+
+  useEffect(() => {
+    if (loadAllUsers) {
+      loadAllUsers().then(users => {
+        const referredUsers = users.filter(u => u.referredBy === referralCode);
+        const newReferrals = referredUsers.map(u => u.username);
+        
+        // Zaktualizuj stan lokalny
+        setReferrals(newReferrals);
+        
+        // Jeśli lista z bazy różni się rozmiarem, zapisz ją do statystyk 
+        // by odblokować UI nagród (Awatary, Ranga) w locie
+        if ((stats.referrals?.length || 0) !== newReferrals.length) {
+          onUpdateStats({ ...stats, referrals: newReferrals });
+        }
+      });
+    }
+  }, [loadAllUsers, referralCode]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referralLink);
@@ -22,39 +39,6 @@ export default function Referrals({ stats, onUpdateStats, onNavigate }) {
   const showToast = (msg) => {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(""), 3000);
-  };
-
-  const handleSimulate = (e) => {
-    e.preventDefault();
-    const name = simName.trim();
-    if (!name) return;
-
-    if (referrals.includes(name)) {
-      showToast("Ten znajomy został już polecony!");
-      return;
-    }
-
-    const updatedReferrals = [...referrals, name];
-    
-    // Create new stats
-    const updatedStats = {
-      ...stats,
-      referrals: updatedReferrals
-    };
-
-    onUpdateStats(updatedStats);
-    setSimName("");
-    
-    // Check milestones for popups
-    if (updatedReferrals.length === 1) {
-      showToast("Gratulacje! Odblokowałeś nowy motyw Cyberpunk Neon! 🌌");
-    } else if (updatedReferrals.length === 3) {
-      showToast("Gratulacje! Odblokowałeś ekskluzywne awatary: 👽 🛸 👾! 🚀");
-    } else if (updatedReferrals.length === 5) {
-      showToast("Niesamowite! Zostałeś Ambasadorem Językowym LingoCards! 👑");
-    } else {
-      showToast(`Polecono użytkownika ${name}! 🎉`);
-    }
   };
 
   // Milestones Config
@@ -152,35 +136,6 @@ export default function Referrals({ stats, onUpdateStats, onNavigate }) {
               )}
             </button>
           </div>
-        </div>
-
-        {/* Simulate Friend Joined Card */}
-        <div className="glass-card p-6 flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute -right-16 -bottom-16 w-36 h-36 bg-cyan-500/5 rounded-full blur-2xl pointer-events-none" />
-          <div>
-            <span className="text-[10px] text-cyan-400 font-extrabold uppercase tracking-wider block">Krok 2: Symulacja lokalna</span>
-            <h3 className="text-lg font-bold text-white mt-1">Dodaj znajomego (Lokalnie)</h3>
-            <p className="text-slate-400 text-xs mt-2 leading-relaxed">
-              Ponieważ testujesz aplikację lokalnie na swoim komputerze, możesz w prosty sposób zasymulować dołączenie znajomego, wpisując jego imię poniżej.
-            </p>
-          </div>
-
-          <form onSubmit={handleSimulate} className="mt-6 flex flex-col sm:flex-row gap-2.5">
-            <input 
-              type="text"
-              placeholder="Imię lub pseudonim znajomego..."
-              value={simName}
-              onChange={(e) => setSimName(e.target.value)}
-              className="flex-grow bg-[var(--bg-input)] border border-[var(--border-light)] rounded-xl px-4 py-3 text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-active)] font-medium"
-            />
-            <button 
-              type="submit" 
-              className="btn btn-secondary py-3 px-5 text-xs font-bold flex items-center justify-center gap-1.5 border-cyan-500/20 hover:border-cyan-500/40 text-cyan-400 bg-cyan-500/5 hover:bg-cyan-500/10"
-            >
-              <Icons.UserPlus size={14} />
-              Zarejestruj
-            </button>
-          </form>
         </div>
 
       </div>

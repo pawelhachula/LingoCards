@@ -66,6 +66,12 @@ export default function App() {
   const [showSearch, setShowSearch] = useState(false);
   const [activeDeckIds, setActiveDeckIds] = useState([]);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [adminNotificationUser, setAdminNotificationUser] = useState("");
+  const [showLevelUpModal, setShowLevelUpModal] = useState(false);
+  const [levelUpInfo, setLevelUpInfo] = useState({ oldLevel: 1, newLevel: 1 });
+  const [showSearch, setShowSearch] = useState(false);
+  const [activeDeckIds, setActiveDeckIds] = useState([]);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
   const moreMenuRef = useRef(null);
   const [notifications, setNotifications] = useState([]);
   const [isBlocked, setIsBlocked] = useState(false);
@@ -73,6 +79,16 @@ export default function App() {
   const [premiumTriggerDeck, setPremiumTriggerDeck] = useState(null);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
+
+  // Przechwytywanie kodu polecającego z URL i zachowanie w sessionStorage
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const code = searchParams.get("code");
+    if (code) {
+      sessionStorage.setItem("lingocards_ref_code", code.toUpperCase());
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
 
   // Firestore sync hook — działa zarówno gdy Firebase jest skonfigurowany, jak i bez niego
   const { 
@@ -310,417 +326,6 @@ export default function App() {
     }
   }, [currentUser]);
 
-  // Periodically update lastActiveAt timestamp in Firestore (every 60 seconds)
-  useEffect(() => {
-    if (!currentUser) return;
-    const updateActivity = async () => {
-      const uidKey = getFirestoreUidKey();
-      if (uidKey && isFirebaseConfigured) {
-        try {
-          await updateUserField(uidKey, { lastActiveAt: Date.now() });
-        } catch (e) {
-          // ignore
-        }
-      }
-    };
-    // Update immediately on mount/login
-    updateActivity();
-    const interval = setInterval(updateActivity, 60000);
-    return () => clearInterval(interval);
-  }, [currentUser]);
-
-  // Safety check to prevent free users from accessing premium decks through direct navigation/URL
-  useEffect(() => {
-    if ((view === "learn" || view === "quiz" || view === "match") && !stats.isPro) {
-      if (!selectedDeck || selectedDeck.isPremium) {
-        // Find the first available free deck from decks state
-        const firstFreeDeck = decks.find(d => !d.isPremium);
-        if (firstFreeDeck) {
-          setSelectedDeck(firstFreeDeck);
-        } else {
-          setView("dashboard");
-        }
-      }
-    }
-  }, [view, selectedDeck, stats.isPro, decks]);
-
-  const getStatsScore = (s) => {
-    if (!s) return 0;
-    const xpVal = s.xp || 0;
-    const learnedCount = Object.keys(s.learnedCards || {}).length;
-    const completedCount = Object.values(s.completedDecks || {}).reduce((a, b) => a + b, 0);
-    const activeCount = (s.activeDeckIds || []).length;
-    return (xpVal * 10) + (learnedCount * 5) + (completedCount * 100) + activeCount;
-  };
-
-  // Helper to load user specific data — uid = Firebase UID lub username dla kont lokalnych
-  const loadUserData = async (uid, username, userEmail = "") => {
-    // Jeśli nie podano username, użyj uid jako username (dla kont lokalnych)
-    const uname = username || uid;
-    const uidKey = getFirestoreUidKey(uid);
-
-    // --- 1. Załaduj talie ---
-    let loadedDecks = [];
-    try {
-      const firestoreDecks = await loadDecks(uidKey);
-      if (firestoreDecks && firestoreDecks.length > 0) {
-        loadedDecks = firestoreDecks;
-      } else {
-        // Fallback: localStorage z kluczem po username
-        const savedDecks = localStorage.getItem(`lingocards_decks_${uname.toLowerCase()}`);
-        loadedDecks = savedDecks ? JSON.parse(savedDecks) : [];
-      }
-    } catch (e) {
-      console.error("Error loading decks", e);
-      loadedDecks = [];
-    }
-
-    // Automatyczne uzupełnianie brakujących/przestarzałych talii systemowych oraz migracja pól (type, isPremium, level itp.)
-    if (loadedDecks.length > 0) {
-      let shouldSave = false;
-      loadedDecks = loadedDecks.map(userDeck => {
-        const officialDeck = defaultDecks.find(d => d.id === userDeck.id);
-        let updatedDeck = { ...userDeck };
-        
-        if (officialDeck) {
-          // Zapewnienie poprawności typu i statusu premium (isPremium) z oficjalnej talii
-          const expectedType = officialDeck.type || "vocabulary";
-          if (userDeck.type !== expectedType) {
-            updatedDeck.type = expectedType;
-            shouldSave = true;
-          }
-
-          const expectedIsPremium = !!officialDeck.isPremium;
-          if (userDeck.isPremium !== expectedIsPremium) {
-            updatedDeck.isPremium = expectedIsPremium;
-            shouldSave = true;
-          }
-
-          // Zapewnienie poprawności pozostałych metadanych (category, level, title, description itp.)
-          if (userDeck.category !== officialDeck.category ||
-              userDeck.level !== officialDeck.level ||
-              userDeck.title !== officialDeck.title ||
-              userDeck.polishTitle !== officialDeck.polishTitle ||
-              userDeck.description !== officialDeck.description) {
-            updatedDeck.category = officialDeck.category;
-            updatedDeck.level = officialDeck.level;
-            updatedDeck.title = officialDeck.title;
-            updatedDeck.polishTitle = officialDeck.polishTitle;
-            updatedDeck.description = officialDeck.description;
-            shouldSave = true;
-          }
-
-          // Zabezpieczenie przed brakującymi/nowymi słówkami w oficjalnej talii
-          if ((userDeck.cards?.length || 0) < (officialDeck.cards?.length || 0)) {
-            shouldSave = true;
-            const userCustomCards = (userDeck.cards || []).filter(c => c.id && c.id.startsWith("custom-card-"));
-            updatedDeck.cards = [...officialDeck.cards, ...userCustomCards];
-          }
-        } else {
-          // Dla talii użytkownika (własnych) zapewniamy tylko domyślne typy i isPremium = false
-          if (!updatedDeck.type) {
-            updatedDeck.type = "vocabulary";
-            shouldSave = true;
-          }
-          if (updatedDeck.isPremium) {
-            updatedDeck.isPremium = false;
-            shouldSave = true;
-          }
-        }
-        const cards = (updatedDeck.cards || []).map(card => {
-          let updatedCard = { ...card };
-          if (updatedCard.level !== updatedDeck.level) {
-            updatedCard.level = updatedDeck.level;
-            shouldSave = true;
-          }
-          if (updatedCard.isPremium !== !!updatedDeck.isPremium) {
-            updatedCard.isPremium = !!updatedDeck.isPremium;
-            shouldSave = true;
-          }
-          return updatedCard;
-        });
-        updatedDeck.cards = cards;
-
-        return updatedDeck;
-      });
-      const loadedIds = new Set(loadedDecks.map(d => d.id));
-      const missingDefaultDecks = defaultDecks.filter(d => !loadedIds.has(d.id));
-      if (missingDefaultDecks.length > 0) {
-        loadedDecks = [...loadedDecks, ...missingDefaultDecks];
-        shouldSave = true;
-      }
-      if (shouldSave) {
-        saveDecks(uidKey, loadedDecks);
-      }
-    } else {
-      loadedDecks = defaultDecks;
-      saveDecks(uidKey, defaultDecks);
-    }
-
-    // --- 2. Załaduj statystyki ---
-    const defaultStatsTemplate = {
-      streak: 0, dailyCount: 0, lastActiveDate: "",
-      learnedCards: {}, starredCards: {}, quizTotal: 0, quizCorrect: 0,
-      matchesWon: 0, srsData: {}, bestStreak: 0, referrals: [],
-      xp: 0, level: 1, studyDates: [], deckMedals: {}, completedDecks: {},
-      audioStyle: "synth", confettiStyle: "standard",
-      reviewsCount: 0, cardMistakes: {}, dailyHistory: {}, studyTime: 0
-    };
-
-    let loadedStats = { ...defaultStatsTemplate };
-    try {
-      // Próbuj Firestore (z fallback na localStorage)
-      const firestoreStats = await loadStats(uidKey);
-      if (firestoreStats) {
-        loadedStats = { ...defaultStatsTemplate, ...firestoreStats };
-      } else {
-        // Fallback: localStorage z kluczem po username
-        const savedStats = localStorage.getItem(`lingocards_stats_${uname.toLowerCase()}`);
-        if (savedStats) loadedStats = { ...defaultStatsTemplate, ...JSON.parse(savedStats) };
-      }
-    } catch (e) {
-      console.error("Error loading stats", e);
-    }
-
-    // One-time self-healing patch for June 7th, 2026 (yesterday)
-    const todayStr = getLocalDateString();
-    if (todayStr === "2026-06-08") {
-      const dates = loadedStats.studyDates || [];
-      if (dates.includes("2026-06-08") && dates.includes("2026-06-06") && !dates.includes("2026-06-07")) {
-        console.log("[Streak Repair] Auto-healing missing study date: 2026-06-07");
-        dates.push("2026-06-07");
-        loadedStats.studyDates = dates;
-        if (loadedStats.lastActiveDate === "2026-06-06") {
-          loadedStats.lastActiveDate = "2026-06-07";
-          loadedStats.streak += 1;
-        }
-      }
-    }
-
-    // Oblicz streak na podstawie daty
-    const lastActive = loadedStats.lastActiveDate;
-    if (lastActive) {
-      if (lastActive !== todayStr) {
-        const diffDays = Math.ceil(Math.abs(new Date(todayStr) - new Date(lastActive)) / (1000 * 60 * 60 * 24));
-        if (diffDays === 1) loadedStats.streak += 1;
-        else if (diffDays > 1) loadedStats.streak = 1;
-        loadedStats.dailyCount = 0;
-        loadedStats.lastActiveDate = todayStr;
-      }
-    } else {
-      loadedStats.streak = 1;
-      loadedStats.lastActiveDate = todayStr;
-      loadedStats.dailyCount = 0;
-    }
-    if (loadedStats.streak > (loadedStats.bestStreak || 0)) {
-      loadedStats.bestStreak = loadedStats.streak;
-    }
-
-    // Synchronizuj studyDates
-    const streakVal = loadedStats.streak || 0;
-    if (streakVal > 0) {
-      const dates = loadedStats.studyDates || [];
-      const dateList = [...dates];
-      const baseDate = new Date(loadedStats.lastActiveDate || todayStr);
-      for (let i = 0; i < streakVal; i++) {
-        const d = new Date(baseDate);
-        d.setDate(baseDate.getDate() - i);
-        const dateStr = getLocalDateString(d);
-        if (!dateList.includes(dateStr)) dateList.push(dateStr);
-      }
-      loadedStats.studyDates = dateList;
-    }
-
-    // --- 3. Automatyczna migracja starego lokalnego postępu komputera ---
-    // Jeśli w przeglądarce leżą stare dane lokalne z większym postępem niż te w chmurze,
-    // zmigrujmy je automatycznie do chmury!
-    try {
-      const currentStatsKey = `lingocards_stats_${uidKey.toLowerCase()}`;
-      const legacyStatsKey = `lingocards_stats_${uname.toLowerCase()}`;
-      
-      // Zabezpieczenie: Migrujemy dane TYLKO wtedy, gdy nazwa klucza źródłowego 
-      // odpowiada dokładnie tej samej nazwie użytkownika (uname).
-      // Zapobiega to kopiowaniu postępu innego gracza (np. pawelh) na nowo utworzone konto testowe.
-      const localStatsKeys = [];
-      if (currentStatsKey.toLowerCase() !== legacyStatsKey.toLowerCase() && localStorage.getItem(legacyStatsKey)) {
-        localStatsKeys.push(legacyStatsKey);
-      }
-      
-      console.log("[Migration Diagnostic] uidKey:", uidKey);
-      console.log("[Migration Diagnostic] currentStatsKey:", currentStatsKey);
-      console.log("[Migration Diagnostic] localStatsKeys found in browser:", localStatsKeys);
-      
-      let bestLocalStats = null;
-      let bestLocalKey = null;
-      let maxScore = getStatsScore(loadedStats);
-      
-      console.log("[Migration Diagnostic] Current loadedStats score:", maxScore, loadedStats);
-      
-      for (const key of localStatsKeys) {
-        const dataStr = localStorage.getItem(key);
-        if (dataStr) {
-          try {
-            const parsed = JSON.parse(dataStr);
-            const score = getStatsScore(parsed);
-            console.log(`[Migration Diagnostic] Key "${key}" -> Score: ${score}`, parsed);
-            if (score > maxScore) {
-              maxScore = score;
-              bestLocalStats = parsed;
-              bestLocalKey = key;
-            }
-          } catch (err) {
-            console.warn(`[Migration Diagnostic] Failed to parse key "${key}":`, err.message);
-          }
-        }
-      }
-      
-      if (bestLocalStats) {
-        console.log(`[Migration Diagnostic] TRIGGERING MIGRATION from "${bestLocalKey}" (new score: ${maxScore})`);
-        
-        const migratedStats = {
-          ...loadedStats,
-          ...bestLocalStats,
-          // Do NOT copy personal profile fields (avatar, username) from another local user account:
-          avatarData: loadedStats.avatarData || "👑",
-          customUsername: loadedStats.customUsername || ""
-        };
-        
-        loadedStats = migratedStats;
-        
-        // Migrujemy też własne talie z tamtego profilu
-        const usernamePart = bestLocalKey.replace("lingocards_stats_", "");
-        const localDecksKey = `lingocards_decks_${usernamePart}`;
-        const localDecksStr = localStorage.getItem(localDecksKey);
-        if (localDecksStr) {
-          try {
-            const parsedDecks = JSON.parse(localDecksStr);
-            if (parsedDecks && parsedDecks.length > 0) {
-              console.log(`[Migration Diagnostic] Copying custom decks from "${localDecksKey}":`, parsedDecks);
-              const mergedDecks = [...loadedDecks];
-              parsedDecks.forEach(d => {
-                if (!mergedDecks.some(md => md.id === d.id)) {
-                  mergedDecks.push(d);
-                }
-              });
-              loadedDecks = mergedDecks;
-            }
-          } catch (err) { /* ignore */ }
-        }
-      } else {
-        console.log("[Migration Diagnostic] NO MIGRATION: No local profile had a score higher than current chmura profile.");
-      }
-    } catch (e) {
-      console.error("[Migration Diagnostic] Exception during migration:", e);
-    }
-
-    // --- 4. Zapisz i Ustaw stany końcowe ---
-    setDecks(loadedDecks);
-    saveDecks(uidKey, loadedDecks);
-
-    setStats(loadedStats);
-    saveStats(uidKey, loadedStats);
-
-    // --- 5. Załaduj metadane użytkownika (Rola i Status) z Firestore ---
-    let userRole = "user";
-    let userStatus = "active";
-    if (isFirebaseConfigured && db) {
-      try {
-        const { doc, getDoc } = await import("firebase/firestore");
-        const metaSnap = await getDoc(doc(db, "users", uidKey));
-        if (metaSnap.exists()) {
-          const metaData = metaSnap.data();
-          userRole = metaData.role || "user";
-          userStatus = metaData.status || "active";
-        }
-      } catch (e) {
-        console.warn("Failed to load user metadata:", e.message);
-      }
-    }
-
-    // Zabezpieczenie: admin dla wyznaczonych kont
-    const normalizedUname = uname.toLowerCase();
-    const emailToCheck = (userEmail || currentUser?.email || auth?.currentUser?.email || "").toLowerCase();
-    const statsName = (loadedStats?.customUsername || "").toLowerCase();
-    const currentName = (currentUser?.username || "").toLowerCase();
-    const authDisplayName = (auth?.currentUser?.displayName || "").toLowerCase();
-    const authEmail = (auth?.currentUser?.email || "").toLowerCase();
-
-    const isHardcodedAdmin = 
-      emailToCheck === "p.hachula89@wp.pl" ||
-      authEmail === "p.hachula89@wp.pl" ||
-      normalizedUname === "admin";
-
-    console.log("[Admin Check DEBUG]", {
-      uid,
-      username,
-      userEmail,
-      uname,
-      normalizedUname,
-      emailToCheck,
-      statsName,
-      currentName,
-      authDisplayName,
-      authEmail,
-      isHardcodedAdmin,
-      userRoleBeforeCheck: userRole
-    });
-
-    if (isHardcodedAdmin) {
-      userRole = "admin";
-    }
-
-    // Blokada konta
-    if (userStatus === "blocked") {
-      setIsBlocked(true);
-      return;
-    } else {
-      setIsBlocked(false);
-    }
-
-    // --- 6. Załaduj powiadomienia systemowe ---
-    try {
-      const loadedNotifs = await loadNotifications(uidKey);
-      setNotifications(loadedNotifs);
-    } catch (e) {
-      console.warn("Failed to load notifications:", e.message);
-    }
-
-    // Ustal datę utworzenia konta (createdAt) jeśli jej nie ma
-    if (!loadedStats.createdAt) {
-      let resolvedCreatedAt = Date.now();
-      if (auth?.currentUser?.uid === uidKey && auth?.currentUser?.metadata?.creationTime) {
-        resolvedCreatedAt = new Date(auth.currentUser.metadata.creationTime).getTime();
-      } else if (loadedStats.studyDates && loadedStats.studyDates.length > 0) {
-        const sortedDates = [...loadedStats.studyDates].sort();
-        resolvedCreatedAt = new Date(sortedDates[0]).getTime();
-      }
-      loadedStats.createdAt = resolvedCreatedAt;
-      saveStats(uidKey, loadedStats);
-    }
-
-    // --- 7. Synchronizacja metadanych do users/{uid} ---
-    try {
-      const emailToSync = userEmail || currentUser?.email || auth?.currentUser?.email || "";
-      const metaRecord = {
-        uid: uidKey,
-        username: loadedStats.customUsername || uname,
-        email: emailToSync,
-        avatar: loadedStats.avatarData || "👑",
-        createdAt: loadedStats.createdAt,
-        lastActiveDate: todayStr,
-        lastActiveAt: Date.now(),
-        xp: loadedStats.xp || 0,
-        level: loadedStats.level || 1,
-        streak: loadedStats.streak || 0,
-        wordsCount: Object.keys(loadedStats.learnedCards || {}).length,
-        role: userRole,
-        status: userStatus,
-        isPro: !!loadedStats.isPro
-      };
-      await syncUserMeta(uidKey, metaRecord);
-    } catch (e) {
-      console.warn("Failed to sync user metadata record:", e.message);
-    }
 
     // --- 8. Synchronizacja stanów pobocznych UI ---
     setCurrentUser(prev => {
@@ -1770,6 +1375,8 @@ export default function App() {
             stats={stats}
             onUpdateStats={handleSetStats}
             onNavigate={setView}
+            loadAllUsers={loadAllUsers}
+            currentUser={currentUser}
           />
         )}
 
