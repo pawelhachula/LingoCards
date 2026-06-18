@@ -59,6 +59,8 @@ export default function App() {
   const [selectedDeck, setSelectedDeck] = useState(null);
   const [theme, setTheme] = useState("navy");
   const [unlockedThemeToast, setUnlockedThemeToast] = useState("");
+  const [adminNotificationToast, setAdminNotificationToast] = useState(null);
+  const [adminNotificationUser, setAdminNotificationUser] = useState("");
   const [showLevelUpModal, setShowLevelUpModal] = useState(false);
   const [levelUpInfo, setLevelUpInfo] = useState({ oldLevel: 1, newLevel: 1 });
   const [showSearch, setShowSearch] = useState(false);
@@ -280,6 +282,33 @@ export default function App() {
       saveStats(getFirestoreUidKey(currentUser.uid), stats);
     }
   }, [stats, currentUser, saveStats, isDataLoaded]);
+
+  // Listen for admin notifications
+  useEffect(() => {
+    if (currentUser?.role === "admin" && isFirebaseConfigured && db) {
+      let unsubscribeSnapshot;
+      let initialLoad = true;
+      
+      import("firebase/firestore").then(({ collection, query, where, onSnapshot }) => {
+        const q = query(collection(db, "admin_notifications"), where("isRead", "==", false));
+        unsubscribeSnapshot = onSnapshot(q, (snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === "added" && !initialLoad) {
+              const data = change.doc.data();
+              setAdminNotificationUser(data.email || data.username);
+              setAdminNotificationToast(true);
+              setTimeout(() => setAdminNotificationToast(false), 8000);
+            }
+          });
+          initialLoad = false;
+        });
+      }).catch(e => console.error("Error loading firestore for admin listener:", e));
+      
+      return () => {
+        if (unsubscribeSnapshot) unsubscribeSnapshot();
+      };
+    }
+  }, [currentUser]);
 
   // Periodically update lastActiveAt timestamp in Firestore (every 60 seconds)
   useEffect(() => {
@@ -1353,6 +1382,20 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-transparent">
+            {/* Toast notification for new user registration (Admin) */}
+      {adminNotificationToast && (
+        <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[110] bg-gradient-to-r from-blue-600 to-indigo-500 text-white font-black text-xs px-6 py-4.5 rounded-2xl border border-blue-400/30 shadow-[0_0_25px_rgba(59,130,246,0.4)] flex items-center gap-3 animate-bounce cursor-pointer" onClick={() => setView("admin")}>
+          <Icons.UserPlus size={18} className="text-yellow-300 animate-pulse" />
+          <div className="flex flex-col">
+            <span className="font-bold text-[10px] text-blue-100 uppercase tracking-widest leading-none">Nowy użytkownik! 🎉</span>
+            <span className="text-sm font-extrabold mt-1 text-white">{adminNotificationUser}</span>
+          </div>
+          <button onClick={(e) => { e.stopPropagation(); setAdminNotificationToast(false); }} className="text-blue-200 hover:text-white ml-2 transition-colors">
+            <Icons.X size={14} />
+          </button>
+        </div>
+      )}
+
       {/* Toast notification for unlocked theme */}
       {unlockedThemeToast && (
         <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[100] bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-black text-xs px-6 py-4.5 rounded-2xl border border-emerald-400/30 shadow-[0_0_25px_rgba(16,185,129,0.4)] flex items-center gap-3 animate-bounce">

@@ -14,7 +14,7 @@ import {
   onAuthStateChanged,
   deleteUser
 } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "PLACEHOLDER_API_KEY",
@@ -53,12 +53,32 @@ export const signInWithGoogle = async () => {
   };
 };
 
+// ─── Powiadomienie dla admina ───────────────────────────────────────────────────
+export const sendAdminNotification = async (userEmail, username) => {
+  try {
+    if (!isFirebaseConfigured) return;
+    await addDoc(collection(db, "admin_notifications"), {
+      type: "new_user",
+      email: userEmail,
+      username: username || "Nowy uczeń",
+      createdAt: serverTimestamp(),
+      isRead: false
+    });
+  } catch (error) {
+    console.error("Błąd wysyłania powiadomienia do admina:", error);
+  }
+};
+
 // ─── Rejestracja emailem ──────────────────────────────────────────────────────
 export const registerWithEmail = async (email, password, username, avatar) => {
   const result = await createUserWithEmailAndPassword(auth, email, password);
   const user = result.user;
   // Zapisz displayName w Firebase Auth
   await updateProfile(user, { displayName: username });
+  
+  // Wyślij powiadomienie
+  await sendAdminNotification(user.email, username);
+  
   return {
     uid: user.uid,
     username: username,

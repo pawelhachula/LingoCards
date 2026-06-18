@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import * as Icons from "lucide-react";
 import { auth, db, isFirebaseConfigured } from "../firebase";
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, writeBatch } from "firebase/firestore";
 import { sendPasswordResetEmail } from "firebase/auth";
 
 export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNotification, currentUser, systemConfig, updateSystemConfig }) {
@@ -25,6 +26,70 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
   
   // Feedback toast state
   const [toast, setToast] = useState(null);
+
+  // Tabs state
+  const [activeTab, setActiveTab] = useState("users");
+  
+  // Notifications state
+  const [adminNotifications, setAdminNotifications] = useState([]);
+  
+  useEffect(() => {
+    if (!isFirebaseConfigured || !db) return;
+    const q = query(collection(db, "admin_notifications"), orderBy("createdAt", "desc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const notifs = [];
+      snapshot.forEach((docSnap) => {
+        notifs.push({ id: docSnap.id, ...docSnap.data() });
+      });
+      setAdminNotifications(notifs);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const markNotificationAsRead = async (id) => {
+    try {
+      const notifRef = doc(db, "admin_notifications", id);
+      await updateDoc(notifRef, { isRead: true });
+    } catch (e) {
+      showToast("Błąd oznaczania jako przeczytane", "error");
+    }
+  };
+
+  const deleteNotification = async (id) => {
+    try {
+      const notifRef = doc(db, "admin_notifications", id);
+      await deleteDoc(notifRef);
+    } catch (e) {
+      showToast("Błąd usuwania powiadomienia", "error");
+    }
+  };
+  
+  const markAllAsRead = async () => {
+    try {
+      const batch = writeBatch(db);
+      adminNotifications.filter(n => !n.isRead).forEach(n => {
+        batch.update(doc(db, "admin_notifications", n.id), { isRead: true });
+      });
+      await batch.commit();
+      showToast("Wszystkie oznaczono jako przeczytane", "success");
+    } catch (e) {
+      showToast("Błąd", "error");
+    }
+  };
+  
+  const deleteAllNotifications = async () => {
+    try {
+      const batch = writeBatch(db);
+      adminNotifications.forEach(n => {
+        batch.delete(doc(db, "admin_notifications", n.id));
+      });
+      await batch.commit();
+      showToast("Lista powiadomień została wyczyszczona", "success");
+    } catch (e) {
+      showToast("Błąd usuwania", "error");
+    }
+  };
+  
 
   // Time tracker for live status update
   const [now, setNow] = useState(Date.now());
