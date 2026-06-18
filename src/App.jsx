@@ -66,12 +66,7 @@ export default function App() {
   const [showSearch, setShowSearch] = useState(false);
   const [activeDeckIds, setActiveDeckIds] = useState([]);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
-  const [adminNotificationUser, setAdminNotificationUser] = useState("");
-  const [showLevelUpModal, setShowLevelUpModal] = useState(false);
-  const [levelUpInfo, setLevelUpInfo] = useState({ oldLevel: 1, newLevel: 1 });
-  const [showSearch, setShowSearch] = useState(false);
-  const [activeDeckIds, setActiveDeckIds] = useState([]);
-  const [showMoreMenu, setShowMoreMenu] = useState(false);
+
   const moreMenuRef = useRef(null);
   const [notifications, setNotifications] = useState([]);
   const [isBlocked, setIsBlocked] = useState(false);
