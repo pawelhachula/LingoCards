@@ -323,12 +323,38 @@ export function useFirestore() {
     const ops = await getFirestoreOps();
     if (!ops) return;
     try {
-      const { doc, deleteDoc } = ops;
+      const { doc, deleteDoc, getDoc, setDoc } = ops;
+      
+      // Preserve important data before deletion
+      let preservedStats = {};
+      try {
+        const statsRef = doc(db, "users", uid, "data", "stats");
+        const statsSnap = await getDoc(statsRef);
+        if (statsSnap.exists()) {
+          const s = statsSnap.data();
+          if (s.referredBy) preservedStats.referredBy = s.referredBy;
+          if (s.createdAt) preservedStats.createdAt = s.createdAt;
+          if (s.customUsername) preservedStats.customUsername = s.customUsername;
+          if (s.avatarData) preservedStats.avatarData = s.avatarData;
+        }
+      } catch (e) {
+        console.warn("[Firestore] Failed to read stats before deletion:", e.message);
+      }
+
       await deleteDoc(doc(db, "users", uid, "data", "stats"));
       await deleteDoc(doc(db, "users", uid, "data", "decks"));
       await deleteDoc(doc(db, "users", uid, "data", "settings"));
       await deleteDoc(doc(db, "users", uid, "data", "profile"));
       await deleteDoc(doc(db, "users", uid)); // optional: delete user document itself
+      
+      // Re-save preserved data so referral rewards aren't triggered again
+      if (Object.keys(preservedStats).length > 0) {
+        try {
+          await setDoc(doc(db, "users", uid, "data", "stats"), preservedStats);
+        } catch (e) {
+          console.warn("[Firestore] Failed to preserve stats after deletion:", e.message);
+        }
+      }
     } catch (e) {
       console.warn("[Firestore] Failed to delete user data:", e.message);
     }

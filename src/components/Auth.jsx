@@ -83,8 +83,23 @@ export default function Auth({ onLogin }) {
     setIsLoading(true);
     try {
       if (isFirebaseConfigured) {
-        const user = await registerWithEmail(email.trim(), password, username.trim(), selectedAvatar);
+        let user;
+        try {
+          user = await registerWithEmail(email.trim(), password, username.trim(), selectedAvatar);
+        } catch (regErr) {
+          if (regErr.code === "auth/email-already-in-use") {
+            try {
+              user = await signInWithEmail(email.trim(), password);
+            } catch (loginErr) {
+              throw regErr; // Jeśli hasło nie pasuje, rzuć oryginalny błąd
+            }
+          } else {
+            throw regErr;
+          }
+        }
+        
         user.avatar = selectedAvatar;
+        user.username = username.trim();
         setSuccess("Konto utworzone!");
         setTimeout(() => onLogin(user), 700);
       } else {
@@ -92,7 +107,7 @@ export default function Auth({ onLogin }) {
       }
     } catch (err) {
       const msg = err.code === "auth/email-already-in-use"
-        ? "Ten email jest już zarejestrowany."
+        ? "Ten email jest już zarejestrowany. Przejdź do logowania lub zresetuj hasło."
         : err.code === "auth/weak-password"
         ? "Hasło jest zbyt słabe (min. 6 znaków)."
         : "Błąd rejestracji: " + err.message;
