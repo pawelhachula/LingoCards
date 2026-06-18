@@ -12,7 +12,8 @@ import {
   signOut,
   updateProfile,
   onAuthStateChanged,
-  deleteUser
+  deleteUser,
+  getAdditionalUserInfo
 } from "firebase/auth";
 import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
 
@@ -44,6 +45,12 @@ export { auth, db, googleProvider, onAuthStateChanged };
 export const signInWithGoogle = async () => {
   const result = await signInWithPopup(auth, googleProvider);
   const user = result.user;
+  
+  const additionalInfo = getAdditionalUserInfo(result);
+  if (additionalInfo && additionalInfo.isNewUser) {
+    await sendAdminNotification(user.email, user.displayName || user.email.split("@")[0]);
+  }
+  
   return {
     uid: user.uid,
     username: user.displayName || user.email.split("@")[0],
