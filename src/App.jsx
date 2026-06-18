@@ -83,7 +83,7 @@ export default function App() {
     const searchParams = new URLSearchParams(window.location.search);
     const code = searchParams.get("code");
     if (code) {
-      sessionStorage.setItem("lingocards_ref_code", code.toUpperCase());
+      sessionStorage.setItem("lingocards_ref_code", code.toUpperCase().replace(/\s+/g, ''));
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, []);
@@ -713,7 +713,8 @@ export default function App() {
     }
 
     // Obsługa rejestracji z linku referencyjnego
-    const storedRefCode = sessionStorage.getItem("lingocards_ref_code");
+    let storedRefCode = sessionStorage.getItem("lingocards_ref_code");
+    if (storedRefCode) storedRefCode = storedRefCode.replace(/\s+/g, '');
     if (storedRefCode && !loadedStats.referredBy) {
       loadedStats.referredBy = storedRefCode;
       saveStats(uidKey, loadedStats);

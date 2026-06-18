@@ -14,7 +14,8 @@ export default function Referrals({ stats, onUpdateStats, onNavigate, loadAllUse
   useEffect(() => {
     if (loadAllUsers) {
       loadAllUsers().then(users => {
-        const referredUsers = users.filter(u => u.referredBy === referralCode);
+        const cleanCode = referralCode.replace(/\s+/g, '');
+        const referredUsers = users.filter(u => u.referredBy && u.referredBy.replace(/\s+/g, '') === cleanCode);
         const currentReferrals = stats.referrals || [];
         const activeReferredNames = referredUsers.map(u => u.username);
         
