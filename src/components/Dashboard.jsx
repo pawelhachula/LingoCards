@@ -393,9 +393,9 @@ export default function Dashboard({
 
             <button 
               onClick={() => onNavigate("referrals")}
-              className="text-xs text-[var(--text-secondary)] hover:text-white transition-colors flex items-center gap-1 font-bold"
+              className="text-xs text-[var(--primary)] font-bold hover:scale-105 transition-all flex items-center gap-1.5"
             >
-              <Icons.Gift size={14} className="text-[var(--primary)]" /> Poleć aplikację
+              <Icons.Gift size={14} /> Poleć aplikację
             </button>
           </div>
         </div>

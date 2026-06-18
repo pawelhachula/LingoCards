@@ -1940,13 +1940,14 @@ export default function App() {
                   </div>
                 ) : (
                   notifications.map((notif) => {
-                    const dateStr = notif.createdAt ? new Date(notif.createdAt).toLocaleString("pl-PL", {
+                    const dateObj = notif.createdAt ? (typeof notif.createdAt.toDate === 'function' ? notif.createdAt.toDate() : new Date(notif.createdAt)) : null;
+                    const dateStr = dateObj && !isNaN(dateObj) ? dateObj.toLocaleString("pl-PL", {
                       day: "2-digit",
                       month: "2-digit",
                       year: "numeric",
                       hour: "2-digit",
                       minute: "2-digit"
-                    }) : "";
+                    }) : "Przed chwilą";
                     
                     return (
                       <div 

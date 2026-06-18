@@ -372,14 +372,36 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
       )}
 
       {/* Header Dashboard section */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6">
         <div>
           <span className="text-xs font-bold text-rose-400 uppercase tracking-widest block">Strefa Administratora</span>
           <h2 className="text-3xl font-extrabold mt-1 text-white">Panel Administracyjny</h2>
         </div>
+
+        {/* TABS */}
+        <div className="flex items-center gap-1 bg-black/20 p-1.5 rounded-xl border border-white/5">
+          <button 
+            onClick={() => setActiveTab("users")}
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === "users" ? "bg-white/10 text-white shadow-sm" : "text-[var(--text-secondary)] hover:text-white"}`}
+          >
+            Użytkownicy
+          </button>
+          <button 
+            onClick={() => setActiveTab("notifications")}
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${activeTab === "notifications" ? "bg-rose-500/10 text-rose-400 shadow-sm border border-rose-500/20" : "text-[var(--text-secondary)] hover:text-white"}`}
+          >
+            Powiadomienia 
+            {adminNotifications.filter(n => !n.isRead).length > 0 && (
+              <span className="bg-rose-500 text-white px-1.5 py-0.5 rounded-full text-[10px]">
+                {adminNotifications.filter(n => !n.isRead).length}
+              </span>
+            )}
+          </button>
+        </div>
+
         <div className="flex items-center gap-3.5">
           <label className="flex items-center gap-3 cursor-pointer select-none bg-white/5 border border-white/10 rounded-xl px-4 py-2 hover:bg-white/[0.07] transition-all">
-            <span className="text-xs font-bold text-slate-300">Pokazuj boty w rankingu</span>
+            <span className="text-xs font-bold text-slate-300 hidden sm:inline">Pokazuj boty</span>
             <div className="relative flex items-center">
               <input
                 type="checkbox"
@@ -401,6 +423,8 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
         </div>
       </div>
 
+      {activeTab === "users" && (
+        <>
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {/* Total Users */}
@@ -722,6 +746,50 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
           </div>
         )}
       </div>
+      </>
+      )}
+
+      {activeTab === "notifications" && (
+        <div className="glass-card p-6 min-h-[400px]">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Icons.Bell size={20} className="text-rose-400" />
+              Historia Zdarzeń
+            </h3>
+            <div className="flex gap-2">
+              <button onClick={markAllAsRead} className="btn bg-white/5 hover:bg-white/10 text-xs px-3 py-1.5 border border-white/10">Oznacz jako przeczytane</button>
+              <button onClick={deleteAllNotifications} className="btn bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs px-3 py-1.5 border border-rose-500/20">Wyczyść</button>
+            </div>
+          </div>
+          
+          <div className="flex flex-col gap-3">
+            {adminNotifications.length === 0 ? (
+              <div className="text-center py-10 text-slate-500 text-sm">Brak powiadomień.</div>
+            ) : (
+              adminNotifications.map(notif => {
+                const dateObj = notif.createdAt ? (typeof notif.createdAt.toDate === 'function' ? notif.createdAt.toDate() : new Date(notif.createdAt)) : null;
+                const dStr = dateObj ? dateObj.toLocaleString("pl-PL") : "";
+                return (
+                  <div key={notif.id} className={`p-4 rounded-xl border flex justify-between items-start ${notif.isRead ? "bg-white/5 border-white/5" : "bg-rose-500/10 border-rose-500/20"}`}>
+                    <div className="flex gap-3">
+                      <div className="p-2 rounded-full bg-black/20 text-rose-400 mt-1"><Icons.UserPlus size={16} /></div>
+                      <div>
+                        <div className="text-sm font-bold text-white mb-0.5">{notif.type === "new_user" ? "Nowy użytkownik!" : notif.type}</div>
+                        <div className="text-xs text-slate-300">Email: {notif.email}</div>
+                        <div className="text-xs text-slate-400 mt-1">{dStr}</div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      {!notif.isRead && <button onClick={() => markNotificationAsRead(notif.id)} className="p-1.5 text-emerald-400 hover:bg-emerald-500/10 rounded" title="Przeczytane"><Icons.Check size={16}/></button>}
+                      <button onClick={() => deleteNotification(notif.id)} className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded"><Icons.Trash2 size={16}/></button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Message Modal overlay */}
       {selectedUser && (
