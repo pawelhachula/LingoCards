@@ -714,6 +714,25 @@ export default function App() {
       loadedStats.referredBy = storedRefCode;
       saveStats(uidKey, loadedStats);
       sessionStorage.removeItem("lingocards_ref_code");
+      
+      // Powiadomienie dla polecającego (jeśli istnieje)
+      if (isFirebaseConfigured && db) {
+        import("firebase/firestore").then(({ collection, query, where, getDocs, addDoc, serverTimestamp }) => {
+          const q = query(collection(db, "users"), where("referralCode", "==", storedRefCode));
+          getDocs(q).then(snap => {
+            if (!snap.empty) {
+              const referrerUid = snap.docs[0].id;
+              addDoc(collection(db, `users/${referrerUid}/notifications`), {
+                title: "Nowe polecenie! 🎉",
+                message: `Użytkownik ${uname} zarejestrował się z Twojego linku!`,
+                type: "success",
+                createdAt: serverTimestamp(),
+                isRead: false
+              }).catch(console.error);
+            }
+          }).catch(console.error);
+        }).catch(console.error);
+      }
     }
 
     // --- 7. Synchronizacja metadanych do users/{uid} ---

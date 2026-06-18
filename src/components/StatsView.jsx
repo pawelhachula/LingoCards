@@ -444,8 +444,8 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
           {hardestCardsList.length === 0 ? (
             <div className="text-center py-10 border border-dashed border-[var(--border-light)] rounded-2xl bg-[var(--bg-input)] flex-grow flex flex-col justify-center items-center">
               <Icons.CheckCircle2 className="text-emerald-500/40 mb-2" size={32} />
-              <p className="text-xs text-[var(--text-secondary)] font-bold">Wszystko jasne! ✨</p>
-              <p className="text-[10px] text-slate-600 mt-1 max-w-[200px] mx-auto">Rozpocznij testy lub naukę fiszek, by algorytm zebrał trudne słowa.</p>
+              <p className="text-xs text-white font-bold">Wszystko jasne! ✨</p>
+              <p className="text-[10px] text-slate-400 mt-1 max-w-[200px] mx-auto">Rozpocznij testy lub naukę fiszek, by algorytm zebrał trudne słowa.</p>
             </div>
           ) : (
             <div className="flex flex-col gap-3 flex-grow">
@@ -497,8 +497,8 @@ export default function StatsView({ stats, decks, onNavigate, setStats }) {
           {starredCards.length === 0 ? (
             <div className="text-center py-12 border border-dashed border-[var(--border-light)] rounded-2xl bg-[var(--bg-input)] flex-grow flex flex-col justify-center items-center">
               <Icons.Star className="text-slate-600 mb-2" size={32} />
-              <p className="text-xs text-[var(--text-secondary)] font-bold">Brak ulubionych słówek 🌟</p>
-              <p className="text-[10px] text-slate-600 mt-1 max-w-[240px] mx-auto">Podczas przeglądania fiszek kliknij gwiazdkę w rogu karty, aby dodać ją do tego rejestru.</p>
+              <p className="text-xs text-white font-bold">Brak ulubionych słówek 🌟</p>
+              <p className="text-[10px] text-slate-400 mt-1 max-w-[240px] mx-auto">Podczas przeglądania fiszek kliknij gwiazdkę w rogu karty, aby dodać ją do tego rejestru.</p>
             </div>
           ) : filteredStarred.length === 0 ? (
             <div className="text-center py-12">
