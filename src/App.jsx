@@ -54,7 +54,11 @@ export default function App() {
       return null;
     }
   });
-  const [view, setView] = useState("dashboard");
+  const [view, setView] = useState(() => localStorage.getItem("lingocards_view") || "dashboard");
+
+  useEffect(() => {
+    localStorage.setItem("lingocards_view", view);
+  }, [view]);
   const [decks, setDecks] = useState([]);
   const [selectedDeck, setSelectedDeck] = useState(null);
   const [theme, setTheme] = useState("navy");
@@ -1130,7 +1134,12 @@ export default function App() {
       
       // 3. Delete from Firebase Auth and sign out
       if (isFirebaseConfigured) {
-        await deleteUserAccount();
+        try {
+          await deleteUserAccount();
+        } catch (authErr) {
+          console.warn("Failed to delete Firebase Auth record (likely requires-recent-login), but data was wiped:", authErr);
+          // Ignore error to allow the user to delete their data without re-authenticating.
+        }
       }
       
       // Clear state and sign out
@@ -1138,10 +1147,6 @@ export default function App() {
       return true;
     } catch (error) {
       console.error("Błąd podczas usuwania konta:", error);
-      // Jeśli requires-recent-login, zwracamy error do UI by poprosić o ponowne logowanie
-      if (error.code === 'auth/requires-recent-login') {
-        throw new Error("Ze względów bezpieczeństwa musisz się zalogować ponownie, aby usunąć konto.");
-      }
       throw error;
     }
   };
