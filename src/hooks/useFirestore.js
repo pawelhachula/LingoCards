@@ -337,6 +337,13 @@ export function useFirestore() {
           if (s.customUsername) preservedStats.customUsername = s.customUsername;
           if (s.avatarData) preservedStats.avatarData = s.avatarData;
         }
+
+        // Also preserve their original username from the main doc to prevent username changes via re-registration
+        const userRef = doc(db, "users", uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists() && userSnap.data().username && !preservedStats.customUsername) {
+          preservedStats.customUsername = userSnap.data().username;
+        }
       } catch (e) {
         console.warn("[Firestore] Failed to read stats before deletion:", e.message);
       }
