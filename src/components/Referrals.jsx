@@ -7,7 +7,7 @@ export default function Referrals({ stats, onUpdateStats, onNavigate }) {
   const [toastMsg, setToastMsg] = useState("");
 
   const referralCode = `${(stats.username || "USER").toUpperCase()}${stats.streak > 0 ? stats.streak : "7"}PRO`;
-  const referralLink = `https://lingocards.pro/ref?code=${referralCode}`;
+  const referralLink = `${window.location.origin}/ref?code=${referralCode}`;
 
   const referrals = stats.referrals || [];
   const refCount = referrals.length;
