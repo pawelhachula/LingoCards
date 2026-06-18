@@ -6,7 +6,7 @@ export default function Referrals({ stats, onUpdateStats, onNavigate, loadAllUse
   const [toastMsg, setToastMsg] = useState("");
   const [referrals, setReferrals] = useState(stats.referrals || []);
 
-  const referralCode = `${(stats.username || currentUser?.username || "USER").toUpperCase()}PRO`;
+  const referralCode = `${(stats.username || currentUser?.username || "USER").toUpperCase().replace(/\s+/g, '')}PRO`;
   const referralLink = `${window.location.origin}/ref?code=${referralCode}`;
 
   const refCount = referrals.length;

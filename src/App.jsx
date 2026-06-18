@@ -755,7 +755,7 @@ export default function App() {
         status: userStatus,
         isPro: !!loadedStats.isPro,
         referredBy: loadedStats.referredBy || null,
-        referralCode: `${currentUname.toUpperCase()}PRO`
+        referralCode: `${currentUname.toUpperCase().replace(/\s+/g, '')}PRO`
       };
       await syncUserMeta(uidKey, metaRecord);
     } catch (e) {
