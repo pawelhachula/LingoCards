@@ -645,6 +645,19 @@ export default function App() {
           const metaData = metaSnap.data();
           userRole = metaData.role || "user";
           userStatus = metaData.status || "active";
+          
+          let shouldSaveStats = false;
+          // Zabezpieczamy nazwe usera z Firestore jesli jej jeszcze nie skopiowalismy do local stats
+          if (metaData.username && !loadedStats.customUsername) {
+            loadedStats.customUsername = metaData.username;
+            shouldSaveStats = true;
+          }
+          // Zabezpieczamy kod polecający z Firestore
+          if (metaData.referralCode && !loadedStats.referralCode) {
+            loadedStats.referralCode = metaData.referralCode;
+            shouldSaveStats = true;
+          }
+          if (shouldSaveStats) saveStats(uidKey, loadedStats);
         }
       } catch (e) {
         console.warn("Failed to load user metadata:", e.message);
@@ -744,6 +757,15 @@ export default function App() {
     try {
       const emailToSync = userEmail || currentUser?.email || auth?.currentUser?.email || "";
       const currentUname = loadedStats.customUsername || uname;
+      
+      // Zapewniamy wygenerowanie i zapisanie kodu polecającego, jesli go brakuje
+      let currentRefCode = loadedStats.referralCode;
+      if (!currentRefCode) {
+        currentRefCode = `${currentUname.toUpperCase().replace(/\s+/g, '')}PRO`;
+        loadedStats.referralCode = currentRefCode;
+        saveStats(uidKey, loadedStats);
+      }
+
       const metaRecord = {
         uid: uidKey,
         username: currentUname,
@@ -760,7 +782,7 @@ export default function App() {
         status: userStatus,
         isPro: !!loadedStats.isPro,
         referredBy: loadedStats.referredBy || null,
-        referralCode: `${currentUname.toUpperCase().replace(/\s+/g, '')}PRO`
+        referralCode: currentRefCode
       };
       await syncUserMeta(uidKey, metaRecord);
     } catch (e) {

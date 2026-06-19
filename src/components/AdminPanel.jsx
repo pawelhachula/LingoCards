@@ -732,7 +732,25 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
                             {resettingUid === user.uid ? (
                               <Icons.RefreshCw size={14} className="animate-spin" />
                             ) : (
-                              <Icons.Key size={14} />
+                              <Icons.KeyRound size={14} />
+                            )}
+                          </button>
+
+                          {/* Block/Unblock User */}
+                          <button
+                            onClick={() => handleToggleBlock(user)}
+                            disabled={isSelf}
+                            className={`p-1.5 rounded-lg border transition-all disabled:opacity-50 ${
+                              user.status === "blocked"
+                                ? "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border-emerald-500/20"
+                                : "bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 border-white/10 hover:border-rose-500/20 text-slate-400"
+                            }`}
+                            title={isSelf ? "Nie możesz zablokować siebie" : (user.status === "blocked" ? "Odblokuj użytkownika" : "Zablokuj użytkownika")}
+                          >
+                            {user.status === "blocked" ? (
+                              <Icons.ShieldCheck size={14} />
+                            ) : (
+                              <Icons.ShieldBan size={14} />
                             )}
                           </button>
                         </div>
