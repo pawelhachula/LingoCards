@@ -481,7 +481,8 @@ export default function App() {
       matchesWon: 0, srsData: {}, bestStreak: 0, referrals: [],
       xp: 0, level: 1, studyDates: [], deckMedals: {}, completedDecks: {},
       audioStyle: "synth", confettiStyle: "standard",
-      reviewsCount: 0, cardMistakes: {}, dailyHistory: {}, studyTime: 0
+      reviewsCount: 0, cardMistakes: {}, dailyHistory: {}, studyTime: 0,
+      achievements: {}
     };
 
     let loadedStats = { ...defaultStatsTemplate };
@@ -519,8 +520,22 @@ export default function App() {
     if (lastActive) {
       if (lastActive !== todayStr) {
         const diffDays = Math.ceil(Math.abs(new Date(todayStr) - new Date(lastActive)) / (1000 * 60 * 60 * 24));
-        if (diffDays === 1) loadedStats.streak += 1;
-        else if (diffDays > 1) loadedStats.streak = 1;
+        if (diffDays === 1) {
+          loadedStats.streak += 1;
+        } else if (diffDays > 1) {
+          loadedStats.streak = 1;
+          if ((loadedStats.bestStreak || 0) >= 3 && loadedStats.achievements && !loadedStats.achievements.welcomeBack) {
+            if (!loadedStats.achievements) loadedStats.achievements = {};
+            loadedStats.achievements.welcomeBack = true;
+            if (uidKey) {
+              sendSystemNotification(uidKey, {
+                title: "Dobrze Cię znów widzieć! 👋",
+                message: "Zauważyliśmy małą przerwę, ale najważniejsze to nie poddawać się! Trzymamy kciuki za nową, jeszcze dłuższą serię.",
+                type: "info"
+              }).catch(e => console.warn(e));
+            }
+          }
+        }
         loadedStats.dailyCount = 0;
         loadedStats.lastActiveDate = todayStr;
       }
@@ -854,7 +869,7 @@ export default function App() {
       srsData: {}, bestStreak: 0, referrals: [], xp: 0, level: 1,
       studyDates: [], deckMedals: {}, completedDecks: {}, audioStyle: "synth",
       confettiStyle: "standard", reviewsCount: 0, cardMistakes: {},
-      dailyHistory: {}, studyTime: 0
+      dailyHistory: {}, studyTime: 0, achievements: {}
     });
     // Reset motywu do domyślnego na ekranie logowania
     setTheme("navy");
@@ -954,6 +969,96 @@ export default function App() {
       if (updatedStats.streak > (updatedStats.bestStreak || 0)) {
         updatedStats.bestStreak = updatedStats.streak;
       }
+
+      // --- ACHIEVEMENTS CHECK ---
+      if (!updatedStats.achievements) updatedStats.achievements = {};
+      let achievementsToGrant = [];
+      
+      // 1. Streak 10
+      if (updatedStats.streak >= 10 && !updatedStats.achievements.streak10) {
+          updatedStats.achievements.streak10 = true;
+          achievementsToGrant.push({
+            id: 'streak10',
+            title: "Świetna robota! 10 dni z rzędu 🔥",
+            message: "Twój zapał do nauki robi wrażenie. Osiągnąłeś serię 10 dni nauki bez przerwy. Oby tak dalej!",
+            type: "success"
+          });
+      }
+      
+      // 2. 100 słówek
+      const wordsCount = Object.keys(updatedStats.learnedCards || {}).length;
+      if (wordsCount >= 100 && !updatedStats.achievements.words100) {
+          updatedStats.achievements.words100 = true;
+          achievementsToGrant.push({
+            id: 'words100',
+            title: "Pierwsza stówka za Tobą! 💯",
+            message: "Gratulacje! Właśnie opanowałeś swoje pierwsze 100 słówek. To doskonały fundament do płynnej komunikacji.",
+            type: "reward"
+          });
+      }
+
+      // 3. 500 słówek
+      if (wordsCount >= 500 && !updatedStats.achievements.words500) {
+          updatedStats.achievements.words500 = true;
+          achievementsToGrant.push({
+            id: 'words500',
+            title: "Pół tysiąca! 🚀",
+            message: "Opanowałeś 500 słów! Jesteś na świetnej drodze do płynności w języku.",
+            type: "reward"
+          });
+      }
+      
+      // 4. 1000 słówek
+      if (wordsCount >= 1000 && !updatedStats.achievements.words1000) {
+          updatedStats.achievements.words1000 = true;
+          achievementsToGrant.push({
+            id: 'words1000',
+            title: "Ekspert! 1000 słów 🏆",
+            message: "Tysiąc słówek w Twojej kieszeni! Tak szeroki zasób słownictwa pozwala na swobodną komunikację w większości sytuacji.",
+            type: "reward"
+          });
+      }
+      
+      // 5. Pierwsza talia
+      const completedDecksCount = Object.keys(updatedStats.completedDecks || {}).length;
+      if (completedDecksCount >= 1 && !updatedStats.achievements.firstDeck) {
+          updatedStats.achievements.firstDeck = true;
+          achievementsToGrant.push({
+            id: 'firstDeck',
+            title: "Pierwsza talia zdobyta! 🏆",
+            message: "Rewelacja! Ukończyłeś w całości swoją pierwszą talię fiszek. Czas podbić kolejną!",
+            type: "success"
+          });
+      }
+      
+      // 6. Perfect Quiz (triggered from Quiz.jsx setting pendingPerfectQuiz)
+      if (updatedStats.pendingPerfectQuiz) {
+          if (!updatedStats.achievements.perfectQuiz) {
+            updatedStats.achievements.perfectQuiz = true;
+            achievementsToGrant.push({
+              id: 'perfectQuiz',
+              title: "Strzał w dziesiątkę! 🎯",
+              message: "Znakomity wynik! Ukończyłeś quiz z maksymalną punktacją, nie popełniając ani jednego błędu.",
+              type: "success"
+            });
+          }
+          delete updatedStats.pendingPerfectQuiz;
+      }
+
+      if (achievementsToGrant.length > 0 && currentUser) {
+          const uidKey = getFirestoreUidKey();
+          if (uidKey) {
+            achievementsToGrant.forEach(ach => {
+              sendSystemNotification(uidKey, {
+                title: ach.title,
+                message: ach.message,
+                type: ach.type
+              }).catch(e => console.warn(e));
+            });
+          }
+      }
+      // --- END ACHIEVEMENTS ---
+
       if (currentUser) {
         // Zapisz do Firestore (z localStorage fallback)
         const uidKey = getFirestoreUidKey();
@@ -1108,7 +1213,8 @@ export default function App() {
       audioStyle: "synth",
       confettiStyle: "standard",
       activeDeckIds: [],
-      theme: "navy"
+      theme: "navy",
+      achievements: {}
     };
     setStats(defaultStatsObj);
     localStorage.setItem(userStatsKey, JSON.stringify(defaultStatsObj));

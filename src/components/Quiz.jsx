@@ -275,7 +275,8 @@ export default function Quiz({ selectedDeck, decks = [], stats, setStats, onNavi
           ...prev,
           quizTotal: newTotal,
           quizCorrect: newCorrect,
-          cardMistakes: updatedCardMistakes
+          cardMistakes: updatedCardMistakes,
+          pendingPerfectQuiz: (finalScore === questions.length && questions.length >= 5) ? true : undefined
         };
       });
     }
