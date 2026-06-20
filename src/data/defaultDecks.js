@@ -111,7 +111,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-a1-12",
         "english": "Family",
-        "polish": "rodzina",
+        "polish": "Rodzina",
         "pronunciation": "/ˈfæm.əl.i/",
         "partOfSpeech": "noun",
         "exampleEnglish": "We have a big family.",
@@ -120,7 +120,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-a1-13",
         "english": "House",
-        "polish": "dom (budynek)",
+        "polish": "Dom (budynek)",
         "pronunciation": "/haʊs/",
         "partOfSpeech": "noun",
         "exampleEnglish": "They live in a beautiful house.",
@@ -174,7 +174,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-a1-19",
         "english": "Water",
-        "polish": "woda",
+        "polish": "Woda",
         "pronunciation": "/ˈwɔː.tər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Can I have a glass of water?",
@@ -183,7 +183,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-a1-20",
         "english": "Food",
-        "polish": "jedzenie",
+        "polish": "Jedzenie",
         "pronunciation": "/fuːd/",
         "partOfSpeech": "noun",
         "exampleEnglish": "We need to buy some food.",
@@ -201,7 +201,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-a1-22",
         "english": "Money",
-        "polish": "pieniądze",
+        "polish": "Pieniądze",
         "pronunciation": "/ˈmʌn.i/",
         "partOfSpeech": "noun",
         "exampleEnglish": "I don't have enough money.",
@@ -210,7 +210,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-a1-23",
         "english": "Time",
-        "polish": "czas / godzina",
+        "polish": "Czas / godzina",
         "pronunciation": "/taɪm/",
         "partOfSpeech": "noun",
         "exampleEnglish": "What time is it?",
@@ -219,7 +219,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-a1-24",
         "english": "Day",
-        "polish": "dzień",
+        "polish": "Dzień",
         "pronunciation": "/deɪ/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Monday is the first day of the week.",
@@ -228,7 +228,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-a1-25",
         "english": "Week",
-        "polish": "tydzień",
+        "polish": "Tydzień",
         "pronunciation": "/wiːk/",
         "partOfSpeech": "noun",
         "exampleEnglish": "I am traveling next week.",
@@ -237,7 +237,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-a1-26",
         "english": "Month",
-        "polish": "miesiąc",
+        "polish": "Miesiąc",
         "pronunciation": "/mʌnθ/",
         "partOfSpeech": "noun",
         "exampleEnglish": "January is the first month of the year.",
@@ -246,7 +246,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-a1-27",
         "english": "Year",
-        "polish": "rok",
+        "polish": "Rok",
         "pronunciation": "/jɪər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Happy New Year!",
@@ -255,7 +255,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-a1-28",
         "english": "Today",
-        "polish": "dzisiaj",
+        "polish": "Dzisiaj",
         "pronunciation": "/təˈdeɪ/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Today is a sunny day.",
@@ -264,7 +264,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-a1-29",
         "english": "Tomorrow",
-        "polish": "jutro",
+        "polish": "Jutro",
         "pronunciation": "/təˈmɒr.əʊ/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Tomorrow is Saturday.",
@@ -273,7 +273,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-a1-30",
         "english": "Yesterday",
-        "polish": "wczoraj",
+        "polish": "Wczoraj",
         "pronunciation": "/ˈjes.tə.deɪ/",
         "partOfSpeech": "noun",
         "exampleEnglish": "I saw him yesterday morning.",
@@ -327,7 +327,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-a1-36",
         "english": "Cold",
-        "polish": "przeziębienie",
+        "polish": "Przeziębienie",
         "pronunciation": "/kəʊld/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "Drink warm tea when you have a cold.",
@@ -380,7 +380,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-a1-42",
-        "english": "Close",
+        "english": "To Close",
         "polish": "Zamykać / Zamknąć",
         "pronunciation": "/kləʊz/",
         "partOfSpeech": "verb",
@@ -389,7 +389,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-a1-43",
-        "english": "Read",
+        "english": "To Read",
         "polish": "Czytać",
         "pronunciation": "/riːd/",
         "partOfSpeech": "verb",
@@ -398,7 +398,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-a1-44",
-        "english": "Write",
+        "english": "To Write",
         "polish": "Pisać",
         "pronunciation": "/raɪt/",
         "partOfSpeech": "verb",
@@ -407,7 +407,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-a1-45",
-        "english": "Speak",
+        "english": "To Speak",
         "polish": "Mówić / Rozmawiać",
         "pronunciation": "/spiːk/",
         "partOfSpeech": "verb",
@@ -416,7 +416,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-a1-46",
-        "english": "Listen",
+        "english": "To Listen",
         "polish": "Słuchać",
         "pronunciation": "/ˈlɪs.ən/",
         "partOfSpeech": "verb",
@@ -425,7 +425,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-a1-47",
-        "english": "Understand",
+        "english": "To Understand",
         "polish": "Rozumieć",
         "pronunciation": "/ˌʌn.dəˈstænd/",
         "partOfSpeech": "verb",
@@ -434,7 +434,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-a1-48",
-        "english": "Learn",
+        "english": "To Learn",
         "polish": "Uczyć się",
         "pronunciation": "/lɜːn/",
         "partOfSpeech": "verb",
@@ -501,7 +501,7 @@ const rawDefaultDecks = [
       {
         "id": "dining-a1-5",
         "english": "Milk",
-        "polish": "mleko",
+        "polish": "Mleko",
         "pronunciation": "/mɪlk/",
         "partOfSpeech": "noun",
         "exampleEnglish": "I put milk in my coffee.",
@@ -582,7 +582,7 @@ const rawDefaultDecks = [
       {
         "id": "dining-a1-14",
         "english": "Bread",
-        "polish": "chleb",
+        "polish": "Chleb",
         "pronunciation": "/bred/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Would you like a slice of bread?",
@@ -618,7 +618,7 @@ const rawDefaultDecks = [
       {
         "id": "dining-a1-18",
         "english": "Fruit",
-        "polish": "owoce",
+        "polish": "Owoce",
         "pronunciation": "/fruːt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Apple is my favorite fruit.",
@@ -717,7 +717,7 @@ const rawDefaultDecks = [
       {
         "id": "dining-a1-29",
         "english": "Table",
-        "polish": "stół",
+        "polish": "Stół",
         "pronunciation": "/ˈteɪ.bəl/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The food is on the table.",
@@ -726,7 +726,7 @@ const rawDefaultDecks = [
       {
         "id": "dining-a1-30",
         "english": "Chair",
-        "polish": "krzesło",
+        "polish": "Krzesło",
         "pronunciation": "/tʃeər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Please sit on this chair.",
@@ -735,7 +735,7 @@ const rawDefaultDecks = [
       {
         "id": "dining-a1-31",
         "english": "Waiter",
-        "polish": "kelner",
+        "polish": "Kelner",
         "pronunciation": "/ˈweɪ.tər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "We asked the waiter for the bill.",
@@ -744,7 +744,7 @@ const rawDefaultDecks = [
       {
         "id": "dining-a1-32",
         "english": "Customer",
-        "polish": "klient",
+        "polish": "Klient",
         "pronunciation": "/ˈkʌs.tə.mər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The customer is always right.",
@@ -752,7 +752,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "dining-a1-33",
-        "english": "Eat",
+        "english": "To Eat",
         "polish": "Jeść",
         "pronunciation": "/iːt/",
         "partOfSpeech": "verb",
@@ -761,7 +761,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "dining-a1-34",
-        "english": "Drink",
+        "english": "To Drink",
         "polish": "Pić",
         "pronunciation": "/drɪŋk/",
         "partOfSpeech": "verb",
@@ -770,7 +770,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "dining-a1-35",
-        "english": "Order",
+        "english": "To Order",
         "polish": "Zamawiać",
         "pronunciation": "/ˈɔː.dər/",
         "partOfSpeech": "verb",
@@ -779,7 +779,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "dining-a1-36",
-        "english": "Pay",
+        "english": "To Pay",
         "polish": "Płacić",
         "pronunciation": "/peɪ/",
         "partOfSpeech": "verb",
@@ -888,7 +888,7 @@ const rawDefaultDecks = [
       {
         "id": "dining-a1-49",
         "english": "Kitchen",
-        "polish": "kuchnia",
+        "polish": "Kuchnia",
         "pronunciation": "/ˈkɪtʃ.ən/",
         "partOfSpeech": "noun",
         "exampleEnglish": "She is cooking lunch in the kitchen.",
@@ -927,7 +927,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-3",
         "english": "Break a leg",
-        "polish": "połamania nóg (powodzenia)",
+        "polish": "Połamania nóg (powodzenia)",
         "pronunciation": "/breɪk ə leɡ/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "Go on stage and break a leg!",
@@ -936,7 +936,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-4",
         "english": "Take it easy",
-        "polish": "wyluzować / odpoczywać",
+        "polish": "Wyluzować / odpoczywać",
         "pronunciation": "/teɪk ɪt ˈiːzi/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Just take it easy and relax after the busy week.",
@@ -945,7 +945,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-5",
         "english": "Call it a day",
-        "polish": "skończyć na dziś",
+        "polish": "Skończyć na dziś",
         "pronunciation": "/kɔːl ɪt ə deɪ/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "We made great progress; let's call it a day.",
@@ -954,7 +954,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-6",
         "english": "Under the weather",
-        "polish": "kiepsko się czuć / nie wyraźny",
+        "polish": "Kiepsko się czuć / nie wyraźny",
         "pronunciation": "/ˈʌndər ðə ˈweðər/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "I am feeling a bit under the weather today.",
@@ -963,7 +963,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-7",
         "english": "Out of the blue",
-        "polish": "nagle / jak grom z jasnego nieba",
+        "polish": "Nagle / jak grom z jasnego nieba",
         "pronunciation": "/aʊt əv ðə bluː/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "He called me out of the blue after five years.",
@@ -972,7 +972,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-8",
         "english": "Keep in touch",
-        "polish": "być w kontakcie",
+        "polish": "Być w kontakcie",
         "pronunciation": "/kiːp ɪn tʌtʃ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Let's keep in touch via email.",
@@ -1017,7 +1017,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-13",
         "english": "Hit the sack",
-        "polish": "iść spać",
+        "polish": "Iść spać",
         "pronunciation": "/hɪt ðə sæk/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "I am very tired, I will hit the sack now.",
@@ -1026,7 +1026,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-14",
         "english": "Piece of cake",
-        "polish": "bułka z masłem (bardzo łatwe)",
+        "polish": "Bułka z masłem (bardzo łatwe)",
         "pronunciation": "/piːs əv keɪk/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "Don't worry, the exam was a piece of cake.",
@@ -1052,7 +1052,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-17",
-        "english": "Shower",
+        "english": "To Shower",
         "polish": "Brać prysznic",
         "pronunciation": "/ˈʃaʊ.ər/",
         "partOfSpeech": "verb",
@@ -1061,7 +1061,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-18",
-        "english": "Dress",
+        "english": "To Dress",
         "polish": "Ubierać się",
         "pronunciation": "/dres/",
         "partOfSpeech": "verb",
@@ -1070,7 +1070,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-19",
-        "english": "Clean",
+        "english": "To Clean",
         "polish": "Sprzątać / Czyścić",
         "pronunciation": "/kliːn/",
         "partOfSpeech": "verb",
@@ -1079,8 +1079,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-20",
-        "english": "Shop",
-        "polish": "sklep",
+        "english": "To Shop",
+        "polish": "Sklep",
         "pronunciation": "/ʃɒp/",
         "partOfSpeech": "verb",
         "exampleEnglish": "This shop is closed on Sunday.",
@@ -1088,7 +1088,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-21",
-        "english": "Walk",
+        "english": "To Walk",
         "polish": "Spacerować / Chodzić",
         "pronunciation": "/wɔːk/",
         "partOfSpeech": "verb",
@@ -1097,7 +1097,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-22",
-        "english": "Run",
+        "english": "To Run",
         "polish": "Biegać",
         "pronunciation": "/rʌn/",
         "partOfSpeech": "verb",
@@ -1133,7 +1133,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-26",
-        "english": "Chat",
+        "english": "To Chat",
         "polish": "Rozmawiać / Czatować",
         "pronunciation": "/tʃæt/",
         "partOfSpeech": "verb",
@@ -1142,7 +1142,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-27",
-        "english": "Meet",
+        "english": "To Meet",
         "polish": "Spotykać (się)",
         "pronunciation": "/miːt/",
         "partOfSpeech": "verb",
@@ -1151,7 +1151,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-28",
-        "english": "Travel",
+        "english": "To Travel",
         "polish": "Podróżować",
         "pronunciation": "/ˈtræv.əl/",
         "partOfSpeech": "verb",
@@ -1160,7 +1160,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-29",
-        "english": "Visit",
+        "english": "To Visit",
         "polish": "Odwiedzać",
         "pronunciation": "/ˈvɪz.ɪt/",
         "partOfSpeech": "verb",
@@ -1169,7 +1169,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-30",
-        "english": "Sleep",
+        "english": "To Sleep",
         "polish": "Spać",
         "pronunciation": "/sliːp/",
         "partOfSpeech": "verb",
@@ -1196,7 +1196,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-33",
-        "english": "Wash",
+        "english": "To Wash",
         "polish": "Myć / Prać",
         "pronunciation": "/wɒʃ/",
         "partOfSpeech": "verb",
@@ -1205,8 +1205,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-34",
-        "english": "Buy",
-        "polish": "kupować",
+        "english": "To Buy",
+        "polish": "Kupować",
         "pronunciation": "/baɪ/",
         "partOfSpeech": "verb",
         "exampleEnglish": "I want to buy a new shirt.",
@@ -1214,8 +1214,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-35",
-        "english": "Sell",
-        "polish": "sprzedawać",
+        "english": "To Sell",
+        "polish": "Sprzedawać",
         "pronunciation": "/sel/",
         "partOfSpeech": "verb",
         "exampleEnglish": "They sell fresh bread here.",
@@ -1223,7 +1223,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-36",
-        "english": "Agree",
+        "english": "To Agree",
         "polish": "Zgadzać się",
         "pronunciation": "/əˈɡriː/",
         "partOfSpeech": "verb",
@@ -1232,7 +1232,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-37",
-        "english": "Disagree",
+        "english": "To Disagree",
         "polish": "Nie zgadzać się",
         "pronunciation": "/ˌdɪs.əˈɡriː/",
         "partOfSpeech": "verb",
@@ -1250,7 +1250,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-39",
-        "english": "Decide",
+        "english": "To Decide",
         "polish": "Decydować",
         "pronunciation": "/dɪˈsaɪd/",
         "partOfSpeech": "verb",
@@ -1259,7 +1259,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-40",
-        "english": "Remember",
+        "english": "To Remember",
         "polish": "Pamiętać",
         "pronunciation": "/rɪˈmem.bər/",
         "partOfSpeech": "verb",
@@ -1268,7 +1268,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-41",
-        "english": "Forget",
+        "english": "To Forget",
         "polish": "Zapominać",
         "pronunciation": "/fəˈɡet/",
         "partOfSpeech": "verb",
@@ -1277,7 +1277,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-42",
-        "english": "Wake up",
+        "english": "To Wake up",
         "polish": "Budzić się",
         "pronunciation": "/weɪk ʌp/",
         "partOfSpeech": "verb",
@@ -1305,7 +1305,7 @@ const rawDefaultDecks = [
       {
         "id": "everyday-45",
         "english": "Work",
-        "polish": "praca / pracować",
+        "polish": "Praca / pracować",
         "pronunciation": "/wɜːk/",
         "partOfSpeech": "verb/noun",
         "exampleEnglish": "I like my work very much.",
@@ -1313,7 +1313,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-46",
-        "english": "Study",
+        "english": "To Study",
         "polish": "Uczyć się / Studiować",
         "pronunciation": "/ˈstʌd.i/",
         "partOfSpeech": "verb",
@@ -1322,8 +1322,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-47",
-        "english": "Cook",
-        "polish": "kucharz",
+        "english": "To Cook",
+        "polish": "Kucharz",
         "pronunciation": "/kʊk/",
         "partOfSpeech": "verb",
         "exampleEnglish": "The cook prepared a delicious fish.",
@@ -1331,7 +1331,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "everyday-48",
-        "english": "Get up",
+        "english": "To Get up",
         "polish": "Wstawać",
         "pronunciation": "/ɡet ʌp/",
         "partOfSpeech": "verb",
@@ -1695,7 +1695,7 @@ const rawDefaultDecks = [
       {
         "id": "travel-38",
         "english": "Market",
-        "polish": "targ / rynek",
+        "polish": "Targ / rynek",
         "pronunciation": "/ˈmɑː.kɪt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "We buy fresh eggs at the market.",
@@ -1713,7 +1713,7 @@ const rawDefaultDecks = [
       {
         "id": "travel-40",
         "english": "Driver",
-        "polish": "kierowca",
+        "polish": "Kierowca",
         "pronunciation": "/ˈdraɪ.vər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The taxi driver was very polite.",
@@ -1740,7 +1740,7 @@ const rawDefaultDecks = [
       {
         "id": "travel-43",
         "english": "Currency",
-        "polish": "waluta",
+        "polish": "Waluta",
         "pronunciation": "/ˈkʌr.ən.si/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The euro is the currency of many EU nations.",
@@ -2385,7 +2385,7 @@ const rawDefaultDecks = [
       {
         "id": "restaurant-24",
         "english": "Vegetables",
-        "polish": "warzywa",
+        "polish": "Warzywa",
         "pronunciation": "/ˈvedʒ.tə.bəlz/",
         "partOfSpeech": "noun",
         "exampleEnglish": "You should eat more vegetables.",
@@ -2850,7 +2850,7 @@ const rawDefaultDecks = [
       {
         "id": "business-b1-3",
         "english": "Salary",
-        "polish": "pensja / wynagrodzenie",
+        "polish": "Pensja / wynagrodzenie",
         "pronunciation": "/ˈsæl.ɚ.i/",
         "partOfSpeech": "noun",
         "exampleEnglish": "His monthly salary was increased.",
@@ -2913,7 +2913,7 @@ const rawDefaultDecks = [
       {
         "id": "business-b1-10",
         "english": "Employee",
-        "polish": "pracownik",
+        "polish": "Pracownik",
         "pronunciation": "/ɪmˈplɔɪ.iː/",
         "partOfSpeech": "noun",
         "exampleEnglish": "He is a very valuable employee.",
@@ -2922,7 +2922,7 @@ const rawDefaultDecks = [
       {
         "id": "business-b1-11",
         "english": "Office",
-        "polish": "biuro",
+        "polish": "Biuro",
         "pronunciation": "/ˈɒf.ɪs/",
         "partOfSpeech": "noun",
         "exampleEnglish": "I go to the office at nine o'clock.",
@@ -2931,7 +2931,7 @@ const rawDefaultDecks = [
       {
         "id": "business-b1-12",
         "english": "Company",
-        "polish": "firma",
+        "polish": "Firma",
         "pronunciation": "/ˈkʌm.pə.ni/",
         "partOfSpeech": "noun",
         "exampleEnglish": "She works for a tech company.",
@@ -2976,7 +2976,7 @@ const rawDefaultDecks = [
       {
         "id": "business-b1-17",
         "english": "Manager",
-        "polish": "menedżer / kierownik",
+        "polish": "Menedżer / kierownik",
         "pronunciation": "/ˈmæn.ɪ.dʒər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Our manager is helpful and fair.",
@@ -3012,7 +3012,7 @@ const rawDefaultDecks = [
       {
         "id": "business-b1-23",
         "english": "Meeting",
-        "polish": "spotkanie",
+        "polish": "Spotkanie",
         "pronunciation": "/ˈmiː.tɪŋ/",
         "partOfSpeech": "noun",
         "exampleEnglish": "I have an important business meeting tomorrow.",
@@ -3129,7 +3129,7 @@ const rawDefaultDecks = [
       {
         "id": "business-b1-38",
         "english": "Price",
-        "polish": "cena",
+        "polish": "Cena",
         "pronunciation": "/praɪs/",
         "partOfSpeech": "noun",
         "exampleEnglish": "What is the price of this dress?",
@@ -3147,7 +3147,7 @@ const rawDefaultDecks = [
       {
         "id": "business-b1-40",
         "english": "Budget",
-        "polish": "budżet",
+        "polish": "Budżet",
         "pronunciation": "/ˈbʌdʒ.ɪt/",
         "partOfSpeech": "noun/verb",
         "exampleEnglish": "We are working on a tight budget.",
@@ -3165,7 +3165,7 @@ const rawDefaultDecks = [
       {
         "id": "business-b1-42",
         "english": "Profit",
-        "polish": "zysk",
+        "polish": "Zysk",
         "pronunciation": "/ˈprɒf.ɪt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The company made a huge profit last year.",
@@ -3590,7 +3590,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "tech-b1-46",
-        "english": "Install",
+        "english": "To Install",
         "polish": "Instalować",
         "pronunciation": "/ɪnˈstɔːl/",
         "partOfSpeech": "verb",
@@ -3599,7 +3599,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "tech-b1-47",
-        "english": "Uninstall",
+        "english": "To Uninstall",
         "polish": "Odinstalować",
         "pronunciation": "/ˌʌn.ɪnˈstɔːl/",
         "partOfSpeech": "verb",
@@ -3684,7 +3684,7 @@ const rawDefaultDecks = [
       {
         "id": "culture-b1-5",
         "english": "Audience",
-        "polish": "widownia / publiczność",
+        "polish": "Widownia / publiczność",
         "pronunciation": "/ˈɑː.di.əns/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The audience cheered at the end of the show.",
@@ -3747,7 +3747,7 @@ const rawDefaultDecks = [
       {
         "id": "culture-b1-12",
         "english": "Artist",
-        "polish": "artysta",
+        "polish": "Artysta",
         "pronunciation": "/ˈɑː.tɪst/",
         "partOfSpeech": "noun",
         "exampleEnglish": "She is a talented musical artist.",
@@ -4217,7 +4217,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "nature-b1-22",
-        "english": "Recycle",
+        "english": "To Recycle",
         "polish": "Przetwarzać powtórnie",
         "pronunciation": "/ˌriːˈsaɪ.kl/",
         "partOfSpeech": "verb",
@@ -4226,7 +4226,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "nature-b1-23",
-        "english": "Reuse",
+        "english": "To Reuse",
         "polish": "Używać ponownie",
         "pronunciation": "/ˌriːˈjuːz/",
         "partOfSpeech": "verb",
@@ -4235,7 +4235,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "nature-b1-24",
-        "english": "Reduce",
+        "english": "To Reduce",
         "polish": "Ograniczać / Zmniejszać",
         "pronunciation": "/rɪˈdʒuːs/",
         "partOfSpeech": "verb",
@@ -4244,7 +4244,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "nature-b1-26",
-        "english": "Protect",
+        "english": "To Protect",
         "polish": "Chronić",
         "pronunciation": "/prəˈtekt/",
         "partOfSpeech": "verb",
@@ -4253,7 +4253,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "nature-b1-27",
-        "english": "Save",
+        "english": "To Save",
         "polish": "Oszczędzać / Ocalić",
         "pronunciation": "/seɪv/",
         "partOfSpeech": "verb",
@@ -4437,7 +4437,7 @@ const rawDefaultDecks = [
       {
         "id": "business-1",
         "english": "Touch base",
-        "polish": "skontaktować się na chwilę / omówić krótko status",
+        "polish": "Skontaktować się na chwilę / omówić krótko status",
         "pronunciation": "/tʌtʃ beɪs/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "Call me later and we'll touch base.",
@@ -4455,7 +4455,7 @@ const rawDefaultDecks = [
       {
         "id": "business-3",
         "english": "Think outside the box",
-        "polish": "myśleć nieszablonowo",
+        "polish": "Myśleć nieszablonowo",
         "pronunciation": "/θɪŋk aʊtˈsaɪd ðə bɑːks/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "We need creative ideas; think outside the box.",
@@ -4482,7 +4482,7 @@ const rawDefaultDecks = [
       {
         "id": "business-6",
         "english": "On the same page",
-        "polish": "nadawać na tych samych falach / zgadzać się",
+        "polish": "Nadawać na tych samych falach / zgadzać się",
         "pronunciation": "/aːn ðə seɪm peɪdʒ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Let's touch base to make sure we are on the same page.",
@@ -4509,7 +4509,7 @@ const rawDefaultDecks = [
       {
         "id": "business-9",
         "english": "Back to the drawing board",
-        "polish": "zacząć od nowa",
+        "polish": "Zacząć od nowa",
         "pronunciation": "/bæk tuː ðə ˈdrɔː.ɪŋ bɔːrd/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "The plan failed, so it's back to the drawing board.",
@@ -4545,7 +4545,7 @@ const rawDefaultDecks = [
       {
         "id": "business-14",
         "english": "Cut corners",
-        "polish": "iść na skróty / robić coś po łebkach",
+        "polish": "Iść na skróty / robić coś po łebkach",
         "pronunciation": "/kʌt ˈkɔːr.nərz/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "Never cut corners during software quality assurance.",
@@ -4626,7 +4626,7 @@ const rawDefaultDecks = [
       {
         "id": "business-23",
         "english": "Investment",
-        "polish": "inwestycja",
+        "polish": "Inwestycja",
         "pronunciation": "/ɪnˈvest.mənt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Buying property is usually a safe investment.",
@@ -4635,7 +4635,7 @@ const rawDefaultDecks = [
       {
         "id": "business-24",
         "english": "Investor",
-        "polish": "inwestor",
+        "polish": "Inwestor",
         "pronunciation": "/ɪnˈves.tər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "A foreign investor backed the project.",
@@ -4644,7 +4644,7 @@ const rawDefaultDecks = [
       {
         "id": "business-25",
         "english": "Shares",
-        "polish": "akcje / udziały",
+        "polish": "Akcje / udziały",
         "pronunciation": "/ʃeəz/",
         "partOfSpeech": "noun",
         "exampleEnglish": "He bought shares in a startup company.",
@@ -4716,7 +4716,7 @@ const rawDefaultDecks = [
       {
         "id": "business-33",
         "english": "Campaign",
-        "polish": "kampania",
+        "polish": "Kampania",
         "pronunciation": "/kæmˈpeɪn/",
         "partOfSpeech": "noun",
         "exampleEnglish": "They launched a marketing campaign.",
@@ -4842,7 +4842,7 @@ const rawDefaultDecks = [
       {
         "id": "business-48",
         "english": "Revenue",
-        "polish": "przychód / obroty",
+        "polish": "Przychód / obroty",
         "pronunciation": "/ˈrev.ən.juː/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Annual revenue grew by ten percent.",
@@ -4989,7 +4989,7 @@ const rawDefaultDecks = [
       {
         "id": "technology-15",
         "english": "Artificial intelligence",
-        "polish": "sztuczna inteligencja",
+        "polish": "Sztuczna inteligencja",
         "pronunciation": "/ˌɑː.tɪ.fɪʃ.əl ɪnˈtel.ɪ.dʒəns/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Artificial intelligence speeds up data classification.",
@@ -5631,7 +5631,7 @@ const rawDefaultDecks = [
       {
         "id": "culture-b2-41",
         "english": "Journalism",
-        "polish": "dziennikarstwo",
+        "polish": "Dziennikarstwo",
         "pronunciation": "/ˈdʒɜː.nə.lɪ.zəm/",
         "partOfSpeech": "noun",
         "exampleEnglish": "She is studying investigative journalism.",
@@ -5685,7 +5685,7 @@ const rawDefaultDecks = [
       {
         "id": "culture-b2-47",
         "english": "Influence",
-        "polish": "wpływ / wpływać",
+        "polish": "Wpływ / wpływać",
         "pronunciation": "/ˈɪn.flu.əns/",
         "partOfSpeech": "noun/verb",
         "exampleEnglish": "Social media has a strong influence on teenagers.",
@@ -5822,7 +5822,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "advanced-11",
-        "english": "Procrastinate",
+        "english": "To Procrastinate",
         "polish": "Zwlekać / odkładać na później (prokrastynować)",
         "pronunciation": "/proʊˈkræs.tə.neɪt/",
         "partOfSpeech": "verb",
@@ -5840,7 +5840,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "advanced-13",
-        "english": "Scrutinize",
+        "english": "To Scrutinize",
         "polish": "Szczegółowo badać",
         "pronunciation": "/ˈskruː.t̬ən.aɪz/",
         "partOfSpeech": "verb",
@@ -5868,7 +5868,7 @@ const rawDefaultDecks = [
       {
         "id": "advanced-16",
         "english": "Hypothesis",
-        "polish": "hipoteza",
+        "polish": "Hipoteza",
         "pronunciation": "/haɪˈpɒθ.ə.sɪs/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The scientific hypothesis was tested in the lab.",
@@ -5886,7 +5886,7 @@ const rawDefaultDecks = [
       {
         "id": "advanced-18",
         "english": "Methodology",
-        "polish": "metodologia",
+        "polish": "Metodologia",
         "pronunciation": "/ˌmeθ.əˈdɒl.ə.dʒi/",
         "partOfSpeech": "noun",
         "exampleEnglish": "We explained our research methodology in detail.",
@@ -6177,7 +6177,7 @@ const rawDefaultDecks = [
       {
         "id": "business-c1-4",
         "english": "Liability",
-        "polish": "odpowiedzialność prawna",
+        "polish": "Odpowiedzialność prawna",
         "pronunciation": "/ˌlaɪ.əˈbɪl.ə.t̬i/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The company admitted no liability for the accident.",
@@ -6240,7 +6240,7 @@ const rawDefaultDecks = [
       {
         "id": "business-c1-13",
         "english": "Regulation",
-        "polish": "przepis / rozporządzenie",
+        "polish": "Przepis / rozporządzenie",
         "pronunciation": "/ˌreɡ.jəˈleɪ.ʃən/",
         "partOfSpeech": "noun",
         "exampleEnglish": "We must follow the safety regulations.",
@@ -6276,7 +6276,7 @@ const rawDefaultDecks = [
       {
         "id": "business-c1-20",
         "english": "Bankruptcy",
-        "polish": "bankructwo / upadłość",
+        "polish": "Bankructwo / upadłość",
         "pronunciation": "/ˈbæŋ.krəpt.si/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The airline declared bankruptcy in 2024.",
@@ -6483,7 +6483,7 @@ const rawDefaultDecks = [
       {
         "id": "business-c1-45",
         "english": "Intellectual property",
-        "polish": "własność intelektualna",
+        "polish": "Własność intelektualna",
         "pronunciation": "/ˌɪn.təlˈek.tʃu.əl ˈprɒp.ə.ti/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Patents protect intellectual property.",
@@ -6549,7 +6549,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-1",
         "english": "Bite the bullet",
-        "polish": "zacisnąć zęby / stawić czoła trudnościom",
+        "polish": "Zacisnąć zęby / stawić czoła trudnościom",
         "pronunciation": "/baɪt ðə ˈbʊl.ɪt/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "I decided to bite the bullet and tell him the truth.",
@@ -6558,7 +6558,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-2",
         "english": "Spill the beans",
-        "polish": "wygadać się / ujawnić sekret",
+        "polish": "Wygadać się / ujawnić sekret",
         "pronunciation": "/spɪl ðə biːnz/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "Tell me what she said – spill the beans!",
@@ -6576,7 +6576,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-4",
         "english": "Take with a grain of salt",
-        "polish": "brać z przymrużeniem oka",
+        "polish": "Brać z przymrużeniem oka",
         "pronunciation": "/teɪk wɪð ə ɡreɪn əv sɑːlt/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "He exaggerates, so take his stories with a grain of salt.",
@@ -6594,7 +6594,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-6",
         "english": "Burn the midnight oil",
-        "polish": "pracować po nocach",
+        "polish": "Pracować po nocach",
         "pronunciation": "/bɜːrn ðə ˈmɪd.naɪt ɔɪl/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "We had to burn the midnight oil to compile the data.",
@@ -6621,7 +6621,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-9",
         "english": "Once in a blue moon",
-        "polish": "raz na ruski rok (bardzo rzadko)",
+        "polish": "Raz na ruski rok (bardzo rzadko)",
         "pronunciation": "/wʌns ɪn ə bluː muːn/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "He visits us once in a blue moon.",
@@ -6630,7 +6630,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-10",
         "english": "Break the ice",
-        "polish": "przełamać lody",
+        "polish": "Przełamać lody",
         "pronunciation": "/breɪk ðə aɪs/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "His funny presentation broke the ice.",
@@ -6693,7 +6693,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-25",
         "english": "Devil's advocate",
-        "polish": "adwokat diabła",
+        "polish": "Adwokat diabła",
         "pronunciation": "/ˈdev.əlz ˈæd.və.kət/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "She played devil's advocate during our brainstorm.",
@@ -6702,7 +6702,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-26",
         "english": "Face the music",
-        "polish": "wypić piwo, które się nawarzyło / ponieść konsekwencje",
+        "polish": "Wypić piwo, które się nawarzyło / ponieść konsekwencje",
         "pronunciation": "/feɪs ðə ˈmjuː.zɪk/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "You broke the window; you must face the music.",
@@ -6720,7 +6720,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-29",
         "english": "Keep an eye on",
-        "polish": "mieć oko na / pilnować",
+        "polish": "Mieć oko na / pilnować",
         "pronunciation": "/kiːp ən aɪ ɒn/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "Please keep an eye on my bags while I buy a ticket.",
@@ -6738,7 +6738,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-31",
         "english": "Miss the boat",
-        "polish": "spóźnić się / stracić okazję",
+        "polish": "Spóźnić się / stracić okazję",
         "pronunciation": "/mɪs ðə bəʊt/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "If you don't buy the ticket today, you will miss the boat.",
@@ -6747,7 +6747,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-32",
         "english": "On the ball",
-        "polish": "mający głowę na karku / zorientowany",
+        "polish": "Mający głowę na karku / zorientowany",
         "pronunciation": "/ɒn ðə bɔːl/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "He is very quick to learn; he is really on the ball.",
@@ -6756,7 +6756,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-33",
         "english": "Pull someone's leg",
-        "polish": "robić sobie z kogoś żarty / nabierać kogoś",
+        "polish": "Robić sobie z kogoś żarty / nabierać kogoś",
         "pronunciation": "/pʊl ˈsʌm.wʌnz leɡ/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "Don't worry, he is just pulling your leg.",
@@ -6765,7 +6765,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-34",
         "english": "Rule of thumb",
-        "polish": "złota zasada / reguła oparta na doświadczeniu",
+        "polish": "Złota zasada / reguła oparta na doświadczeniu",
         "pronunciation": "/ruːl ɒv θʌm/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "As a rule of thumb, drink eight glasses of water daily.",
@@ -6774,7 +6774,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-35",
         "english": "See eye to eye",
-        "polish": "zgadzać się w zupełności",
+        "polish": "Zgadzać się w zupełności",
         "pronunciation": "/siː aɪ tuː aɪ/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "They don't see eye to eye on family matters.",
@@ -6801,7 +6801,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-38",
         "english": "Up in the air",
-        "polish": "pod znakiem zapytania / w zawieszeniu",
+        "polish": "Pod znakiem zapytania / w zawieszeniu",
         "pronunciation": "/ʌp ɪn ði eər/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "Our travel plans are still up in the air.",
@@ -6819,7 +6819,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-40",
         "english": "Whole nine yards",
-        "polish": "wszystko, co możliwe / na całego",
+        "polish": "Wszystko, co możliwe / na całego",
         "pronunciation": "/həʊl naɪn jɑːdz/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "He bought the house, furniture, yard – the whole nine yards.",
@@ -6864,7 +6864,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-45",
         "english": "Best of both worlds",
-        "polish": "korzyści z dwóch różnych sytuacji / idealne rozwiązanie",
+        "polish": "Korzyści z dwóch różnych sytuacji / idealne rozwiązanie",
         "pronunciation": "/best ɒv bəʊθ wɜːldz/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "Working from home part-time gives me the best of both worlds.",
@@ -6882,7 +6882,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-47",
         "english": "Blessing in disguise",
-        "polish": "szczęście w nieszczęściu",
+        "polish": "Szczęście w nieszczęściu",
         "pronunciation": "/ˈbles.ɪŋ ɪn dɪsˈɡaɪz/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "Losing that client was a blessing in disguise as we found a better one.",
@@ -6900,7 +6900,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-49",
         "english": "Cry over spilled milk",
-        "polish": "płakać nad rozlanym mlekiem",
+        "polish": "Płakać nad rozlanym mlekiem",
         "pronunciation": "/kraɪ ˈəʊ.vər spɪld mɪlk/",
         "partOfSpeech": "idiom",
         "exampleEnglish": "We lost the deal, but let's not cry over spilled milk.",
@@ -6921,7 +6921,7 @@ const rawDefaultDecks = [
       {
         "id": "academic-c1-2",
         "english": "Empirical",
-        "polish": "empiryczny / oparty na doświadczeniu",
+        "polish": "Empiryczny / oparty na doświadczeniu",
         "pronunciation": "/ɪmˈpɪr.ɪ.kəl/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "We need empirical evidence to validate the theory.",
@@ -6948,7 +6948,7 @@ const rawDefaultDecks = [
       {
         "id": "academic-c1-9",
         "english": "Cognitive",
-        "polish": "poznawczy / kognitywny",
+        "polish": "Poznawczy / kognitywny",
         "pronunciation": "/ˈkɑːɡ.nə.t̬ɪv/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "Cognitive psychology studies mental processes.",
@@ -6965,7 +6965,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-11",
-        "english": "Corroborate",
+        "english": "To Corroborate",
         "polish": "Potwierdzić / Poprzeć dowodami",
         "pronunciation": "/kəˈrɒb.ə.reɪt/",
         "partOfSpeech": "verb",
@@ -6974,7 +6974,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-12",
-        "english": "Delineate",
+        "english": "To Delineate",
         "polish": "Nakreślić / Przedstawić szczegółowo",
         "pronunciation": "/dɪˈlɪn.i.eɪt/",
         "partOfSpeech": "verb",
@@ -6983,7 +6983,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-13",
-        "english": "Elucidate",
+        "english": "To Elucidate",
         "polish": "Wyjaśnić / Naświetlić",
         "pronunciation": "/iˈluː.sɪ.deɪt/",
         "partOfSpeech": "verb",
@@ -7001,7 +7001,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-15",
-        "english": "Concede",
+        "english": "To Concede",
         "polish": "Przyznać rację / Ustąpić",
         "pronunciation": "/kənˈsiːd/",
         "partOfSpeech": "verb",
@@ -7010,7 +7010,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-16",
-        "english": "Refute",
+        "english": "To Refute",
         "polish": "Obaliwać / Wykazać fałsz",
         "pronunciation": "/rɪˈfjuːt/",
         "partOfSpeech": "verb",
@@ -7019,7 +7019,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-17",
-        "english": "Synthesize",
+        "english": "To Synthesize",
         "polish": "Łączyć w całość",
         "pronunciation": "/ˈsɪn.θə.saɪz/",
         "partOfSpeech": "verb",
@@ -7028,7 +7028,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-18",
-        "english": "Evaluate",
+        "english": "To Evaluate",
         "polish": "Ewaluować",
         "pronunciation": "/ɪˈvæl.ju.eɪt/",
         "partOfSpeech": "verb",
@@ -7037,7 +7037,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-19",
-        "english": "Hypothesize",
+        "english": "To Hypothesize",
         "polish": "Formułować hipotezę",
         "pronunciation": "/haɪˈpɒθ.ə.saɪz/",
         "partOfSpeech": "verb",
@@ -7055,7 +7055,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-21",
-        "english": "Reiterate",
+        "english": "To Reiterate",
         "polish": "Powtórzyć wielokrotnie",
         "pronunciation": "/riˈɪt.ər.eɪt/",
         "partOfSpeech": "verb",
@@ -7064,7 +7064,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-22",
-        "english": "Exemplify",
+        "english": "To Exemplify",
         "polish": "Ilustrować / Stanowić przykład",
         "pronunciation": "/ɪɡˈzem.plɪ.faɪ/",
         "partOfSpeech": "verb",
@@ -7073,7 +7073,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-23",
-        "english": "Demonstrate",
+        "english": "To Demonstrate",
         "polish": "Wykazać / Zademonstrować",
         "pronunciation": "/ˈdem.ən.streɪt/",
         "partOfSpeech": "verb",
@@ -7082,7 +7082,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-24",
-        "english": "Illustrate",
+        "english": "To Illustrate",
         "polish": "Ilustrować / Przedstawiać",
         "pronunciation": "/ˈɪl.ə.streɪt/",
         "partOfSpeech": "verb",
@@ -7091,7 +7091,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-26",
-        "english": "Assess",
+        "english": "To Assess",
         "polish": "Oceniać / Oszacować",
         "pronunciation": "/əˈses/",
         "partOfSpeech": "verb",
@@ -7100,7 +7100,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-27",
-        "english": "Appraise",
+        "english": "To Appraise",
         "polish": "Wyceniać / Oceniać wartość",
         "pronunciation": "/əˈpreɪz/",
         "partOfSpeech": "verb",
@@ -7109,7 +7109,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-28",
-        "english": "Interpret",
+        "english": "To Interpret",
         "polish": "Interpretować",
         "pronunciation": "/ɪnˈtɜː.prɪt/",
         "partOfSpeech": "verb",
@@ -7118,7 +7118,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-29",
-        "english": "Clarify",
+        "english": "To Clarify",
         "polish": "Wyjaśniać / Klarować",
         "pronunciation": "/ˈklær.ɪ.faɪ/",
         "partOfSpeech": "verb",
@@ -7136,7 +7136,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-31",
-        "english": "Cite",
+        "english": "To Cite",
         "polish": "Cytować / Powoływać się",
         "pronunciation": "/saɪt/",
         "partOfSpeech": "verb",
@@ -7145,7 +7145,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-32",
-        "english": "Plagiarize",
+        "english": "To Plagiarize",
         "polish": "Plagiatować",
         "pronunciation": "/ˈpleɪ.dʒər.aɪz/",
         "partOfSpeech": "verb",
@@ -7154,7 +7154,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-33",
-        "english": "Validate",
+        "english": "To Validate",
         "polish": "Uprawomocnić / Zatwierdzić",
         "pronunciation": "/ˈvæl.ɪ.deɪt/",
         "partOfSpeech": "verb",
@@ -7163,7 +7163,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-34",
-        "english": "Verify",
+        "english": "To Verify",
         "polish": "Weryfikować",
         "pronunciation": "/ˈver.ɪ.faɪ/",
         "partOfSpeech": "verb",
@@ -7172,7 +7172,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-35",
-        "english": "Substantiate",
+        "english": "To Substantiate",
         "polish": "Poprzeć dowodami / Uzasadnić",
         "pronunciation": "/səbˈstæn.ʃi.eɪt/",
         "partOfSpeech": "verb",
@@ -7181,7 +7181,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-36",
-        "english": "Contradict",
+        "english": "To Contradict",
         "polish": "Zaprzeczać / Być w sprzeczności",
         "pronunciation": "/ˌkɒn.trəˈdɪkt/",
         "partOfSpeech": "verb",
@@ -7190,7 +7190,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-37",
-        "english": "Oppose",
+        "english": "To Oppose",
         "polish": "Sprzeciwiać się",
         "pronunciation": "/əˈpəʊz/",
         "partOfSpeech": "verb",
@@ -7199,7 +7199,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-38",
-        "english": "Analyze",
+        "english": "To Analyze",
         "polish": "Analizować",
         "pronunciation": "/ˈæn.əl.aɪz/",
         "partOfSpeech": "verb",
@@ -7208,7 +7208,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-40",
-        "english": "Summarize",
+        "english": "To Summarize",
         "polish": "Podsumować",
         "pronunciation": "/ˈsʌm.ər.aɪz/",
         "partOfSpeech": "verb",
@@ -7226,7 +7226,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-43",
-        "english": "Differentiate",
+        "english": "To Differentiate",
         "polish": "Rozróżniać",
         "pronunciation": "/ˌdɪf.əˈren.ʃi.eɪt/",
         "partOfSpeech": "verb",
@@ -7244,7 +7244,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-45",
-        "english": "Assert",
+        "english": "To Assert",
         "polish": "Twierdzić / Zapewniać",
         "pronunciation": "/əˈsɜːt/",
         "partOfSpeech": "verb",
@@ -7253,7 +7253,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-46",
-        "english": "Formulate",
+        "english": "To Formulate",
         "polish": "Formułować",
         "pronunciation": "/ˈfɔː.mjə.leɪt/",
         "partOfSpeech": "verb",
@@ -7262,7 +7262,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-47",
-        "english": "Devise",
+        "english": "To Devise",
         "polish": "Opracować / Wymyślić",
         "pronunciation": "/dɪˈvaɪz/",
         "partOfSpeech": "verb",
@@ -7271,7 +7271,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-48",
-        "english": "Incorporate",
+        "english": "To Incorporate",
         "polish": "Wcielać / Włączać",
         "pronunciation": "/ɪnˈkɔː.pər.eɪt/",
         "partOfSpeech": "verb",
@@ -7280,7 +7280,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-49",
-        "english": "Acquire",
+        "english": "To Acquire",
         "polish": "Nabywać / Zdobywać",
         "pronunciation": "/əˈkwaɪər/",
         "partOfSpeech": "verb",
@@ -7289,7 +7289,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "academic-c1-50",
-        "english": "Determine",
+        "english": "To Determine",
         "polish": "Określać / Ustalać",
         "pronunciation": "/dɪˈtɜː.mɪn/",
         "partOfSpeech": "verb",
@@ -7455,7 +7455,7 @@ const rawDefaultDecks = [
       {
         "id": "social-c1-19",
         "english": "Bias",
-        "polish": "stronniczość / uprzedzenie",
+        "polish": "Stronniczość / uprzedzenie",
         "pronunciation": "/ˈbaɪ.əs/",
         "partOfSpeech": "noun/verb",
         "exampleEnglish": "Some news outlets show a political bias.",
@@ -7554,7 +7554,7 @@ const rawDefaultDecks = [
       {
         "id": "social-c1-31",
         "english": "Legislation",
-        "polish": "ustawodawstwo / legislacja",
+        "polish": "Ustawodawstwo / legislacja",
         "pronunciation": "/ˌledʒ.ɪˈsleɪ.ʃən/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The parliament passed new safety legislation.",
@@ -8118,7 +8118,7 @@ const rawDefaultDecks = [
       {
         "id": "literature-c2-2",
         "english": "Epistemology",
-        "polish": "epistemologia / teoria poznania",
+        "polish": "Epistemologia / teoria poznania",
         "pronunciation": "/ɪˌpɪs.təˈmɑː.lə.dʒi/",
         "partOfSpeech": "noun",
         "exampleEnglish": "His research focuses on evolutionary epistemology.",
@@ -8136,7 +8136,7 @@ const rawDefaultDecks = [
       {
         "id": "literature-c2-5",
         "english": "Paradigm",
-        "polish": "paradygmat / wzorzec",
+        "polish": "Paradygmat / wzorzec",
         "pronunciation": "/ˈpær.ə.daɪm/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The discovery led to a paradigm shift in physics.",
@@ -8181,7 +8181,7 @@ const rawDefaultDecks = [
       {
         "id": "literature-c2-10",
         "english": "Altruism",
-        "polish": "altruizm",
+        "polish": "Altruizm",
         "pronunciation": "/ˈæl.tru.ɪ.zəm/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Volunteering is an act of pure altruism.",
@@ -8199,7 +8199,7 @@ const rawDefaultDecks = [
       {
         "id": "literature-c2-13",
         "english": "Phenomenology",
-        "polish": "fenomenologia",
+        "polish": "Fenomenologia",
         "pronunciation": "/fɪˌnɒm.ɪˈnɒl.ə.dʒi/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Phenomenology explores conscious experience.",
@@ -8217,7 +8217,7 @@ const rawDefaultDecks = [
       {
         "id": "literature-c2-15",
         "english": "Metaphysics",
-        "polish": "metafizyka",
+        "polish": "Metafizyka",
         "pronunciation": "/ˌmet.əˈfɪz.ɪks/",
         "partOfSpeech": "noun",
         "exampleEnglish": "She is lecturing on classical metaphysics.",
@@ -8334,7 +8334,7 @@ const rawDefaultDecks = [
       {
         "id": "literature-c2-30",
         "english": "Sovereignty",
-        "polish": "suwerenność",
+        "polish": "Suwerenność",
         "pronunciation": "/ˈsɒv.rɪn.ti/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The treaty respects national sovereignty.",
@@ -8517,7 +8517,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-business-2",
         "english": "Get the ball rolling",
-        "polish": "zacząć działać",
+        "polish": "Zacząć działać",
         "pronunciation": "/ɡet ðə bɔːl ˈroʊ.lɪŋ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Let's get the ball rolling with the initial testing.",
@@ -8871,7 +8871,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-bd-3",
         "english": "Play it by ear",
-        "polish": "decydować na bieżąco / improwizować",
+        "polish": "Decydować na bieżąco / improwizować",
         "pronunciation": "/pleɪ ɪt baɪ ɪər/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "We don't have a plan, so let's just play it by ear.",
@@ -8880,7 +8880,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-bd-6",
         "english": "Give someone the cold shoulder",
-        "polish": "traktować kogoś ozięble / ignorować",
+        "polish": "Traktować kogoś ozięble / ignorować",
         "pronunciation": "/ɡɪv ˈsʌm.wʌn ðə koʊld ˈʃoʊl.dər/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I don't know why she is giving me the cold shoulder today.",
@@ -8898,7 +8898,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-bd-9",
         "english": "All ears",
-        "polish": "zamienić się w słuch",
+        "polish": "Zamienić się w słuch",
         "pronunciation": "/ɔːl ɪərz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Tell me about your vacation, I am all ears.",
@@ -8907,7 +8907,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-bd-10",
         "english": "Get cold feet",
-        "polish": "stchórzyć / przestraszyć się w ostatniej chwili",
+        "polish": "Stchórzyć / przestraszyć się w ostatniej chwili",
         "pronunciation": "/ɡet koʊld fiːt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "He was going to ask her out, but got cold feet.",
@@ -8966,7 +8966,7 @@ const rawDefaultDecks = [
       },
       {
         "id": "idioms-bus1-3",
-        "english": "Tweak",
+        "english": "To Tweak",
         "polish": "Wprowadzić drobne poprawki",
         "pronunciation": "/twiːk/",
         "partOfSpeech": "verb",
@@ -9030,7 +9030,7 @@ const rawDefaultDecks = [
       {
         "id": "idioms-bus1-12",
         "english": "Call the shots",
-        "polish": "podejmować kluczowe decyzje / rządzić",
+        "polish": "Podejmować kluczowe decyzje / rządzić",
         "pronunciation": "/kɔːl ðə ʃɑːts/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Since she is the director, she is the one calling the shots.",
@@ -9050,8 +9050,8 @@ const rawDefaultDecks = [
     "cards": [
       {
         "id": "v-a1-f1",
-        "english": "mother",
-        "polish": "matka / mama",
+        "english": "Mother",
+        "polish": "Matka / mama",
         "pronunciation": "/ˈmʌð.ər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "My mother is a doctor.",
@@ -9059,8 +9059,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-f2",
-        "english": "father",
-        "polish": "ojciec / tata",
+        "english": "Father",
+        "polish": "Ojciec / tata",
         "pronunciation": "/ˈfɑː.ðər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "His father works in a bank.",
@@ -9068,8 +9068,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-f3",
-        "english": "brother",
-        "polish": "brat",
+        "english": "Brother",
+        "polish": "Brat",
         "pronunciation": "/ˈbrʌð.ər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "I have one older brother.",
@@ -9077,8 +9077,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-f4",
-        "english": "sister",
-        "polish": "siostra",
+        "english": "Sister",
+        "polish": "Siostra",
         "pronunciation": "/ˈsɪs.tər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "She is my younger sister.",
@@ -9086,8 +9086,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-f7",
-        "english": "home",
-        "polish": "dom (miejsce zamieszkania)",
+        "english": "Home",
+        "polish": "Dom (miejsce zamieszkania)",
         "pronunciation": "/hoʊm/",
         "partOfSpeech": "noun",
         "exampleEnglish": "I am going home now.",
@@ -9095,8 +9095,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-f8",
-        "english": "room",
-        "polish": "pokój",
+        "english": "Room",
+        "polish": "Pokój",
         "pronunciation": "/ruːm/",
         "partOfSpeech": "noun",
         "exampleEnglish": "My room has blue walls.",
@@ -9104,8 +9104,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-f10",
-        "english": "bedroom",
-        "polish": "sypialnia",
+        "english": "Bedroom",
+        "polish": "Sypialnia",
         "pronunciation": "/ˈbed.ruːm/",
         "partOfSpeech": "noun",
         "exampleEnglish": "There is a big bed in the bedroom.",
@@ -9113,8 +9113,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-f11",
-        "english": "bathroom",
-        "polish": "łazienka",
+        "english": "Bathroom",
+        "polish": "Łazienka",
         "pronunciation": "/ˈbæθ.ruːm/",
         "partOfSpeech": "noun",
         "exampleEnglish": "I need to clean the bathroom.",
@@ -9122,8 +9122,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-f12",
-        "english": "door",
-        "polish": "drzwi",
+        "english": "Door",
+        "polish": "Drzwi",
         "pronunciation": "/dɔːr/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Please close the door.",
@@ -9131,8 +9131,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-f13",
-        "english": "window",
-        "polish": "okno",
+        "english": "Window",
+        "polish": "Okno",
         "pronunciation": "/ˈwɪn.doʊ/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Open the window, it's hot.",
@@ -9140,8 +9140,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-f16",
-        "english": "bed",
-        "polish": "łóżko",
+        "english": "Bed",
+        "polish": "Łóżko",
         "pronunciation": "/bed/",
         "partOfSpeech": "noun",
         "exampleEnglish": "This bed is very comfortable.",
@@ -9149,8 +9149,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-f17",
-        "english": "son",
-        "polish": "syn",
+        "english": "Son",
+        "polish": "Syn",
         "pronunciation": "/sʌn/",
         "partOfSpeech": "noun",
         "exampleEnglish": "He is their only son.",
@@ -9158,8 +9158,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-f18",
-        "english": "daughter",
-        "polish": "córka",
+        "english": "Daughter",
+        "polish": "Córka",
         "pronunciation": "/ˈdɔː.tər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "My daughter is five years old.",
@@ -9167,8 +9167,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-f19",
-        "english": "parents",
-        "polish": "rodzice",
+        "english": "Parents",
+        "polish": "Rodzice",
         "pronunciation": "/ˈper.ənts/",
         "partOfSpeech": "noun",
         "exampleEnglish": "My parents live in Warsaw.",
@@ -9176,8 +9176,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-f20",
-        "english": "baby",
-        "polish": "niemowlę / dziecko",
+        "english": "Baby",
+        "polish": "Niemowlę / dziecko",
         "pronunciation": "/ˈbeɪ.bi/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The baby is sleeping.",
@@ -9197,8 +9197,8 @@ const rawDefaultDecks = [
     "cards": [
       {
         "id": "v-a1-s1",
-        "english": "red",
-        "polish": "czerwony",
+        "english": "Red",
+        "polish": "Czerwony",
         "pronunciation": "/red/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "I bought a red apple.",
@@ -9206,8 +9206,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-s2",
-        "english": "blue",
-        "polish": "niebieski",
+        "english": "Blue",
+        "polish": "Niebieski",
         "pronunciation": "/bluː/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "The sky is blue today.",
@@ -9215,8 +9215,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-s3",
-        "english": "green",
-        "polish": "zielony",
+        "english": "Green",
+        "polish": "Zielony",
         "pronunciation": "/ɡriːn/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "The grass is green in summer.",
@@ -9224,8 +9224,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-s4",
-        "english": "yellow",
-        "polish": "żółty",
+        "english": "Yellow",
+        "polish": "Żółty",
         "pronunciation": "/ˈjel.oʊ/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "Bananas are yellow.",
@@ -9233,8 +9233,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-s5",
-        "english": "black",
-        "polish": "czarny",
+        "english": "Black",
+        "polish": "Czarny",
         "pronunciation": "/blæk/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "I wear black shoes.",
@@ -9242,8 +9242,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-s6",
-        "english": "white",
-        "polish": "biały",
+        "english": "White",
+        "polish": "Biały",
         "pronunciation": "/waɪt/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "The milk is white.",
@@ -9251,8 +9251,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-s12",
-        "english": "cheap",
-        "polish": "tani",
+        "english": "Cheap",
+        "polish": "Tani",
         "pronunciation": "/tʃiːp/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "This book is very cheap.",
@@ -9260,8 +9260,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-s13",
-        "english": "expensive",
-        "polish": "drogi",
+        "english": "Expensive",
+        "polish": "Drogi",
         "pronunciation": "/ɪkˈspen.sɪv/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "Gold is very expensive.",
@@ -9281,8 +9281,8 @@ const rawDefaultDecks = [
     "cards": [
       {
         "id": "v-a1-t6",
-        "english": "hour",
-        "polish": "godzina (trwanie)",
+        "english": "Hour",
+        "polish": "Godzina (trwanie)",
         "pronunciation": "/aʊər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The film lasts for one hour.",
@@ -9290,8 +9290,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-t7",
-        "english": "minute",
-        "polish": "minuta",
+        "english": "Minute",
+        "polish": "Minuta",
         "pronunciation": "/ˈmɪn.ɪt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Give me one minute, please.",
@@ -9299,8 +9299,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-t8",
-        "english": "second",
-        "polish": "drugi",
+        "english": "Second",
+        "polish": "Drugi",
         "pronunciation": "/ˈsek.ənd/",
         "partOfSpeech": "noun",
         "exampleEnglish": "This is my second cup of tea.",
@@ -9308,8 +9308,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-t12",
-        "english": "morning",
-        "polish": "poranek / rano",
+        "english": "Morning",
+        "polish": "Poranek / rano",
         "pronunciation": "/ˈmɔːr.nɪŋ/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Good morning! How did you sleep?",
@@ -9317,8 +9317,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-t13",
-        "english": "afternoon",
-        "polish": "popołudnie",
+        "english": "Afternoon",
+        "polish": "Popołudnie",
         "pronunciation": "/ˌæf.tərˈnuːn/",
         "partOfSpeech": "noun",
         "exampleEnglish": "I will call you in the afternoon.",
@@ -9326,8 +9326,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-t14",
-        "english": "evening",
-        "polish": "wieczór",
+        "english": "Evening",
+        "polish": "Wieczór",
         "pronunciation": "/ˈiːv.nɪŋ/",
         "partOfSpeech": "noun",
         "exampleEnglish": "We watch TV in the evening.",
@@ -9335,8 +9335,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-t15",
-        "english": "night",
-        "polish": "noc",
+        "english": "Night",
+        "polish": "Noc",
         "pronunciation": "/naɪt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The stars shine bright at night.",
@@ -9344,8 +9344,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-t16",
-        "english": "clock",
-        "polish": "zegar",
+        "english": "Clock",
+        "polish": "Zegar",
         "pronunciation": "/klɑːk/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The clock is on the wall.",
@@ -9353,8 +9353,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-t17",
-        "english": "number",
-        "polish": "liczba / numer",
+        "english": "Number",
+        "polish": "Liczba / numer",
         "pronunciation": "/ˈnʌm.bər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Choose a number from one to ten.",
@@ -9362,8 +9362,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-t18",
-        "english": "first",
-        "polish": "pierwszy",
+        "english": "First",
+        "polish": "Pierwszy",
         "pronunciation": "/fɜːrst/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "He won the first prize.",
@@ -9371,8 +9371,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a1-t20",
-        "english": "third",
-        "polish": "trzeci",
+        "english": "Third",
+        "polish": "Trzeci",
         "pronunciation": "/θɜːrd/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "Our office is on the third floor.",
@@ -9393,7 +9393,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-4",
         "english": "So far, so good",
-        "polish": "jak na razie wszystko w porządku",
+        "polish": "Jak na razie wszystko w porządku",
         "pronunciation": "/soʊ fɑːr soʊ ɡʊd/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "How is the new job? So far, so good.",
@@ -9402,7 +9402,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-6",
         "english": "Easy does it",
-        "polish": "ostrożnie / powoli",
+        "polish": "Ostrożnie / powoli",
         "pronunciation": "/ˈiː.zi dʌz ɪt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Easy does it! Don't drop that glass box.",
@@ -9411,7 +9411,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-9",
         "english": "Beat around the bush",
-        "polish": "owijać w bawełnę",
+        "polish": "Owijać w bawełnę",
         "pronunciation": "/biːt əˈraʊnd ðə bʊʃ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Stop beating around the bush and state your terms.",
@@ -9420,7 +9420,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-10",
         "english": "No pain, no gain",
-        "polish": "bez pracy nie ma kołaczy",
+        "polish": "Bez pracy nie ma kołaczy",
         "pronunciation": "/noʊ peɪn noʊ ɡeɪn/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Gym is hard, but no pain, no gain.",
@@ -9441,7 +9441,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-11",
         "english": "Time flies",
-        "polish": "czas szybko leci",
+        "polish": "Czas szybko leci",
         "pronunciation": "/taɪm flaɪz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Time flies when you are having fun.",
@@ -9450,7 +9450,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-12",
         "english": "Nice try",
-        "polish": "dobra próba / ładny usiłowanie",
+        "polish": "Dobra próba / ładny usiłowanie",
         "pronunciation": "/naɪs traɪ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "You didn't win, but nice try!",
@@ -9459,7 +9459,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-13",
         "english": "Cross your fingers",
-        "polish": "trzymać kciuki",
+        "polish": "Trzymać kciuki",
         "pronunciation": "/krɔːs jɔːr ˈfɪŋ.ɡərz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Cross your fingers that I pass the exam.",
@@ -9468,7 +9468,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-14",
         "english": "Better late than never",
-        "polish": "lepiej późno niż wcale",
+        "polish": "Lepiej późno niż wcale",
         "pronunciation": "/ˈbet.ər leɪt ðæn ˈnev.ər/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "You arrived an hour late, but better late than never.",
@@ -9477,7 +9477,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-15",
         "english": "Lose your touch",
-        "polish": "stracić wprawę",
+        "polish": "Stracić wprawę",
         "pronunciation": "/luːz jɔːr tʌtʃ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I missed three shots; I am losing my touch.",
@@ -9486,7 +9486,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-16",
         "english": "Under your nose",
-        "polish": "pod samym nosem (bardzo blisko)",
+        "polish": "Pod samym nosem (bardzo blisko)",
         "pronunciation": "/ˈʌn.dər jɔːr noʊz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Your keys are right under your nose on the table.",
@@ -9495,7 +9495,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-17",
         "english": "You bet",
-        "polish": "no jasne / masz to jak w banku",
+        "polish": "No jasne / masz to jak w banku",
         "pronunciation": "/juː bet/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Are you coming tonight? You bet!",
@@ -9504,7 +9504,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-18",
         "english": "Don't sweat it",
-        "polish": "nie przejmuj się tym / bez obaw",
+        "polish": "Nie przejmuj się tym / bez obaw",
         "pronunciation": "/doʊnt swet ɪt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I broke the pen. Don't sweat it, I have another one.",
@@ -9513,7 +9513,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-19",
         "english": "Go with the flow",
-        "polish": "iść z prądem / płynąć z prądem",
+        "polish": "Iść z prądem / płynąć z prądem",
         "pronunciation": "/ɡoʊ wɪð ðə floʊ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I don't have a plan, I will just go with the flow.",
@@ -9522,7 +9522,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-20",
         "english": "Draw the line",
-        "polish": "wyznaczyć nieprzekraczalną granicę",
+        "polish": "Wyznaczyć nieprzekraczalną granicę",
         "pronunciation": "/drɔː ðə laɪn/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I want to help, but I draw the line at lending money.",
@@ -9543,7 +9543,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-22",
         "english": "Ring a bell",
-        "polish": "brzmieć znajomo",
+        "polish": "Brzmieć znajomo",
         "pronunciation": "/rɪŋ ə bel/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Does the name John Smith ring a bell?",
@@ -9552,7 +9552,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-23",
         "english": "Wear your heart on your sleeve",
-        "polish": "mieć serce na dłoni / łatwo okazywać uczucia",
+        "polish": "Mieć serce na dłoni / łatwo okazywać uczucia",
         "pronunciation": "/wer jɔːr hɑːrt ɑːn jɔːr sliːv/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "She wears her heart on her sleeve and cries easily.",
@@ -9561,7 +9561,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-24",
         "english": "Wouldn't hurt a fly",
-        "polish": "nie skrzywdziłby muchy",
+        "polish": "Nie skrzywdziłby muchy",
         "pronunciation": "/ˈwʊd.ənt hɜːt ə flaɪ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Don't fear our dog; he wouldn't hurt a fly.",
@@ -9570,7 +9570,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-25",
         "english": "Safe and sound",
-        "polish": "cały i zdrowy",
+        "polish": "Cały i zdrowy",
         "pronunciation": "/seɪf ænd saʊnd/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "The children returned from the trip safe and sound.",
@@ -9579,7 +9579,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-27",
         "english": "In the same boat",
-        "polish": "jechać na tym samym wózku / w tej samej sytuacji",
+        "polish": "Jechać na tym samym wózku / w tej samej sytuacji",
         "pronunciation": "/ɪn ðə seɪm boʊt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "We both lost our jobs, so we are in the same boat.",
@@ -9588,7 +9588,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-28",
         "english": "Let the cat out of the bag",
-        "polish": "puścić parę z ust / wygadać tajemnicę",
+        "polish": "Puścić parę z ust / wygadać tajemnicę",
         "pronunciation": "/let ðə kæt aʊt əv ðə bæɡ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "It was a secret, but he let the cat out of the bag.",
@@ -9609,7 +9609,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-34",
         "english": "Ring in the new year",
-        "polish": "powitać Nowy Rok",
+        "polish": "Powitać Nowy Rok",
         "pronunciation": "/rɪŋ ɪn ðə nuː jɪr/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "We went to Times Square to ring in the new year.",
@@ -9618,7 +9618,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-36",
         "english": "Through thick and thin",
-        "polish": "na dobre i na złe",
+        "polish": "Na dobre i na złe",
         "pronunciation": "/θruː θɪk ænd θɪn/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Our partnership lasted through thick and thin.",
@@ -9627,7 +9627,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-37",
         "english": "Step up your game",
-        "polish": "wziąć się w garść / zacząć lepiej grać",
+        "polish": "Wziąć się w garść / zacząć lepiej grać",
         "pronunciation": "/step ʌp jɔːr ɡeɪm/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "If you want to win, you need to step up your game.",
@@ -9636,7 +9636,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-38",
         "english": "Make a long story short",
-        "polish": "krótko mówiąc",
+        "polish": "Krótko mówiąc",
         "pronunciation": "/meɪk ə lɔːŋ ˈstɔː.ri ʃɔːrt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "To make a long story short, they moved to London.",
@@ -9645,7 +9645,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-39",
         "english": "Keep your chin up",
-        "polish": "głowa do góry (nie poddawaj się)",
+        "polish": "Głowa do góry (nie poddawaj się)",
         "pronunciation": "/kiːp jɔːr tʃɪn ʌp/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Keep your chin up! Tomorrow is another day.",
@@ -9654,7 +9654,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-40",
         "english": "It's not rocket science",
-        "polish": "to nie filozofia / żadna wielka sztuka",
+        "polish": "To nie filozofia / żadna wielka sztuka",
         "pronunciation": "/ɪts nɑːt ˈrɑː.kɪt ˈsaɪ.əns/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Just click this button; it's not rocket science.",
@@ -9675,7 +9675,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-41",
         "english": "Barking up the wrong tree",
-        "polish": "szukać w złym miejscu / błędny adres",
+        "polish": "Szukać w złym miejscu / błędny adres",
         "pronunciation": "/ˈbɑːr.kɪŋ ʌp ðə rɔːŋ triː/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "If you think I broke it, you are barking up the wrong tree.",
@@ -9684,7 +9684,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-42",
         "english": "Bite off more than you can chew",
-        "polish": "porywać się z motyką na słońce",
+        "polish": "Porywać się z motyką na słońce",
         "pronunciation": "/baɪt ɔːf mɔːr ðæn juː kæn tʃuː/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Starting three businesses at once is biting off more than you can chew.",
@@ -9693,7 +9693,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-43",
         "english": "Burn bridges",
-        "polish": "palić za sobą mosty",
+        "polish": "Palić za sobą mosty",
         "pronunciation": "/bɜːrn ˈbrɪdʒ.ɪz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Leaving the team in anger is a way to burn bridges.",
@@ -9702,7 +9702,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-44",
         "english": "Catch someone's eye",
-        "polish": "wpaść komuś w oko / przykuć uwagę",
+        "polish": "Wpaść komuś w oko / przykuć uwagę",
         "pronunciation": "/kætʃ ˈsʌm.wʌnz aɪ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "That beautiful picture on the wall caught my eye.",
@@ -9711,7 +9711,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-45",
         "english": "Cut some slack",
-        "polish": "przymknąć na kogoś oko / dać komuś luzu",
+        "polish": "Przymknąć na kogoś oko / dać komuś luzu",
         "pronunciation": "/kʌt sʌm slæk/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "It was his first day at work, so cut him some slack.",
@@ -9720,7 +9720,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a1-46",
         "english": "Get out of hand",
-        "polish": "wymknąć się spod kontroli",
+        "polish": "Wymknąć się spod kontroli",
         "pronunciation": "/ɡet aʊt əv hænd/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "The children's party got a bit out of hand.",
@@ -9740,8 +9740,8 @@ const rawDefaultDecks = [
     "cards": [
       {
         "id": "v-a2-j1",
-        "english": "teacher",
-        "polish": "nauczyciel",
+        "english": "Teacher",
+        "polish": "Nauczyciel",
         "pronunciation": "/ˈtiː.tʃər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "My teacher explains everything very well.",
@@ -9749,8 +9749,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-j2",
-        "english": "doctor",
-        "polish": "lekarz",
+        "english": "Doctor",
+        "polish": "Lekarz",
         "pronunciation": "/ˈdɒk.tər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The doctor gave me a prescription.",
@@ -9758,8 +9758,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-j3",
-        "english": "nurse",
-        "polish": "pielęgniarka",
+        "english": "Nurse",
+        "polish": "Pielęgniarka",
         "pronunciation": "/nɜːs/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The nurse checked my body temperature.",
@@ -9767,8 +9767,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-j7",
-        "english": "engineer",
-        "polish": "inżynier",
+        "english": "Engineer",
+        "polish": "Inżynier",
         "pronunciation": "/ˌen.dʒɪˈnɪər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "An engineer designed this long bridge.",
@@ -9776,8 +9776,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-j9",
-        "english": "shop assistant",
-        "polish": "sprzedawca w sklepie",
+        "english": "Shop assistant",
+        "polish": "Sprzedawca w sklepie",
         "pronunciation": "/ˈʃɒp əˌsɪs.tənt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The shop assistant helped me find a jacket.",
@@ -9785,8 +9785,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-j17",
-        "english": "job interview",
-        "polish": "rozmowa kwalifikacyjna",
+        "english": "Job interview",
+        "polish": "Rozmowa kwalifikacyjna",
         "pronunciation": "/dʒɒb ˈɪn.tə.vjuː/",
         "partOfSpeech": "noun",
         "exampleEnglish": "She did well at her job interview.",
@@ -9794,8 +9794,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-j18",
-        "english": "skills",
-        "polish": "umiejętności",
+        "english": "Skills",
+        "polish": "Umiejętności",
         "pronunciation": "/skɪlz/",
         "partOfSpeech": "noun",
         "exampleEnglish": "We need to learn new digital skills.",
@@ -9803,8 +9803,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-j20",
-        "english": "retired",
-        "polish": "na emeryturze",
+        "english": "Retired",
+        "polish": "Na emeryturze",
         "pronunciation": "/rɪˈtaɪəd/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "My grandfather is retired.",
@@ -9824,8 +9824,8 @@ const rawDefaultDecks = [
     "cards": [
       {
         "id": "v-a2-h1",
-        "english": "body",
-        "polish": "ciało",
+        "english": "Body",
+        "polish": "Ciało",
         "pronunciation": "/ˈbɒd.i/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Healthy food keeps your body strong.",
@@ -9833,8 +9833,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h2",
-        "english": "head",
-        "polish": "głowa",
+        "english": "Head",
+        "polish": "Głowa",
         "pronunciation": "/hed/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Wear a hat to protect your head.",
@@ -9842,8 +9842,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h3",
-        "english": "hand",
-        "polish": "dłoń / ręka",
+        "english": "Hand",
+        "polish": "Dłoń / ręka",
         "pronunciation": "/hænd/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Hold my hand to cross the street.",
@@ -9851,8 +9851,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h4",
-        "english": "foot",
-        "polish": "stopa",
+        "english": "Foot",
+        "polish": "Stopa",
         "pronunciation": "/fʊt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "His left foot was injured.",
@@ -9860,8 +9860,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h5",
-        "english": "health",
-        "polish": "zdrowie",
+        "english": "Health",
+        "polish": "Zdrowie",
         "pronunciation": "/helθ/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Health is more important than wealth.",
@@ -9869,8 +9869,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h6",
-        "english": "sick",
-        "polish": "chory",
+        "english": "Sick",
+        "polish": "Chory",
         "pronunciation": "/sɪk/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "I stayed in bed because I was sick.",
@@ -9878,8 +9878,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h7",
-        "english": "pain",
-        "polish": "ból",
+        "english": "Pain",
+        "polish": "Ból",
         "pronunciation": "/peɪn/",
         "partOfSpeech": "noun",
         "exampleEnglish": "I have a sharp pain in my back.",
@@ -9887,8 +9887,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h8",
-        "english": "headache",
-        "polish": "ból głowy",
+        "english": "Headache",
+        "polish": "Ból głowy",
         "pronunciation": "/ˈhed.eɪk/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Aspiring helps to cure a headache.",
@@ -9896,8 +9896,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h10",
-        "english": "cough",
-        "polish": "kaszel",
+        "english": "Cough",
+        "polish": "Kaszel",
         "pronunciation": "/kɒf/",
         "partOfSpeech": "noun/verb",
         "exampleEnglish": "He had a bad cough all night.",
@@ -9905,8 +9905,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h11",
-        "english": "medicine",
-        "polish": "lek / lekarstwo",
+        "english": "Medicine",
+        "polish": "Lek / lekarstwo",
         "pronunciation": "/ˈmed.ɪ.sən/",
         "partOfSpeech": "noun",
         "exampleEnglish": "This medicine must be taken with water.",
@@ -9914,8 +9914,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h12",
-        "english": "pharmacy",
-        "polish": "apteka",
+        "english": "Pharmacy",
+        "polish": "Apteka",
         "pronunciation": "/ˈfɑː.mə.si/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Is there a pharmacy nearby?",
@@ -9923,8 +9923,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h13",
-        "english": "hospital",
-        "polish": "szpital",
+        "english": "Hospital",
+        "polish": "Szpital",
         "pronunciation": "/ˈhɒs.pɪ.təl/",
         "partOfSpeech": "noun",
         "exampleEnglish": "He was taken to the city hospital.",
@@ -9932,8 +9932,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h14",
-        "english": "fever",
-        "polish": "gorączka",
+        "english": "Fever",
+        "polish": "Gorączka",
         "pronunciation": "/ˈfiː.vər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "A high fever is a sign of infection.",
@@ -9941,8 +9941,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h15",
-        "english": "dentist",
-        "polish": "dentysta",
+        "english": "Dentist",
+        "polish": "Dentysta",
         "pronunciation": "/ˈden.tɪst/",
         "partOfSpeech": "noun",
         "exampleEnglish": "I have an appointment with the dentist.",
@@ -9950,8 +9950,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h16",
-        "english": "stomach",
-        "polish": "żołądek",
+        "english": "Stomach",
+        "polish": "Żołądek",
         "pronunciation": "/ˈstʌm.ək/",
         "partOfSpeech": "noun",
         "exampleEnglish": "My stomach is empty.",
@@ -9959,8 +9959,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h17",
-        "english": "blood",
-        "polish": "krew",
+        "english": "Blood",
+        "polish": "Krew",
         "pronunciation": "/blʌd/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Blood carries oxygen throughout the body.",
@@ -9968,8 +9968,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h18",
-        "english": "appointment",
-        "polish": "umówione spotkanie / wizyta",
+        "english": "Appointment",
+        "polish": "Umówione spotkanie / wizyta",
         "pronunciation": "/əˈpɔɪnt.mənt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "I need to make a doctor's appointment.",
@@ -9977,8 +9977,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h19",
-        "english": "healthy",
-        "polish": "zdrowy",
+        "english": "Healthy",
+        "polish": "Zdrowy",
         "pronunciation": "/ˈhel.θi/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "Vegetables are a healthy food choice.",
@@ -9986,8 +9986,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-a2-h20",
-        "english": "exercise",
-        "polish": "ćwiczenia / ćwiczyć",
+        "english": "Exercise",
+        "polish": "Ćwiczenia / ćwiczyć",
         "pronunciation": "/ˈek.sə.saɪz/",
         "partOfSpeech": "noun/verb",
         "exampleEnglish": "Daily exercise helps to stay fit.",
@@ -10008,7 +10008,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-1",
         "english": "Hold your horses",
-        "polish": "chwileczkę / wstrzymaj konie (poczekaj)",
+        "polish": "Chwileczkę / wstrzymaj konie (poczekaj)",
         "pronunciation": "/hoʊld jɔːr ˈhɔːr.sɪz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Hold your horses! We are not ready to go yet.",
@@ -10017,7 +10017,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-2",
         "english": "Kill two birds with one stone",
-        "polish": "upiec dwie pieczenie na jednym ogniu",
+        "polish": "Upiec dwie pieczenie na jednym ogniu",
         "pronunciation": "/kɪl tuː bɜːrdz wɪð wʌn stoʊn/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I will drop you off on my way to work to kill two birds with one stone.",
@@ -10026,7 +10026,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-3",
         "english": "Piece of the pie",
-        "polish": "udział w zyskach / część tortu",
+        "polish": "Udział w zyskach / część tortu",
         "pronunciation": "/piːs əv ðə paɪ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "If the business succeeds, everyone wants a piece of the pie.",
@@ -10035,7 +10035,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-4",
         "english": "Raining cats and dogs",
-        "polish": "lać jak z cebra",
+        "polish": "Lać jak z cebra",
         "pronunciation": "/ˈreɪ.nɪŋ kæts ænd dɑːɡz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Take an umbrella, it is raining cats and dogs outside.",
@@ -10044,7 +10044,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-7",
         "english": "Throw in the towel",
-        "polish": "poddać się / rzucić ręcznik",
+        "polish": "Poddać się / rzucić ręcznik",
         "pronunciation": "/θroʊ ɪn ðə ˈtaʊ.əl/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "The test was too hard, and he threw in the towel.",
@@ -10053,7 +10053,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-8",
         "english": "Your guess is as good as mine",
-        "polish": "wiem tyle samo co ty (nie mam pojęcia)",
+        "polish": "Wiem tyle samo co ty (nie mam pojęcia)",
         "pronunciation": "/jɔːr ɡes ɪz æz ɡʊd æz maɪn/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Where are my keys? Your guess is as good as mine.",
@@ -10062,7 +10062,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-10",
         "english": "Actions speak louder than words",
-        "polish": "czyny znaczą więcej niż słowa",
+        "polish": "Czyny znaczą więcej niż słowa",
         "pronunciation": "/ˈæk.ʃənz spiːk ˈlaʊ.dər ðæn wɜːrdz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Don't promise to help; actions speak louder than words.",
@@ -10083,7 +10083,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-11",
         "english": "Add fuel to the fire",
-        "polish": "dolać oliwy do ognia",
+        "polish": "Dolać oliwy do ognia",
         "pronunciation": "/æd fjuːəl tuː ðə faɪər/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "His angry comment only added fuel to the fire.",
@@ -10092,7 +10092,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-13",
         "english": "Between a rock and a hard place",
-        "polish": "między młotem a kowadłem",
+        "polish": "Między młotem a kowadłem",
         "pronunciation": "/bɪˈtwiːn ə rɑːk ænd ə hɑːrd pleɪs/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Having to choose between those two is being between a rock and a hard place.",
@@ -10101,7 +10101,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-16",
         "english": "Catch someone red-handed",
-        "polish": "złapać kogoś na gorącym uczynku",
+        "polish": "Złapać kogoś na gorącym uczynku",
         "pronunciation": "/kætʃ ˈsʌm.wʌn red ˈhæn.dɪd/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "The thief was caught red-handed taking the money.",
@@ -10110,7 +10110,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-17",
         "english": "Cry wolf",
-        "polish": "wszczynać fałszywy alarm / wołać na pomoc bez powodu",
+        "polish": "Wszczynać fałszywy alarm / wołać na pomoc bez powodu",
         "pronunciation": "/kraɪ wʊlf/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "If you cry wolf too often, nobody will help you when you really need it.",
@@ -10119,7 +10119,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-18",
         "english": "Curiosity killed the cat",
-        "polish": "ciekawość to pierwszy stopień do piekła",
+        "polish": "Ciekawość to pierwszy stopień do piekła",
         "pronunciation": "/ˌkjʊr.iˈɒs.ə.ti kɪld ðə kæt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Don't open that locked drawer; curiosity killed the cat.",
@@ -10128,7 +10128,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-20",
         "english": "Don't judge a book by its cover",
-        "polish": "nie oceniaj książki po okładce",
+        "polish": "Nie oceniaj książki po okładce",
         "pronunciation": "/doʊnt dʒʌdʒ ə bʊk baɪ ɪts ˈkʌv.ər/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "He looks scary, but he is kind; don't judge a book by its cover.",
@@ -10149,7 +10149,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-21",
         "english": "Drop the subject",
-        "polish": "zmienić temat / odpuścić temat",
+        "polish": "Zmienić temat / odpuścić temat",
         "pronunciation": "/drɑːp ðə ˈsʌb.dʒekt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "We started arguing, so I decided to drop the subject.",
@@ -10158,7 +10158,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-22",
         "english": "Far cry from",
-        "polish": "bardzo daleki od / zupełnie inny niż",
+        "polish": "Bardzo daleki od / zupełnie inny niż",
         "pronunciation": "/fɑːr kraɪ frʌm/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "The tiny apartment was a far cry from the photos online.",
@@ -10167,7 +10167,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-23",
         "english": "Feel like a million dollars",
-        "polish": "czuć się znakomicie / jak nowo narodzony",
+        "polish": "Czuć się znakomicie / jak nowo narodzony",
         "pronunciation": "/fiːl laɪk ə ˈmɪl.jən ˈdɑː.lərz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I slept for nine hours and now I feel like a million dollars.",
@@ -10176,7 +10176,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-24",
         "english": "Get your act together",
-        "polish": "wziąć się w garść / zorganizować się lepiej",
+        "polish": "Wziąć się w garść / zorganizować się lepiej",
         "pronunciation": "/ɡet jɔːr ækt təˈɡeð.ər/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "You need to get your act together if you want to pass the exam.",
@@ -10185,7 +10185,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-25",
         "english": "Give someone the benefit of the doubt",
-        "polish": "dać komuś kredyt zaufania / uwierzyć komuś na słowo",
+        "polish": "Dać komuś kredyt zaufania / uwierzyć komuś na słowo",
         "pronunciation": "/ɡɪv ˈsʌm.wʌn ðə ˈben.ə.fɪt əv ðə daʊt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "He is late, but let's give him the benefit of the doubt.",
@@ -10194,7 +10194,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-26",
         "english": "Go cold turkey",
-        "polish": "nagle i całkowicie rzucić nałóg",
+        "polish": "Nagle i całkowicie rzucić nałóg",
         "pronunciation": "/ɡoʊ koʊld ˈtɜː.ki/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "He quit smoking by going cold turkey.",
@@ -10203,7 +10203,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-27",
         "english": "Hit the nail on the head",
-        "polish": "trafić w sedno",
+        "polish": "Trafić w sedno",
         "pronunciation": "/hɪt ðə neɪl ɑːn ðə hed/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Her analysis of our financial problems hit the nail on the head.",
@@ -10212,7 +10212,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-28",
         "english": "Jump on the bandwagon",
-        "polish": "poddać się modzie / zacząć robić to co inni",
+        "polish": "Poddać się modzie / zacząć robić to co inni",
         "pronunciation": "/dʒʌmp ɑːn ðə ˈbændˌwæɡ.ən/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Many shops are jumping on the bandwagon of online delivery.",
@@ -10221,7 +10221,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-30",
         "english": "Last straw",
-        "polish": "kropla przelewająca czarę goryczy",
+        "polish": "Kropla przelewająca czarę goryczy",
         "pronunciation": "/læst strɔː/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "He was late again, and that was the last straw.",
@@ -10242,7 +10242,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-31",
         "english": "Let bygones be bygones",
-        "polish": "puścić w niepamięć / co było, minęło",
+        "polish": "Puścić w niepamięć / co było, minęło",
         "pronunciation": "/let ˈbaɪ.ɡɔːnz biː ˈbaɪ.ɡɔːnz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Let's forget our argument and let bygones be bygones.",
@@ -10251,7 +10251,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-32",
         "english": "Make ends meet",
-        "polish": "wiązać koniec z końcem",
+        "polish": "Wiązać koniec z końcem",
         "pronunciation": "/meɪk endz miːt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "With prices rising, it's hard to make ends meet.",
@@ -10260,7 +10260,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-33",
         "english": "On the fence",
-        "polish": "wahać się / stać na rozdrożu",
+        "polish": "Wahać się / stać na rozdrożu",
         "pronunciation": "/ɑːn ðə fens/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I am on the fence about accepting the promotion.",
@@ -10269,7 +10269,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-34",
         "english": "Play devil's advocate",
-        "polish": "adwokat diabła",
+        "polish": "Adwokat diabła",
         "pronunciation": "/pleɪ ˈdev.əlz ˈæd.və.kət/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Let's play devil's advocate to examine the weak points.",
@@ -10278,7 +10278,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-36",
         "english": "Put all eggs in one basket",
-        "polish": "postawić wszystko na jedną kartę",
+        "polish": "Postawić wszystko na jedną kartę",
         "pronunciation": "/pʊt ɔːl eɡz ɪn wʌn ˈbæs.kɪt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Invest in different companies; don't put all your eggs in one basket.",
@@ -10287,7 +10287,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-37",
         "english": "Put yourself in someone's shoes",
-        "polish": "postawić się na czyimś miejscu",
+        "polish": "Postawić się na czyimś miejscu",
         "pronunciation": "/pʊt jɔːrˈself ɪn ˈsʌm.wʌnz ʃuːz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Put yourself in his shoes before you criticize him.",
@@ -10296,7 +10296,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-38",
         "english": "Read between the lines",
-        "polish": "czytać między wierszami",
+        "polish": "Czytać między wierszami",
         "pronunciation": "/riːd bɪˈtwiːn ðə laɪnz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "He said he was fine, but reading between the lines, he seemed sad.",
@@ -10305,7 +10305,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-39",
         "english": "Speak your mind",
-        "polish": "mówić to co się myśli / szczerze wyrażać zdanie",
+        "polish": "Mówić to co się myśli / szczerze wyrażać zdanie",
         "pronunciation": "/spiːk jɔːr maɪnd/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Don't be afraid to speak your mind at the meeting.",
@@ -10314,7 +10314,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-40",
         "english": "Take something with a grain of salt",
-        "polish": "brać coś z przymrużeniem oka / podchodzić z dystansem",
+        "polish": "Brać coś z przymrużeniem oka / podchodzić z dystansem",
         "pronunciation": "/teɪk ˈsʌm.θɪŋ wɪð ə ɡreɪn əv sɔːlt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "He exaggerates stories, so take what he says with a grain of salt.",
@@ -10335,7 +10335,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-41",
         "english": "The elephant in the room",
-        "polish": "temat tabu / oczywisty, ale ignorowany problem",
+        "polish": "Temat tabu / oczywisty, ale ignorowany problem",
         "pronunciation": "/ði ˈel.ɪ.fənt ɪn ðə ruːm/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Nobody mentioned his debt; it was the elephant in the room.",
@@ -10344,7 +10344,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-42",
         "english": "Two heads are better than one",
-        "polish": "co dwie głowy, to nie jedna",
+        "polish": "Co dwie głowy, to nie jedna",
         "pronunciation": "/tuː hedz ɑːr ˈbet.ər ðæn wʌn/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Let's solve this puzzle together; two heads are better than one.",
@@ -10353,7 +10353,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-43",
         "english": "Under lock and key",
-        "polish": "pod kluczem (bezpiecznie zamknięte)",
+        "polish": "Pod kluczem (bezpiecznie zamknięte)",
         "pronunciation": "/ˈʌn.dər lɑːk ænd kiː/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "The jewels are kept safe under lock and key.",
@@ -10362,7 +10362,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-44",
         "english": "Up a creek without a paddle",
-        "polish": "w tarapatach / w ciemnej nienazwanej dolinie",
+        "polish": "W tarapatach / w ciemnej nienazwanej dolinie",
         "pronunciation": "/ʌp ə kriːk wɪðˈaʊt ə ˈpæd.əl/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "If our car breaks down here, we are up a creek without a paddle.",
@@ -10371,7 +10371,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-45",
         "english": "Wet behind the ears",
-        "polish": "mieć jeszcze mleko pod nosem / niedoświadczony",
+        "polish": "Mieć jeszcze mleko pod nosem / niedoświadczony",
         "pronunciation": "/wet bɪˈhaɪnd ði ɪəz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "The new programmer is young and still wet behind the ears.",
@@ -10380,7 +10380,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-46",
         "english": "Wild goose chase",
-        "polish": "szukanie wiatru w polu / skazana na niepowodzenie pogoni",
+        "polish": "Szukanie wiatru w polu / skazana na niepowodzenie pogoni",
         "pronunciation": "/waɪld ɡuːs tʃeɪs/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Looking for the receipt was a wild goose chase.",
@@ -10389,7 +10389,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-47",
         "english": "Wolf in sheep's clothing",
-        "polish": "wilk w owczej skórze",
+        "polish": "Wilk w owczej skórze",
         "pronunciation": "/wʊlf ɪn ʃiːps ˈkloʊ.ðɪŋ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Be careful with him; he is a wolf in sheep's clothing.",
@@ -10398,7 +10398,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-48",
         "english": "You can't have your cake and eat it too",
-        "polish": "nie można mieć ciastka i zjeść ciastka",
+        "polish": "Nie można mieć ciastka i zjeść ciastka",
         "pronunciation": "/juː kænt hæv jɔːr keɪk ænd iːt ɪt tuː/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "You want to travel but save money; you can't have your cake and eat it too.",
@@ -10407,7 +10407,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-49",
         "english": "Zero in on",
-        "polish": "skupić się na czymś / wziąć coś na celownik",
+        "polish": "Skupić się na czymś / wziąć coś na celownik",
         "pronunciation": "/ˈzɪə.roʊ ɪn ɑːn/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "We need to zero in on the main source of the problem.",
@@ -10416,7 +10416,7 @@ const rawDefaultDecks = [
       {
         "id": "id-a2-50",
         "english": "All in a day's work",
-        "polish": "chleb powszedni / nic nadzwyczajnego",
+        "polish": "Chleb powszedni / nic nadzwyczajnego",
         "pronunciation": "/ɔːl ɪn ə deɪz wɜːrk/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Solving computer bugs is all in a day's work for me.",
@@ -10437,7 +10437,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-4",
         "english": "Don't put all your eggs in one basket",
-        "polish": "nie stawiaj wszystkiego na jedną kartę",
+        "polish": "Nie stawiaj wszystkiego na jedną kartę",
         "pronunciation": "/doʊnt pʊt ɔːl jɔːr eɡz ɪn wʌn ˈbæs.kɪt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Apply to different jobs; don't put all your eggs in one basket.",
@@ -10446,7 +10446,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-5",
         "english": "Every cloud has a silver lining",
-        "polish": "nie ma tego złego, co by na dobre nie wyszło",
+        "polish": "Nie ma tego złego, co by na dobre nie wyszło",
         "pronunciation": "/ˈev.ri klaʊd hæz ə ˈsɪl.vər ˈlaɪ.nɪŋ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I got laid off but started a business; every cloud has a silver lining.",
@@ -10455,7 +10455,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-7",
         "english": "Hear it on the grapevine",
-        "polish": "dowiedzieć się pocztą pantoflową",
+        "polish": "Dowiedzieć się pocztą pantoflową",
         "pronunciation": "/hɪr ɪt ɑːn ðə ˈɡreɪp.vaɪn/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I heard it on the grapevine that they are getting married.",
@@ -10464,7 +10464,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-8",
         "english": "It takes two to tango",
-        "polish": "do tanga trzeba dwojga",
+        "polish": "Do tanga trzeba dwojga",
         "pronunciation": "/ɪt teɪks tuː tuː ˈtæŋ.ɡoʊ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "They are both to blame; it takes two to tango.",
@@ -10473,7 +10473,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-9",
         "english": "Keep something at bay",
-        "polish": "trzymać coś na dystans / powstrzymywać",
+        "polish": "Trzymać coś na dystans / powstrzymywać",
         "pronunciation": "/kiːp ˈsʌm.θɪŋ æt beɪ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Regular exercise helps to keep stress at bay.",
@@ -10482,7 +10482,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-10",
         "english": "Method to madness",
-        "polish": "metoda w tym szaleństwie",
+        "polish": "Metoda w tym szaleństwie",
         "pronunciation": "/ˈmeθ.əd tuː ˈmæd.nəs/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "His filing system looks messy, but there is a method to his madness.",
@@ -10503,7 +10503,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-12",
         "english": "Picture paints a thousand words",
-        "polish": "jeden obraz jest wart więcej niż tysiąc słów",
+        "polish": "Jeden obraz jest wart więcej niż tysiąc słów",
         "pronunciation": "/ˈpɪk.tʃər peɪnts ə ˈθaʊ.zənd wɜːrdz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Show them the chart; a picture paints a thousand words.",
@@ -10512,7 +10512,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-13",
         "english": "Run like clockwork",
-        "polish": "chodzić jak w zegarku",
+        "polish": "Chodzić jak w zegarku",
         "pronunciation": "/rʌn laɪk ˈklɒk.wɜːrk/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "The conference was organized so well that it ran like clockwork.",
@@ -10521,7 +10521,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-14",
         "english": "Sit on the fence",
-        "polish": "wahać się / zwlekać z podjęciem decyzji",
+        "polish": "Wahać się / zwlekać z podjęciem decyzji",
         "pronunciation": "/sɪt ɑːn ðə fens/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Stop sitting on the fence and choose one side.",
@@ -10530,7 +10530,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-15",
         "english": "Steal someone's thunder",
-        "polish": "skraść show / przypisać sobie cudze zasługi",
+        "polish": "Skraść show / przypisać sobie cudze zasługi",
         "pronunciation": "/stiːl ˈsʌm.wʌnz ˈθʌn.dər/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "He announced his discovery first, stealing my thunder.",
@@ -10539,7 +10539,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-18",
         "english": "Wouldn't be caught dead",
-        "polish": "za nic w świecie",
+        "polish": "Za nic w świecie",
         "pronunciation": "/ˈwʊd.ənt biː kɔːt ded/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I wouldn't be caught dead listening to that pop singer.",
@@ -10548,7 +10548,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-19",
         "english": "Burn the candle at both ends",
-        "polish": "pracować ponad siły (od rana do nocy)",
+        "polish": "Pracować ponad siły (od rana do nocy)",
         "pronunciation": "/bɜːrn ðə ˈkæn.dəl æt boʊθ endz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Working two jobs is burning the candle at both ends.",
@@ -10557,7 +10557,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-20",
         "english": "Change of heart",
-        "polish": "zmiana zdania / nastawienia",
+        "polish": "Zmiana zdania / nastawienia",
         "pronunciation": "/tʃeɪndʒ əv hɑːrt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I was going to sell my house, but I had a change of heart.",
@@ -10578,7 +10578,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-21",
         "english": "Clean slate",
-        "polish": "czysta karta (zacząć od nowa)",
+        "polish": "Czysta karta (zacząć od nowa)",
         "pronunciation": "/kliːn sleɪt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Moving to a new city allowed her to start with a clean slate.",
@@ -10587,7 +10587,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-22",
         "english": "Down to earth",
-        "polish": "twardo stąpający po ziemi / praktyczny",
+        "polish": "Twardo stąpający po ziemi / praktyczny",
         "pronunciation": "/daʊn tuː ɜːrθ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Despite his fame, the actor is very down to earth.",
@@ -10596,7 +10596,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-23",
         "english": "Fit as a fiddle",
-        "polish": "zdrów jak ryba",
+        "polish": "Zdrów jak ryba",
         "pronunciation": "/fɪt æz ə ˈfɪd.əl/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Grandfather walks 5 miles daily and is fit as a fiddle.",
@@ -10605,7 +10605,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-24",
         "english": "Go the extra mile",
-        "polish": "dać z siebie więcej niż się wymaga / dołożyć starań",
+        "polish": "Dać z siebie więcej niż się wymaga / dołożyć starań",
         "pronunciation": "/ɡoʊ ði ˈek.strə maɪl/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "To satisfy customers, we must always go the extra mile.",
@@ -10614,7 +10614,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-25",
         "english": "Have a heart of gold",
-        "polish": "mieć złote serce",
+        "polish": "Mieć złote serce",
         "pronunciation": "/hæv ə hɑːrt əv ɡoʊld/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "She helps poor children; she has a heart of gold.",
@@ -10623,7 +10623,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-26",
         "english": "In hot water",
-        "polish": "mieć kłopoty / narobić sobie biedy",
+        "polish": "Mieć kłopoty / narobić sobie biedy",
         "pronunciation": "/ɪn hɑːt ˈwɔː.tər/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "He got in hot water with the boss for being late again.",
@@ -10632,7 +10632,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-27",
         "english": "Keep fingers crossed",
-        "polish": "trzymać kciuki",
+        "polish": "Trzymać kciuki",
         "pronunciation": "/kiːp ˈfɪŋ.ɡərz krɔːst/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Keep your fingers crossed for my test result.",
@@ -10641,7 +10641,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-28",
         "english": "Make a mountain out of a molehill",
-        "polish": "robić widły z igły",
+        "polish": "Robić widły z igły",
         "pronunciation": "/meɪk ə ˈmaʊn.tɪn aʊt əv ə ˈmoʊl.hɪl/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "It was a tiny mistake; don't make a mountain out of a molehill.",
@@ -10650,7 +10650,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-29",
         "english": "Once in a lifetime",
-        "polish": "jedyna w życiu (szansa)",
+        "polish": "Jedyna w życiu (szansa)",
         "pronunciation": "/wʌns ɪn ə ˈlaɪf.taɪm/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "This scholarship is a once in a lifetime opportunity.",
@@ -10659,7 +10659,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-30",
         "english": "Out of the woods",
-        "polish": "mieć najgorsze za sobą / wyjść na prostą",
+        "polish": "Mieć najgorsze za sobą / wyjść na prostą",
         "pronunciation": "/aʊt əv ðə wʊdz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "The patient is improving, but she is not out of the woods yet.",
@@ -10680,7 +10680,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-31",
         "english": "Penny for your thoughts",
-        "polish": "o czym tak myślisz? / zdradź swoje myśli",
+        "polish": "O czym tak myślisz? / zdradź swoje myśli",
         "pronunciation": "/ˈpen.i fɔːr jɔːr θɔːts/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "You look so quiet today. A penny for your thoughts?",
@@ -10689,7 +10689,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-32",
         "english": "Save face",
-        "polish": "wyjść z twarzą (uniknąć upokorzenia)",
+        "polish": "Wyjść z twarzą (uniknąć upokorzenia)",
         "pronunciation": "/seɪv feɪs/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "He offered to resign to save face rather than get fired.",
@@ -10698,7 +10698,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-33",
         "english": "Skating on thin ice",
-        "polish": "stąpać po cienkim lodzie",
+        "polish": "Stąpać po cienkim lodzie",
         "pronunciation": "/ˈskeɪ.tɪŋ ɑːn θɪn aɪs/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "By skipping classes, he is skating on thin ice.",
@@ -10707,7 +10707,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-35",
         "english": "Storm in a teacup",
-        "polish": "burza w szklance wody",
+        "polish": "Burza w szklance wody",
         "pronunciation": "/stɔːrm ɪn ə ˈtiː.kʌp/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Their argument was just a storm in a teacup.",
@@ -10716,7 +10716,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-36",
         "english": "Take a back seat",
-        "polish": "odsunąć się na dalszy plan / oddać stery",
+        "polish": "Odsunąć się na dalszy plan / oddać stery",
         "pronunciation": "/teɪk ə bæk siːt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I decided to take a back seat and let him lead the project.",
@@ -10725,7 +10725,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-38",
         "english": "Up to speed",
-        "polish": "zorientowany na bieżąco / wdrożony",
+        "polish": "Zorientowany na bieżąco / wdrożony",
         "pronunciation": "/ʌp tuː spiːd/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Read this document to get up to speed with our progress.",
@@ -10734,7 +10734,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-39",
         "english": "When pigs fly",
-        "polish": "święty nigdy / jak mi kaktus na dłoni urośnie",
+        "polish": "Święty nigdy / jak mi kaktus na dłoni urośnie",
         "pronunciation": "/wen pɪɡz flaɪ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "He will clean his room when pigs fly.",
@@ -10743,7 +10743,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-40",
         "english": "Worst-case scenario",
-        "polish": "w najgorszym wypadku / czarny scenariusz",
+        "polish": "W najgorszym wypadku / czarny scenariusz",
         "pronunciation": "/wɜːrst keɪs sɪˈnær.i.oʊ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "In the worst-case scenario, we will lose the deposit money.",
@@ -10764,7 +10764,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-41",
         "english": "Jump the gun",
-        "polish": "pospieszyć się przedwcześnie / wyjść przed szereg",
+        "polish": "Pospieszyć się przedwcześnie / wyjść przed szereg",
         "pronunciation": "/dʒʌmp ðə ɡʌn/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Don't buy the tickets yet; you are jumping the gun.",
@@ -10773,7 +10773,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-42",
         "english": "Keep your head above water",
-        "polish": "utrzymywać się na powierzchni (finansowo)",
+        "polish": "Utrzymywać się na powierzchni (finansowo)",
         "pronunciation": "/kiːp jɔːr hed əˈbʌv ˈwɔː.tər/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "With so many bills, it's hard to keep my head above water.",
@@ -10782,7 +10782,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-43",
         "english": "Leave no stone unturned",
-        "polish": "poruszyć niebo i ziemię / nie szczędzić starań",
+        "polish": "Poruszyć niebo i ziemię / nie szczędzić starań",
         "pronunciation": "/liːv noʊ stoʊn ʌnˈtɜːnd/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "The detectives will leave no stone unturned to find the truths.",
@@ -10791,7 +10791,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-46",
         "english": "Put a damper on",
-        "polish": "popsuć plany / ostudzić zapał",
+        "polish": "Popsuć plany / ostudzić zapał",
         "pronunciation": "/put ə ˈdæm.pər ɑːn/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "The sudden rain put a damper on our picnic plans.",
@@ -10800,7 +10800,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-47",
         "english": "Rain check",
-        "polish": "przełożenie spotkania na inny termin",
+        "polish": "Przełożenie spotkania na inny termin",
         "pronunciation": "/reɪn tʃek/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I can't go tonight, but can I take a rain check?",
@@ -10809,7 +10809,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-49",
         "english": "Stand your ground",
-        "polish": "nie dawać za wygraną / obstawać przy swoim",
+        "polish": "Nie dawać za wygraną / obstawać przy swoim",
         "pronunciation": "/stænd jɔːr ɡraʊnd/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Even though they disagreed, she stood her ground.",
@@ -10818,7 +10818,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b1-50",
         "english": "Throw caution to the wind",
-        "polish": "rzucić ostrożność na wiatr / zaryzykować",
+        "polish": "Rzucić ostrożność na wiatr / zaryzykować",
         "pronunciation": "/θroʊ ˈkɔː.ʃən tuː ðə wɪnd/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "He decided to throw caution to the wind and quit his secure job.",
@@ -10838,8 +10838,8 @@ const rawDefaultDecks = [
     "cards": [
       {
         "id": "v-b2-m1",
-        "english": "broadcast",
-        "polish": "nadawać / program / audycja",
+        "english": "Broadcast",
+        "polish": "Nadawać / program / audycja",
         "pronunciation": "/ˈbrɔːd.kɑːst/",
         "partOfSpeech": "verb/noun",
         "exampleEnglish": "The interview was broadcast live around the world.",
@@ -10847,8 +10847,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-m2",
-        "english": "censor",
-        "polish": "cenzurować / cenzor",
+        "english": "Censor",
+        "polish": "Cenzurować / cenzor",
         "pronunciation": "/ˈsen.sər/",
         "partOfSpeech": "verb/noun",
         "exampleEnglish": "Certain parts of the movie were censored.",
@@ -10856,8 +10856,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-m3",
-        "english": "coverage",
-        "polish": "relacja / sprawozdanie / zasięg",
+        "english": "Coverage",
+        "polish": "Relacja / sprawozdanie / zasięg",
         "pronunciation": "/ˈkʌv.ər.ɪdʒ/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The media coverage of the election was huge.",
@@ -10865,8 +10865,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-m5",
-        "english": "headline",
-        "polish": "nagłówek prasowy",
+        "english": "Headline",
+        "polish": "Nagłówek prasowy",
         "pronunciation": "/ˈhed.laɪn/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The scandal was the main headline of the newspapers.",
@@ -10874,8 +10874,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-m8",
-        "english": "source",
-        "polish": "źródło",
+        "english": "Source",
+        "polish": "Źródło",
         "pronunciation": "/sɔːrs/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The journalist refused to reveal his source.",
@@ -10883,8 +10883,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-m9",
-        "english": "public relations",
-        "polish": "relacje publiczne (PR)",
+        "english": "Public relations",
+        "polish": "Relacje publiczne (PR)",
         "pronunciation": "/ˌpʌb.lɪk rɪˈleɪ.ʃənz/",
         "partOfSpeech": "noun",
         "exampleEnglish": "He works in the public relations department.",
@@ -10892,8 +10892,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-m11",
-        "english": "post",
-        "polish": "zamieścić / post (w sieci)",
+        "english": "Post",
+        "polish": "Zamieścić / post (w sieci)",
         "pronunciation": "/poʊst/",
         "partOfSpeech": "verb/noun",
         "exampleEnglish": "He posted a video on social media.",
@@ -10901,8 +10901,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-m12",
-        "english": "subscriber",
-        "polish": "subskrybent",
+        "english": "Subscriber",
+        "polish": "Subskrybent",
         "pronunciation": "/səbˈskraɪ.bər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Our YouTube channel reached one million subscribers.",
@@ -10910,8 +10910,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-m13",
-        "english": "viral",
-        "polish": "wirusowy / wiralowy (szybko się rozprzestrzeniający)",
+        "english": "Viral",
+        "polish": "Wirusowy / wiralowy (szybko się rozprzestrzeniający)",
         "pronunciation": "/ˈvaɪ.rəl/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "The cat picture went viral in a few hours.",
@@ -10919,8 +10919,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-m14",
-        "english": "advertisement",
-        "polish": "reklama",
+        "english": "Advertisement",
+        "polish": "Reklama",
         "pronunciation": "/ədˈvɜː.tɪs.mənt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "We saw an advertisement for new cars.",
@@ -10928,8 +10928,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-m16",
-        "english": "editor",
-        "polish": "redaktor",
+        "english": "Editor",
+        "polish": "Redaktor",
         "pronunciation": "/ˈed.ɪ.tər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The editor corrected the article.",
@@ -10937,8 +10937,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-m17",
-        "english": "fake news",
-        "polish": "fałszywe informacje",
+        "english": "Fake news",
+        "polish": "Fałszywe informacje",
         "pronunciation": "/feɪk nuːz/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The internet is full of fake news.",
@@ -10946,8 +10946,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-m18",
-        "english": "podcast",
-        "polish": "podcast / audycja internetowa",
+        "english": "Podcast",
+        "polish": "Podcast / audycja internetowa",
         "pronunciation": "/ˈpɒd.kɑːst/",
         "partOfSpeech": "noun",
         "exampleEnglish": "I listen to an English learning podcast.",
@@ -10955,8 +10955,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-m19",
-        "english": "interact",
-        "polish": "wchodzić w interakcję / oddziaływać na siebie",
+        "english": "To interact",
+        "polish": "Wchodzić w interakcję / oddziaływać na siebie",
         "pronunciation": "/ˌɪn.təˈrækt/",
         "partOfSpeech": "verb",
         "exampleEnglish": "Users can interact with each other in the app.",
@@ -10964,8 +10964,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-m20",
-        "english": "trends",
-        "polish": "trendy / tendencje",
+        "english": "Trends",
+        "polish": "Trendy / tendencje",
         "pronunciation": "/trendz/",
         "partOfSpeech": "noun",
         "exampleEnglish": "She follows the latest fashion trends.",
@@ -10985,8 +10985,8 @@ const rawDefaultDecks = [
     "cards": [
       {
         "id": "v-b2-f2",
-        "english": "inflation",
-        "polish": "inflacja",
+        "english": "Inflation",
+        "polish": "Inflacja",
         "pronunciation": "/ɪnˈfleɪ.ʃən/",
         "partOfSpeech": "noun",
         "exampleEnglish": "High inflation reduces the value of money.",
@@ -10994,8 +10994,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-f5",
-        "english": "expenditure",
-        "polish": "wydatki / nakłady",
+        "english": "Expenditure",
+        "polish": "Wydatki / nakłady",
         "pronunciation": "/ɪkˈspen.dɪ.tʃər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "We need to limit our monthly expenditure.",
@@ -11003,8 +11003,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-f8",
-        "english": "stock market",
-        "polish": "giełda papierów wartościowych",
+        "english": "Stock market",
+        "polish": "Giełda papierów wartościowych",
         "pronunciation": "/ˈstɒk ˌmɑː.kɪt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The stock market crashed on Tuesday.",
@@ -11012,8 +11012,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-f9",
-        "english": "debt",
-        "polish": "dług / zadłużenie",
+        "english": "Debt",
+        "polish": "Dług / zadłużenie",
         "pronunciation": "/det/",
         "partOfSpeech": "noun",
         "exampleEnglish": "He is trying to pay off his bank debt.",
@@ -11021,8 +11021,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-f10",
-        "english": "taxes",
-        "polish": "podatki",
+        "english": "Taxes",
+        "polish": "Podatki",
         "pronunciation": "/tæks.ɪz/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Citizens pay taxes to the government.",
@@ -11030,8 +11030,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-f11",
-        "english": "interest rate",
-        "polish": "stopa procentowa",
+        "english": "Interest rate",
+        "polish": "Stopa procentowa",
         "pronunciation": "/ˈɪn.trəst reɪt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The central bank lowered the interest rate.",
@@ -11039,8 +11039,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-f12",
-        "english": "loan",
-        "polish": "pożyczka / kredyt",
+        "english": "Loan",
+        "polish": "Pożyczka / kredyt",
         "pronunciation": "/loʊn/",
         "partOfSpeech": "noun",
         "exampleEnglish": "She took a loan to buy a new flat.",
@@ -11048,8 +11048,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-f13",
-        "english": "mortgage",
-        "polish": "kredyt hipoteczny",
+        "english": "Mortgage",
+        "polish": "Kredyt hipoteczny",
         "pronunciation": "/ˈmɔː.ɡɪdʒ/",
         "partOfSpeech": "noun",
         "exampleEnglish": "They applied for a thirty-year mortgage.",
@@ -11057,8 +11057,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-f14",
-        "english": "economy",
-        "polish": "gospodarka / ekonomia",
+        "english": "Economy",
+        "polish": "Gospodarka / ekonomia",
         "pronunciation": "/iˈkɒn.ə.mi/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The country's economy is growing steadily.",
@@ -11066,8 +11066,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-f18",
-        "english": "fund",
-        "polish": "fundusz / finansować",
+        "english": "Fund",
+        "polish": "Fundusz / finansować",
         "pronunciation": "/fʌnd/",
         "partOfSpeech": "noun/verb",
         "exampleEnglish": "The charity set up a research fund.",
@@ -11075,8 +11075,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-f19",
-        "english": "transaction",
-        "polish": "transakcja",
+        "english": "Transaction",
+        "polish": "Transakcja",
         "pronunciation": "/trænˈzæk.ʃən/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The bank transaction was processed securely.",
@@ -11084,8 +11084,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-b2-f20",
-        "english": "wealth",
-        "polish": "bogactwo / majątek",
+        "english": "Wealth",
+        "polish": "Bogactwo / majątek",
         "pronunciation": "/welθ/",
         "partOfSpeech": "noun",
         "exampleEnglish": "He accumulated great wealth through property.",
@@ -11106,7 +11106,7 @@ const rawDefaultDecks = [
       {
         "id": "id-b2-51",
         "english": "By the skin of your teeth",
-        "polish": "o mały włos / cudem",
+        "polish": "O mały włos / cudem",
         "pronunciation": "/baɪ ðə skɪn əv jɔːr tiːθ/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "He escaped the crash by the skin of his teeth.",
@@ -11126,8 +11126,8 @@ const rawDefaultDecks = [
     "cards": [
       {
         "id": "v-c1-l2",
-        "english": "judiciary",
-        "polish": "sądownictwo / władza sądownicza",
+        "english": "Judiciary",
+        "polish": "Sądownictwo / władza sądownicza",
         "pronunciation": "/dʒuːˈdɪʃ.ər.i/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The independence of the judiciary is crucial.",
@@ -11135,8 +11135,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c1-l3",
-        "english": "lawsuit",
-        "polish": "proces sądowy / pozew",
+        "english": "Lawsuit",
+        "polish": "Proces sądowy / pozew",
         "pronunciation": "/ˈlɔː.suːt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "They filed a lawsuit against the contractor.",
@@ -11144,8 +11144,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c1-l4",
-        "english": "prosecute",
-        "polish": "oskarżać / wnieść oskarżenie",
+        "english": "To prosecute",
+        "polish": "Oskarżać / wnieść oskarżenie",
         "pronunciation": "/ˈprɒs.ɪ.kjuːt/",
         "partOfSpeech": "verb",
         "exampleEnglish": "Shoplifters will be prosecuted.",
@@ -11153,8 +11153,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c1-l5",
-        "english": "defense attorney",
-        "polish": "obrońca (w sądzie)",
+        "english": "Defense attorney",
+        "polish": "Obrońca (w sądzie)",
         "pronunciation": "/dɪˈfens əˈtɜː.ni/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The defense attorney argued for acquittal.",
@@ -11162,8 +11162,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c1-l6",
-        "english": "defendant",
-        "polish": "pozwany / oskarżony",
+        "english": "Defendant",
+        "polish": "Pozwany / oskarżony",
         "pronunciation": "/dɪˈfen.dənt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The defendant pleaded not guilty.",
@@ -11171,8 +11171,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c1-l7",
-        "english": "verdict",
-        "polish": "werdykt / wyrok",
+        "english": "Verdict",
+        "polish": "Werdykt / wyrok",
         "pronunciation": "/ˈvɜː.dɪkt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The jury reached a unanimous verdict.",
@@ -11180,8 +11180,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c1-l8",
-        "english": "testimony",
-        "polish": "zeznanie / świadectwo",
+        "english": "Testimony",
+        "polish": "Zeznanie / świadectwo",
         "pronunciation": "/ˈtes.tɪ.mən.i/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Her testimony convinced the judge.",
@@ -11189,8 +11189,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c1-l9",
-        "english": "constitutional",
-        "polish": "konstytucyjny",
+        "english": "Constitutional",
+        "polish": "Konstytucyjny",
         "pronunciation": "/ˌkɒn.stɪˈtʃuː.ʃən.əl/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "Citizens have a constitutional right to protest.",
@@ -11198,8 +11198,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c1-l10",
-        "english": "comply",
-        "polish": "przestrzegać / zastosować się",
+        "english": "To comply",
+        "polish": "Przestrzegać / zastosować się",
         "pronunciation": "/kəmˈplaɪ/",
         "partOfSpeech": "verb",
         "exampleEnglish": "Companies must comply with environmental laws.",
@@ -11207,8 +11207,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c1-l11",
-        "english": "statute",
-        "polish": "ustawa / statut / prawo pisane",
+        "english": "Statute",
+        "polish": "Ustawa / statut / prawo pisane",
         "pronunciation": "/ˈstætʃ.uːt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The statute defines the crime of fraud.",
@@ -11216,8 +11216,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c1-l12",
-        "english": "breach",
-        "polish": "naruszenie / złamanie (prawa/umowy)",
+        "english": "Breach",
+        "polish": "Naruszenie / złamanie (prawa/umowy)",
         "pronunciation": "/briːtʃ/",
         "partOfSpeech": "noun/verb",
         "exampleEnglish": "They were sued for breach of contract.",
@@ -11225,8 +11225,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c1-l13",
-        "english": "exempt",
-        "polish": "zwolniony (z cła/podatku/obowiązku)",
+        "english": "Exempt",
+        "polish": "Zwolniony (z cła/podatku/obowiązku)",
         "pronunciation": "/ɪɡˈzempt/",
         "partOfSpeech": "adjective/verb",
         "exampleEnglish": "Non-profit organizations are exempt from taxes.",
@@ -11234,8 +11234,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c1-l16",
-        "english": "appeal",
-        "polish": "apelacja / odwołanie",
+        "english": "Appeal",
+        "polish": "Apelacja / odwołanie",
         "pronunciation": "/əˈpiːl/",
         "partOfSpeech": "noun/verb",
         "exampleEnglish": "The lawyer decided to file an appeal.",
@@ -11243,8 +11243,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c1-l17",
-        "english": "conviction",
-        "polish": "skazanie / przekonanie",
+        "english": "Conviction",
+        "polish": "Skazanie / przekonanie",
         "pronunciation": "/kənˈvɪk.ʃən/",
         "partOfSpeech": "noun",
         "exampleEnglish": "He has a prior conviction for theft.",
@@ -11252,8 +11252,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c1-l19",
-        "english": "lease",
-        "polish": "najem / dzierżawa / wynajmować",
+        "english": "Lease",
+        "polish": "Najem / dzierżawa / wynajmować",
         "pronunciation": "/liːs/",
         "partOfSpeech": "noun/verb",
         "exampleEnglish": "They signed a three-year office lease.",
@@ -11261,8 +11261,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c1-l20",
-        "english": "valid",
-        "polish": "ważny / prawomocny / uzasadniony",
+        "english": "Valid",
+        "polish": "Ważny / prawomocny / uzasadniony",
         "pronunciation": "/ˈvæl.ɪd/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "You need a valid passport to travel abroad.",
@@ -11283,7 +11283,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c1-3",
         "english": "Double-edged sword",
-        "polish": "miecz obosieczny",
+        "polish": "Miecz obosieczny",
         "pronunciation": "/ˈdʌb.əl.edʒd sɔːrd/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Fame is a double-edged sword.",
@@ -11292,7 +11292,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c1-8",
         "english": "Familiarity breeds contempt",
-        "polish": "poufałość rodzi lekceważenie",
+        "polish": "Poufałość rodzi lekceważenie",
         "pronunciation": "/fəˌmɪl.iˈær.ə.ti briːdz kənˈtempt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "They fought after living together; familiarity breeds contempt.",
@@ -11301,7 +11301,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c1-10",
         "english": "Ignorance is bliss",
-        "polish": "niewiedza jest błogosławieństwem",
+        "polish": "Niewiedza jest błogosławieństwem",
         "pronunciation": "/ˈɪɡ.nər.əns ɪz blɪs/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I don't know the future, and ignorance is bliss.",
@@ -11322,7 +11322,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c1-16",
         "english": "Keep someone in the loop",
-        "polish": "informować kogoś na bieżąco",
+        "polish": "Informować kogoś na bieżąco",
         "pronunciation": "/kiːp ˈsʌm.wʌn ɪn ðə luːp/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Please keep the manager in the loop regarding the release schedule.",
@@ -11331,7 +11331,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c1-17",
         "english": "Bring to the table",
-        "polish": "wnosić coś do rozmów / wnosić wartość",
+        "polish": "Wnosić coś do rozmów / wnosić wartość",
         "pronunciation": "/brɪŋ tuː ðə ˈteɪ.bəl/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "She brings ten years of marketing experience to the table.",
@@ -11340,7 +11340,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c1-18",
         "english": "Behind the scenes",
-        "polish": "za kulisami (nieoficjalnie)",
+        "polish": "Za kulisami (nieoficjalnie)",
         "pronunciation": "/bɪˈhaɪnd ðə siːnz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Many decisions are made behind the scenes before the meeting.",
@@ -11349,7 +11349,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c1-20",
         "english": "Play by the rules",
-        "polish": "grać według zasad",
+        "polish": "Grać według zasad",
         "pronunciation": "/pleɪ baɪ ðə ruːlz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "If you want to keep your license, you must play by the rules.",
@@ -11370,7 +11370,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c1-22",
         "english": "Give the cold shoulder",
-        "polish": "traktować chłodno / ignorować",
+        "polish": "Traktować chłodno / ignorować",
         "pronunciation": "/ɡɪv ðə koʊld ˈʃoʊl.dər/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "She gave me the cold shoulder after our small argument.",
@@ -11379,7 +11379,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c1-23",
         "english": "Clear the air",
-        "polish": "oczyścić atmosferę / wyjaśnić nieporozumienia",
+        "polish": "Oczyścić atmosferę / wyjaśnić nieporozumienia",
         "pronunciation": "/klɪr ði er/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "We had a long talk to clear the air.",
@@ -11388,7 +11388,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c1-24",
         "english": "Build bridges",
-        "polish": "budować mosty (zasypywać podziały)",
+        "polish": "Budować mosty (zasypywać podziały)",
         "pronunciation": "/bɪld ˈbrɪdʒ.ɪz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "The diplomat worked hard to build bridges between the two groups.",
@@ -11397,7 +11397,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c1-25",
         "english": "Get along famously",
-        "polish": "świetnie się dogadywać",
+        "polish": "Świetnie się dogadywać",
         "pronunciation": "/ɡet əˈlɒŋ ˈfeɪ.məs.li/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "The roommates got along famously from the first day.",
@@ -11406,7 +11406,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c1-26",
         "english": "Cross paths",
-        "polish": "skrzyżować drogi / spotkać się przypadkiem",
+        "polish": "Skrzyżować drogi / spotkać się przypadkiem",
         "pronunciation": "/krɒs pæðz/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "We crossed paths at a conference in Berlin.",
@@ -11415,7 +11415,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c1-28",
         "english": "Read someone like a book",
-        "polish": "czytać w kimś jak w otwartej książce",
+        "polish": "Czytać w kimś jak w otwartej książce",
         "pronunciation": "/riːd ˈsʌm.wʌn laɪk ə bʊk/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I knew she was lying; I can read her like a book.",
@@ -11424,7 +11424,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c1-30",
         "english": "Close-knit",
-        "polish": "zżyty",
+        "polish": "Zżyty",
         "pronunciation": "/ˌkloʊsˈnɪt/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "Our neighborhood is very close-knit.",
@@ -11444,8 +11444,8 @@ const rawDefaultDecks = [
     "cards": [
       {
         "id": "v-c2-s4",
-        "english": "quantum",
-        "polish": "kwant / kwantowy",
+        "english": "Quantum",
+        "polish": "Kwant / kwantowy",
         "pronunciation": "/ˈkwɒn.təm/",
         "partOfSpeech": "noun/adjective",
         "exampleEnglish": "Quantum computing will revolutionize information systems.",
@@ -11453,8 +11453,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-s8",
-        "english": "synthesis",
-        "polish": "synteza",
+        "english": "Synthesis",
+        "polish": "Synteza",
         "pronunciation": "/ˈsɪn.θə.sɪs/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The essay is a synthesis of different concepts.",
@@ -11462,8 +11462,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-s9",
-        "english": "entropy",
-        "polish": "entropia",
+        "english": "Entropy",
+        "polish": "Entropia",
         "pronunciation": "/ˈen.trə.pi/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Entropy measures disorder in a thermodynamic system.",
@@ -11471,8 +11471,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-s10",
-        "english": "determinism",
-        "polish": "determinizm",
+        "english": "Determinism",
+        "polish": "Determinizm",
         "pronunciation": "/dɪˈtɜː.mɪ.nɪ.zəm/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Hard determinism rejects the existence of free will.",
@@ -11480,8 +11480,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-s13",
-        "english": "quantum entanglement",
-        "polish": "splątanie kwantowe",
+        "english": "Quantum entanglement",
+        "polish": "Splątanie kwantowe",
         "pronunciation": "/ˈkwɒn.təm ɪnˈtæŋ.ɡəl.mənt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Quantum entanglement is a puzzling physical phenomenon.",
@@ -11489,8 +11489,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-s14",
-        "english": "nanotechnology",
-        "polish": "nanotechnologia",
+        "english": "Nanotechnology",
+        "polish": "Nanotechnologia",
         "pronunciation": "/ˌnæn.əʊ.tekˈnɒl.ə.dʒi/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Nanotechnology improves medicine delivery systems.",
@@ -11498,8 +11498,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-s15",
-        "english": "causality",
-        "polish": "przyczynowość / związek przyczynowo-skutkowy",
+        "english": "Causality",
+        "polish": "Przyczynowość / związek przyczynowo-skutkowy",
         "pronunciation": "/kɔːˈzæl.ə.ti/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Philosophy analyzes the relation of causality.",
@@ -11507,8 +11507,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-s16",
-        "english": "axiomatic",
-        "polish": "aksjomatyczny / bezsporny",
+        "english": "Axiomatic",
+        "polish": "Aksjomatyczny / bezsporny",
         "pronunciation": "/ˌæk.si.əˈmæt.ɪk/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "His argument starts from axiomatic principles.",
@@ -11516,8 +11516,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-s17",
-        "english": "evolutionary biology",
-        "polish": "biologia ewolucyjna",
+        "english": "Evolutionary biology",
+        "polish": "Biologia ewolucyjna",
         "pronunciation": "/ˌiː.vəˈluː.ʃən.ər.i baɪˈɒl.ə.dʒi/",
         "partOfSpeech": "noun",
         "exampleEnglish": "He is an expert in evolutionary biology.",
@@ -11525,8 +11525,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-s19",
-        "english": "gene expression",
-        "polish": "ekspresja genów",
+        "english": "Gene expression",
+        "polish": "Ekspresja genów",
         "pronunciation": "/dʒiːn ɪkˈspreʃ.ən/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Environmental factors can affect gene expression.",
@@ -11534,8 +11534,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-s20",
-        "english": "heuristics",
-        "polish": "heurystyka / metody heurystyczne",
+        "english": "Heuristics",
+        "polish": "Heurystyka / metody heurystyczne",
         "pronunciation": "/hjuːˈrɪs.tɪks/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Heuristics provide quick problem-solving rules.",
@@ -11555,8 +11555,8 @@ const rawDefaultDecks = [
     "cards": [
       {
         "id": "v-c2-p2",
-        "english": "geopolitics",
-        "polish": "geopolityka",
+        "english": "Geopolitics",
+        "polish": "Geopolityka",
         "pronunciation": "/ˌdʒiː.oʊˈpɒl.ɪ.tɪks/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The conflict is shaped by regional geopolitics.",
@@ -11564,8 +11564,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p3",
-        "english": "hegemony",
-        "polish": "hegemonia / przywództwo",
+        "english": "Hegemony",
+        "polish": "Hegemonia / przywództwo",
         "pronunciation": "/hɪˈdʒem.ə.ni/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The superpower maintained its economic hegemony.",
@@ -11573,8 +11573,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p4",
-        "english": "diplomatic immunity",
-        "polish": "immunitet dyplomatyczny",
+        "english": "Diplomatic immunity",
+        "polish": "Immunitet dyplomatyczny",
         "pronunciation": "/ˌdɪp.ləˈmæt.ɪk ɪˈmjuː.nə.ti/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The ambassador has diplomatic immunity.",
@@ -11582,8 +11582,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p5",
-        "english": "sanction",
-        "polish": "sankcja / nałożyć sankcje",
+        "english": "Sanction",
+        "polish": "Sankcja / nałożyć sankcje",
         "pronunciation": "/ˈsæŋk.ʃən/",
         "partOfSpeech": "noun/verb",
         "exampleEnglish": "Economic sanctions were imposed on the nation.",
@@ -11591,8 +11591,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p6",
-        "english": "bilateral",
-        "polish": "dwustronny (np. układ)",
+        "english": "Bilateral",
+        "polish": "Dwustronny (np. układ)",
         "pronunciation": "/baɪˈlæt.ər.əl/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "They signed a bilateral trade agreement.",
@@ -11600,8 +11600,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p7",
-        "english": "embargo",
-        "polish": "embargo / zakaz handlu",
+        "english": "Embargo",
+        "polish": "Embargo / zakaz handlu",
         "pronunciation": "/ɪmˈbɑːr.ɡoʊ/",
         "partOfSpeech": "noun/verb",
         "exampleEnglish": "The government declared a grain embargo.",
@@ -11609,8 +11609,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p8",
-        "english": "coalition",
-        "polish": "koalicja",
+        "english": "Coalition",
+        "polish": "Koalicja",
         "pronunciation": "/ˌkoʊ.əˈlɪʃ.ən/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The parties formed a governing coalition.",
@@ -11618,8 +11618,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p9",
-        "english": "bureaucracy",
-        "polish": "biurokracja",
+        "english": "Bureaucracy",
+        "polish": "Biurokracja",
         "pronunciation": "/bjʊəˈrɒk.rə.si/",
         "partOfSpeech": "noun",
         "exampleEnglish": "We need to cut through state bureaucracy.",
@@ -11627,8 +11627,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p10",
-        "english": "legislature",
-        "polish": "ciało ustawodawcze / parlament",
+        "english": "Legislature",
+        "polish": "Ciało ustawodawcze / parlament",
         "pronunciation": "/ˈledʒ.ɪ.slə.tʃər/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The proposal was sent to the legislature.",
@@ -11636,8 +11636,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p11",
-        "english": "ratify",
-        "polish": "ratyfikować / zatwierdzić",
+        "english": "To ratify",
+        "polish": "Ratyfikować / zatwierdzić",
         "pronunciation": "/ˈræt.ɪ.faɪ/",
         "partOfSpeech": "verb",
         "exampleEnglish": "The parliament ratified the environmental treaty.",
@@ -11645,8 +11645,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p12",
-        "english": "referendum",
-        "polish": "referendum",
+        "english": "Referendum",
+        "polish": "Referendum",
         "pronunciation": "/ˌref.əˈren.dəm/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The nation will vote in a referendum.",
@@ -11654,8 +11654,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p13",
-        "english": "suffrage",
-        "polish": "prawo do głosowania / prawo wyborcze",
+        "english": "Suffrage",
+        "polish": "Prawo do głosowania / prawo wyborcze",
         "pronunciation": "/ˈsʌf.rɪdʒ/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Universal suffrage is a core democratic value.",
@@ -11663,8 +11663,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p14",
-        "english": "autocracy",
-        "polish": "autokracja / samowładztwo",
+        "english": "Autocracy",
+        "polish": "Autokracja / samowładztwo",
         "pronunciation": "/ɔːˈtɒk.rə.si/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The country transitioned from autocracy to democracy.",
@@ -11672,8 +11672,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p15",
-        "english": "lobbyist",
-        "polish": "lobbysta",
+        "english": "Lobbyist",
+        "polish": "Lobbysta",
         "pronunciation": "/ˈlɒb.i.ɪst/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Lobbyists influence energy policy decisions.",
@@ -11681,8 +11681,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p16",
-        "english": "annexation",
-        "polish": "aneksja / przyłączenie",
+        "english": "Annexation",
+        "polish": "Aneksja / przyłączenie",
         "pronunciation": "/ˌæn.ekˈseɪ.ʃən/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The international community condemned the annexation.",
@@ -11690,8 +11690,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p17",
-        "english": "appeasement",
-        "polish": "ugłaskiwanie / polityka ustępstw",
+        "english": "Appeasement",
+        "polish": "Ugłaskiwanie / polityka ustępstw",
         "pronunciation": "/əˈpiːz.mənt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The policy of appeasement failed to prevent the war.",
@@ -11699,8 +11699,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p18",
-        "english": "diplomat",
-        "polish": "dyplomata",
+        "english": "Diplomat",
+        "polish": "Dyplomata",
         "pronunciation": "/ˈdɪp.lə.mæt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "An experienced diplomat managed the crisis.",
@@ -11708,8 +11708,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p19",
-        "english": "envoys",
-        "polish": "wysłannicy / posłowie",
+        "english": "Envoys",
+        "polish": "Wysłannicy / posłowie",
         "pronunciation": "/ˈen.vɔɪz/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Peace envoys were dispatched to the region.",
@@ -11717,8 +11717,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-p20",
-        "english": "statecraft",
-        "polish": "sztuka rządzenia państwem",
+        "english": "Statecraft",
+        "polish": "Sztuka rządzenia państwem",
         "pronunciation": "/ˈsteɪt.kræft/",
         "partOfSpeech": "noun",
         "exampleEnglish": "The prime minister showed masterful statecraft.",
@@ -11738,8 +11738,8 @@ const rawDefaultDecks = [
     "cards": [
       {
         "id": "v-c2-ps1",
-        "english": "neuroplasticity",
-        "polish": "neuroplastyczność",
+        "english": "Neuroplasticity",
+        "polish": "Neuroplastyczność",
         "pronunciation": "/ˌnjʊə.rəʊ.plæsˈtɪs.ə.ti/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Brain recovery relies heavily on neuroplasticity.",
@@ -11747,8 +11747,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps2",
-        "english": "subconscious",
-        "polish": "podświadomość / podświadomy",
+        "english": "Subconscious",
+        "polish": "Podświadomość / podświadomy",
         "pronunciation": "/ˌsʌbˈkɒn.ʃəs/",
         "partOfSpeech": "noun/adjective",
         "exampleEnglish": "Dreams reveal our subconscious desires.",
@@ -11756,8 +11756,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps3",
-        "english": "projection",
-        "polish": "projekcja (mechanizm obronny)",
+        "english": "Projection",
+        "polish": "Projekcja (mechanizm obronny)",
         "pronunciation": "/prəˈdʒek.ʃən/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Psychology defines projection as accusing others of your own faults.",
@@ -11765,8 +11765,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps4",
-        "english": "cognitive dissonance",
-        "polish": "dysonans poznawczy",
+        "english": "Cognitive dissonance",
+        "polish": "Dysonans poznawczy",
         "pronunciation": "/ˈkɒɡ.nɪ.tɪv ˈdɪs.ə.nəns/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Smoking while knowing it is unhealthy causes cognitive dissonance.",
@@ -11774,8 +11774,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps5",
-        "english": "behaviorism",
-        "polish": "behawioryzm",
+        "english": "Behaviorism",
+        "polish": "Behawioryzm",
         "pronunciation": "/bɪˈheɪ.vjə.rɪ.zəm/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Behaviorism focuses on observable actions rather than thoughts.",
@@ -11783,8 +11783,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps6",
-        "english": "conditioning",
-        "polish": "warunkowanie",
+        "english": "Conditioning",
+        "polish": "Warunkowanie",
         "pronunciation": "/kənˈdɪʃ.ən.ɪŋ/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Pavlov is famous for classical conditioning experiments.",
@@ -11792,8 +11792,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps7",
-        "english": "psychoanalysis",
-        "polish": "psychoanaliza",
+        "english": "Psychoanalysis",
+        "polish": "Psychoanaliza",
         "pronunciation": "/ˌsaɪ.koʊ.əˈnæl.ə.sɪs/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Freud developed the theory of psychoanalysis.",
@@ -11801,8 +11801,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps8",
-        "english": "empathy",
-        "polish": "empatia",
+        "english": "Empathy",
+        "polish": "Empatia",
         "pronunciation": "/ˈem.pə.θi/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Empathy helps us connect with others.",
@@ -11810,8 +11810,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps10",
-        "english": "psychopathology",
-        "polish": "psychopatologia",
+        "english": "Psychopathology",
+        "polish": "Psychopatologia",
         "pronunciation": "/ˌsaɪ.koʊ.pəˈθɒl.ə.dʒi/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Psychopathology studies mental disorders.",
@@ -11819,8 +11819,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps11",
-        "english": "trauma",
-        "polish": "trauma / uraz psychiczny",
+        "english": "Trauma",
+        "polish": "Trauma / uraz psychiczny",
         "pronunciation": "/ˈtrɔː.mə/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Therapy helps people heal from emotional trauma.",
@@ -11828,8 +11828,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps12",
-        "english": "psychiatry",
-        "polish": "psychiatria",
+        "english": "Psychiatry",
+        "polish": "Psychiatria",
         "pronunciation": "/saɪˈkaɪ.ə.tri/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Psychiatry involves medical treatment of mental illness.",
@@ -11837,8 +11837,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps13",
-        "english": "somatic",
-        "polish": "somatyczny / fizyczny",
+        "english": "Somatic",
+        "polish": "Somatyczny / fizyczny",
         "pronunciation": "/səˈmæt.ɪk/",
         "partOfSpeech": "adjective",
         "exampleEnglish": "Stress can lead to somatic complaints like headaches.",
@@ -11846,8 +11846,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps14",
-        "english": "perception",
-        "polish": "percepcja / postrzeganie",
+        "english": "Perception",
+        "polish": "Percepcja / postrzeganie",
         "pronunciation": "/pəˈsep.ʃən/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Perception can differ from objective reality.",
@@ -11855,8 +11855,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps15",
-        "english": "temperament",
-        "polish": "temperament",
+        "english": "Temperament",
+        "polish": "Temperament",
         "pronunciation": "/ˈtem.prə.mənt/",
         "partOfSpeech": "noun",
         "exampleEnglish": "She has a calm and patient temperament.",
@@ -11864,8 +11864,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps16",
-        "english": "narcissism",
-        "polish": "narcyzm",
+        "english": "Narcissism",
+        "polish": "Narcyzm",
         "pronunciation": "/ˈnɑːr.sɪ.sɪ.zəm/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Narcissism is characterized by excessive self-love.",
@@ -11873,8 +11873,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps17",
-        "english": "phobia",
-        "polish": "fobia / lęk",
+        "english": "Phobia",
+        "polish": "Fobia / lęk",
         "pronunciation": "/ˈfoʊ.bi.ə/",
         "partOfSpeech": "noun",
         "exampleEnglish": "Claustrophobia is a fear of enclosed spaces.",
@@ -11882,8 +11882,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps18",
-        "english": "obsession",
-        "polish": "obsesja",
+        "english": "Obsession",
+        "polish": "Obsesja",
         "pronunciation": "/əbˈseʃ.ən/",
         "partOfSpeech": "noun",
         "exampleEnglish": "His obsession with cleanliness became a problem.",
@@ -11891,8 +11891,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps19",
-        "english": "introvert",
-        "polish": "introwertyk / introwertyczny",
+        "english": "Introvert",
+        "polish": "Introwertyk / introwertyczny",
         "pronunciation": "/ˈɪn.trə.vɜːt/",
         "partOfSpeech": "noun/adjective",
         "exampleEnglish": "As an introvert, she enjoys quiet evenings alone.",
@@ -11900,8 +11900,8 @@ const rawDefaultDecks = [
       },
       {
         "id": "v-c2-ps20",
-        "english": "extrovert",
-        "polish": "ekstrawertyk / ekstrawertyczny",
+        "english": "Extrovert",
+        "polish": "Ekstrawertyk / ekstrawertyczny",
         "pronunciation": "/ˈek.strə.vɜːt/",
         "partOfSpeech": "noun/adjective",
         "exampleEnglish": "He is an extrovert who loves busy parties.",
@@ -11922,7 +11922,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c2-5",
         "english": "Don't put all eggs in one basket",
-        "polish": "nie stawiaj wszystkiego na jedną kartę",
+        "polish": "Nie stawiaj wszystkiego na jedną kartę",
         "pronunciation": "/doʊnt pʊt ɔːl eɡz ɪn wʌn ˈbæs.kɪt/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Invest in multiple areas; don't put all eggs in one basket.",
@@ -11943,7 +11943,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c2-11",
         "english": "Heard on the grapevine",
-        "polish": "dowiedzieć się pocztą pantoflową",
+        "polish": "Dowiedzieć się pocztą pantoflową",
         "pronunciation": "/hɜːd ɑːn ðə ˈɡreɪp.vaɪn/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "I heard on the grapevine that a merger is coming.",
@@ -11952,7 +11952,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c2-16",
         "english": "Elephant in the room",
-        "polish": "oczywisty problem, o którym nikt nie chce rozmawiać",
+        "polish": "Oczywisty problem, o którym nikt nie chce rozmawiać",
         "pronunciation": "/ði ˈel.ɪ.fənt ɪn ðə ruːm/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "His absence was the elephant in the room.",
@@ -11973,7 +11973,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c2-23",
         "english": "Read like a book",
-        "polish": "czytać w kimś jak w otwartej książce",
+        "polish": "Czytać w kimś jak w otwartej książce",
         "pronunciation": "/riːd laɪk ə bʊk/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "He tried to smile, but I read him like a book.",
@@ -11982,7 +11982,7 @@ const rawDefaultDecks = [
       {
         "id": "id-c2-30",
         "english": "Keep in the loop",
-        "polish": "informować na bieżąco",
+        "polish": "Informować na bieżąco",
         "pronunciation": "/kiːp ɪn ðə luːp/",
         "partOfSpeech": "phrase",
         "exampleEnglish": "Keep me in the loop regarding the deal.",
