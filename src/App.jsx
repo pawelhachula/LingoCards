@@ -2144,10 +2144,18 @@ export default function App() {
 
             <div className="flex flex-col sm:flex-row gap-2 w-full mt-1">
               <button 
-                onClick={() => {
+                onClick={async () => {
                   handleSetStats({ isPro: true });
                   setShowPremiumModal(false);
                   playSound("achievement", stats.audioStyle || "synth");
+                  const uidKey = getFirestoreUidKey();
+                  if (uidKey) {
+                    await sendSystemNotification(uidKey, {
+                      title: "Gratulacje! Odblokowano PRO 👑",
+                      message: "Twoje konto zostało ulepszone do wersji PRO! Masz teraz pełen dostęp do wszystkich zaawansowanych talii, nielimitowanych motywów i efektów, oraz bardziej szczegółowych statystyk. Miłej nauki!",
+                      type: "reward"
+                    });
+                  }
                 }}
                 className="flex-grow btn bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-white font-extrabold text-xs py-2.5 rounded-xl shadow-lg shadow-amber-500/10 scale-hover uppercase tracking-wider"
               >

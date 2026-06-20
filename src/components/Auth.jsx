@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import * as Icons from "lucide-react";
 import { auth, signInWithGoogle, signInWithEmail, registerWithEmail, isFirebaseConfigured } from "../firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
+import { useFirestore } from "../hooks/useFirestore";
 
 export default function Auth({ onLogin }) {
   const [tab, setTab] = useState("login"); // 'login' | 'register'
@@ -15,6 +16,8 @@ export default function Auth({ onLogin }) {
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [forgotMode, setForgotMode] = useState(false);
+
+  const { sendSystemNotification } = useFirestore();
 
   const avatarsList = ["👑", "🦄", "🐉", "🐙", "🦊", "🦁", "🐼", "🦉", "🚀", "🛸", "👾", "🦖", "🦥", "🦩", "🍕", "🐱", "🐯", "👻", "👽", "🐨"];
 
@@ -100,6 +103,13 @@ export default function Auth({ onLogin }) {
         
         user.avatar = selectedAvatar;
         user.username = username.trim();
+
+        await sendSystemNotification(user.uid, {
+          title: "Witaj w LingoCards! 👋",
+          message: "Cieszymy się, że jesteś z nami! Odkrywaj talie słownictwa, zdobywaj XP, awansuj na kolejne poziomy i odblokowuj nowe, unikalne motywy. Rozpocznij swoją naukę już teraz!",
+          type: "info"
+        });
+        
         setSuccess("Konto utworzone!");
         setTimeout(() => onLogin(user), 700);
       } else {
