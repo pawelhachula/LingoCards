@@ -277,6 +277,9 @@ export default function App() {
     if (uidKey) {
       localStorage.setItem(`lingocards_theme_${uidKey}`, newTheme);
     }
+    // Zapisz również globalnie dla celów zapobiegania FOUC przy odświeżaniu
+    localStorage.setItem(`lingocards_last_theme`, newTheme);
+    
     if (currentUser) {
       handleSetStats({ theme: newTheme });
     }
@@ -818,6 +821,7 @@ export default function App() {
     const themeToSet = loadedStats.theme || localStorage.getItem(`lingocards_theme_${uidKey}`) || "navy";
     setTheme(themeToSet);
     localStorage.setItem(`lingocards_theme_${uidKey}`, themeToSet);
+    localStorage.setItem(`lingocards_last_theme`, themeToSet);
     setIsDataLoaded(true);
   };
 
@@ -1036,6 +1040,16 @@ export default function App() {
             setTimeout(() => {
               playSound("achievement", prev.audioStyle || "synth");
               setUnlockedThemeToast(t.label);
+              
+              // Send notification
+              if (currentUser) {
+                sendSystemNotification(currentUser.uid, {
+                  title: "Nowy motyw odblokowany! 🎨",
+                  message: `Zdobyłeś dostęp do motywu "${t.label}". Zmień go w ustawieniach.`,
+                  type: "reward"
+                });
+              }
+              
               // Hide after 4 seconds
               setTimeout(() => setUnlockedThemeToast(""), 4000);
             }, 50);
@@ -1049,6 +1063,15 @@ export default function App() {
           triggerFireworks();
           setLevelUpInfo({ oldLevel: currentLevel, newLevel: newLevel });
           setShowLevelUpModal(true);
+          
+          // Send notification
+          if (currentUser) {
+            sendSystemNotification(currentUser.uid, {
+              title: "Level Up! 🌟",
+              message: `Gratulacje! Właśnie awansowałeś na poziom ${newLevel}.`,
+              type: "success"
+            });
+          }
         }, 100);
       }
       

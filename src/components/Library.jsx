@@ -27,7 +27,7 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCefr, setSelectedCefr] = useState("all");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [activeTab, setActiveTab] = useState("vocabulary"); // "vocabulary" | "idioms"
+  const [activeTab, setActiveTab] = useState("vocabulary"); // "vocabulary" | "idioms" | "phrases"
 
   const isPro = !!stats.isPro;
 
@@ -131,6 +131,22 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
             Idiomy i Frazale
           </span>
         </button>
+        <button
+          onClick={() => {
+            setActiveTab("phrases");
+            playSound("tap", stats.audioStyle || "synth");
+          }}
+          className={`flex-1 py-4 text-center font-black text-xs sm:text-sm uppercase tracking-wider transition-all border-b-2 ${
+            activeTab === "phrases"
+              ? "text-pink-400 border-pink-500 bg-pink-500/[0.02]"
+              : "text-slate-400 border-transparent hover:text-white hover:bg-white/[0.01]"
+          }`}
+        >
+          <span className="flex items-center justify-center gap-2">
+            <Icons.MessageCircle size={16} />
+            Zwroty
+          </span>
+        </button>
       </div>
 
       {/* Sekcja talii użytkownika */}
@@ -223,7 +239,7 @@ export default function Library({ decks, systemDeckIds, activeDeckIds, onToggleA
         </div>
 
         {/* Category filters */}
-        {activeTab === "vocabulary" && (
+        {(activeTab === "vocabulary" || activeTab === "phrases") && (
           <div className="flex flex-col gap-2">
             <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider">Kategoria tematyczna</span>
             <div className="flex flex-wrap gap-1.5">

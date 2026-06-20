@@ -6,6 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LingoCards - Interaktywna Nauka Angielskiego z Fiszkami</title>
     <meta name="description" content="LingoCards to nowoczesna aplikacja webowa do nauki języka angielskiego za pomocą interaktywnych fiszek 3D, quizów i gier językowych." />
+    <!-- Prevent FOUC by setting theme from localStorage before React mounts -->
+    <script>
+      (function() {
+        try {
+          var theme = localStorage.getItem('lingocards_last_theme') || 'navy';
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

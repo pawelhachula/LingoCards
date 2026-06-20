@@ -722,20 +722,6 @@ export default function AdminPanel({ loadAllUsers, updateUserField, sendSystemNo
                             <Icons.MessageSquare size={14} />
                           </button>
 
-                          {/* Send Password Reset Email */}
-                          <button
-                            onClick={() => handleSendResetPassword(user)}
-                            disabled={resettingUid === user.uid}
-                            className="p-1.5 rounded-lg bg-white/5 hover:bg-amber-500/20 hover:text-amber-400 border border-white/10 hover:border-amber-500/20 text-slate-400 transition-all disabled:opacity-50"
-                            title="Wyślij e-mail z resetem hasła"
-                          >
-                            {resettingUid === user.uid ? (
-                              <Icons.RefreshCw size={14} className="animate-spin" />
-                            ) : (
-                              <Icons.KeyRound size={14} />
-                            )}
-                          </button>
-
                           {/* Block/Unblock User */}
                           <button
                             onClick={() => handleToggleBlock(user)}
