@@ -1151,11 +1151,11 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
             <div className="w-full bg-rose-500/5 border border-rose-500/10 rounded-xl p-4">
               <div className="flex items-center gap-1.5 justify-center mb-3">
                 <Icons.AlertTriangle size={14} className="text-rose-400" />
-                <span className="text-xs font-black text-rose-400 uppercase tracking-wider">Najtrudniejsze słowa</span>
+                <span className="text-xs font-black text-rose-400 uppercase tracking-wider">Trudne słowa/idiomy/zwroty</span>
               </div>
-              <div className="flex flex-col gap-2">
-                {missedCards.slice(0, 3).map((card, i) => (
-                  <div key={card.id || i} className="flex items-center justify-between bg-[var(--bg-input)] px-3 py-2 rounded-lg">
+              <div className="flex flex-col gap-2 max-h-48 overflow-y-auto pr-1">
+                {missedCards.map((card, i) => (
+                  <div key={card.id || i} className="flex items-center justify-between bg-[var(--bg-input)] px-3 py-2 rounded-lg shrink-0">
                     <span className="text-sm font-bold text-white">{card.english}</span>
                     <span className="text-sm text-[var(--text-secondary)]">→ {card.polish}</span>
                   </div>
