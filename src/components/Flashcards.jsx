@@ -1164,14 +1164,19 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
             </div>
           )}
 
-          <div className="flex gap-3 w-full">
-            <button onClick={() => onNavigate("dashboard")} className="flex-1 btn btn-secondary text-sm">
-              Menu główne
-            </button>
-            <button onClick={handleRestart} className="flex-1 btn btn-primary text-sm">
-              Powtórz talię
-            </button>
-          </div>
+            <div className="flex flex-col gap-3 w-full">
+              <div className="flex gap-3 w-full">
+                <button onClick={() => onNavigate("dashboard")} className="flex-1 btn btn-secondary text-sm px-2">
+                  Pulpit
+                </button>
+                <button onClick={() => onNavigate("library")} className="flex-1 btn btn-secondary text-sm px-2 bg-indigo-500/10 text-[var(--primary)] border-indigo-500/20 hover:bg-indigo-500/20">
+                  Inna talia
+                </button>
+              </div>
+              <button onClick={handleRestart} className="w-full btn btn-primary text-sm">
+                Powtórz talię
+              </button>
+            </div>
         </div>
       )}
     </div>
