@@ -175,7 +175,7 @@ export default function Dashboard({
                     })()}
                   </span>
                 </div>
-                <span className="text-[var(--text-secondary)] font-black">{(stats.xp || 0) % 300} / 300 XP</span>
+                <span className="text-[var(--text-secondary)] font-black">{stats.xp || 0} XP <span className="text-[10px] opacity-60 font-medium">Suma</span></span>
               </div>
               <div className="bg-white/5 h-2 rounded-full overflow-hidden border border-[var(--border-light)] relative">
                 <div 
@@ -184,7 +184,7 @@ export default function Dashboard({
                 />
               </div>
               <div className="text-[10px] text-[var(--text-secondary)] font-medium mt-1">
-                Brakuje {300 - ((stats.xp || 0) % 300)} XP do następnego poziomu
+                Brakuje {300 - ((stats.xp || 0) % 300)} XP do poziomu {(stats.level || 1) + 1}
               </div>
             </div>
           </div>
