@@ -189,7 +189,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     );
   }
 
-  const resetSpeechState = () => {
+  function resetSpeechState() {
     setIsListening(false);
     setPronunciationScore(null);
     setHeardText("");
@@ -290,7 +290,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     }
   };
 
-  const toggleStar = (e) => {
+  function toggleStar(e) {
     e.stopPropagation();
     const cardId = currentCard.id;
     setStats(prev => {
@@ -560,7 +560,7 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     setAwardedMedal(null);
   };
 
-  const handleRestart = () => {
+  function handleRestart() {
     if (selectedDeck && selectedDeck.cards) {
       let filteredCards = [...selectedDeck.cards];
       if (srsOnly) {
