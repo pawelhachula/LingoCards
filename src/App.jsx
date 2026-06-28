@@ -2026,7 +2026,19 @@ export default function App() {
 
             <div className="text-xs text-[var(--primary)] font-bold">
               Nowy Tytuł: <span className="text-[var(--text-primary)] font-extrabold uppercase tracking-wide">
-                {levelUpInfo.newLevel >= 15 ? "Master 👑" : levelUpInfo.newLevel >= 10 ? "Scholar 🎓" : levelUpInfo.newLevel >= 6 ? "Explorer 🧭" : levelUpInfo.newLevel >= 3 ? "Learner 📚" : "Beginner 🌱"}
+                {(() => {
+                  const lvl = levelUpInfo.newLevel;
+                  if (lvl >= 51) return "Mentor 🏛️";
+                  if (lvl >= 41) return "Ekspert 🧠";
+                  if (lvl >= 33) return "Uczony 🎓";
+                  if (lvl >= 26) return "Poliglota 🗣️";
+                  if (lvl >= 20) return "Praktyk 🛠️";
+                  if (lvl >= 15) return "Poszukiwacz 🗺️";
+                  if (lvl >= 10) return "Odkrywca 🧭";
+                  if (lvl >= 6) return "Adept ⚙️";
+                  if (lvl >= 3) return "Uczeń 📚";
+                  return "Nowicjusz 🌱";
+                })()}
               </span>
             </div>
 
