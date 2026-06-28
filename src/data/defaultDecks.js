@@ -7011,7 +7011,7 @@ const rawDefaultDecks = [
       {
         "id": "academic-c1-16",
         "english": "To Refute",
-        "polish": "Obaliwać / Wykazać fałsz",
+        "polish": "Obalić / Wykazać fałsz",
         "pronunciation": "/rɪˈfjuːt/",
         "partOfSpeech": "verb",
         "exampleEnglish": "The scientist refuted the old theory.",
