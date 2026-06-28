@@ -560,6 +560,30 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
     setAwardedMedal(null);
   };
 
+  function handlePrevCard(e) {
+    if (e) e.stopPropagation();
+    if (currentIndex > 0) {
+      const prevIdx = currentIndex - 1;
+      currentIndexRef.current = prevIdx;
+      setCurrentIndex(prevIdx);
+      setIsFlipped(false);
+      resetSpeechState();
+    }
+  }
+
+  function handleSkipCard(e) {
+    if (e) e.stopPropagation();
+    if (currentIndex < cards.length - 1) {
+      const nextIdx = currentIndex + 1;
+      currentIndexRef.current = nextIdx;
+      setCurrentIndex(nextIdx);
+      setIsFlipped(false);
+      resetSpeechState();
+    } else {
+      setCompleted(true);
+    }
+  }
+
   function handleRestart() {
     if (selectedDeck && selectedDeck.cards) {
       let filteredCards = [...selectedDeck.cards];
@@ -1073,12 +1097,29 @@ export default function Flashcards({ selectedDeck, stats, setStats, onNavigate, 
               )
             ) : (
               /* Hint to click card to flip */
-              <button 
-                onClick={() => setIsFlipped(true)}
-                className="w-full btn btn-primary py-4 font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform animate-pulse"
-              >
-                <Icons.Eye size={18} /> Pokaż tłumaczenie
-              </button>
+              <div className="flex gap-2 w-full mt-2">
+                <button 
+                  onClick={handlePrevCard}
+                  disabled={currentIndex === 0}
+                  className="btn btn-secondary px-4 flex items-center justify-center hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:cursor-not-allowed border-white/5"
+                  title="Poprzednia fiszka"
+                >
+                  <Icons.ChevronLeft size={20} />
+                </button>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setIsFlipped(true); }}
+                  className="flex-1 btn btn-primary py-4 font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform animate-pulse"
+                >
+                  <Icons.Eye size={18} /> Pokaż tłumaczenie
+                </button>
+                <button 
+                  onClick={handleSkipCard}
+                  className="btn btn-secondary px-4 flex items-center justify-center hover:scale-[1.02] transition-transform border-white/5"
+                  title="Następna fiszka"
+                >
+                  <Icons.ChevronRight size={20} />
+                </button>
+              </div>
             )}
           </div>
         </>
