@@ -15,6 +15,7 @@ import StatsView from "./components/StatsView";
 import SearchModal from "./components/SearchModal";
 import Library from "./components/Library";
 import AdminPanel from "./components/AdminPanel";
+import Vault from "./components/Vault";
 import { playSound, triggerConfetti, triggerFireworks } from "./utils/effects";
 import { useFirestore } from "./hooks/useFirestore";
 import { auth, db, onAuthStateChanged, signOutUser, isFirebaseConfigured, deleteUserAccount } from "./firebase";
@@ -1661,6 +1662,7 @@ export default function App() {
               <button onClick={() => setView("leaderboard")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "leaderboard" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.Trophy size={16} /> Ranking</button>
               <button onClick={() => setView("referrals")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "referrals" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.Users size={16} /> Polecenia</button>
               {currentUser?.role === "admin" && <button onClick={() => setView("admin")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "admin" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-rose-400"}`}><Icons.ShieldAlert size={16} /> Admin Panel</button>}
+              {currentUser?.role === "admin" && <button onClick={() => setView("vault")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "vault" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--primary)]"}`}><Icons.Box size={16} /> Magazyn</button>}
             </div>
           </div>
         </div>
@@ -1990,11 +1992,17 @@ export default function App() {
             currentUser={currentUser}
             stats={stats}
             systemConfig={systemConfig}
-            updateSystemConfig={(newCfg) => {
+          updateSystemConfig={(newCfg) => {
               setSystemConfig(newCfg);
               updateSystemConfig(newCfg);
             }}
           />
+        )}
+
+        {view === "vault" && currentUser?.role === "admin" && (
+          <Vault onSelectDeck={(deck) => {
+            alert("Funkcja 'Rozpocznij naukę' z Magazynu w budowie! Możesz na razie podejrzeć słówka rozwijając listę.");
+          }} />
         )}
       </main>
 
