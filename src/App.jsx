@@ -1831,7 +1831,56 @@ export default function App() {
       )}
 
       {/* Bottom Nav Bar for Mobile Screens */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-xl border-t border-[var(--border-light)] px-2 py-2 flex items-center justify-around shadow-2xl">
+      {/* Mobile More Menu Popup */}
+      {showMoreMenu && (
+        <div className="lg:hidden fixed inset-0 z-[60]" onClick={() => setShowMoreMenu(false)}>
+          <div 
+            className="absolute bottom-[68px] left-2 right-2 bg-[var(--bg-card)] border border-[var(--border-light)] rounded-2xl shadow-2xl p-3 grid grid-cols-3 gap-2"
+            onClick={e => e.stopPropagation()}
+          >
+            <button onClick={() => { setView("match"); setShowMoreMenu(false); }} className={`flex flex-col items-center gap-1 p-3 rounded-xl text-[11px] font-bold transition-all ${view === "match" ? "bg-[var(--primary-glow)] text-[var(--primary)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-input)]"}`}>
+              <Icons.Zap size={22} />
+              <span>Gry</span>
+            </button>
+            <button onClick={() => { setView("creator"); setShowMoreMenu(false); }} className={`flex flex-col items-center gap-1 p-3 rounded-xl text-[11px] font-bold transition-all ${view === "creator" ? "bg-[var(--primary-glow)] text-[var(--primary)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-input)]"}`}>
+              <Icons.PlusCircle size={22} />
+              <span>Menedżer</span>
+            </button>
+            <button onClick={() => { setView("stats"); setShowMoreMenu(false); }} className={`flex flex-col items-center gap-1 p-3 rounded-xl text-[11px] font-bold transition-all ${view === "stats" ? "bg-[var(--primary-glow)] text-[var(--primary)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-input)]"}`}>
+              <Icons.BarChart2 size={22} />
+              <span>Statystyki</span>
+            </button>
+            <button onClick={() => { setView("leaderboard"); setShowMoreMenu(false); }} className={`flex flex-col items-center gap-1 p-3 rounded-xl text-[11px] font-bold transition-all ${view === "leaderboard" ? "bg-[var(--primary-glow)] text-[var(--primary)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-input)]"}`}>
+              <Icons.Trophy size={22} />
+              <span>Ranking</span>
+            </button>
+            <button onClick={() => { setView("referrals"); setShowMoreMenu(false); }} className={`flex flex-col items-center gap-1 p-3 rounded-xl text-[11px] font-bold transition-all ${view === "referrals" ? "bg-[var(--primary-glow)] text-[var(--primary)]" : "text-[var(--text-secondary)] hover:bg-[var(--bg-input)]"}`}>
+              <Icons.Users size={22} />
+              <span>Polecenia</span>
+            </button>
+            {deferredPrompt && (
+              <button onClick={() => { handleInstallClick(); setShowMoreMenu(false); }} className="flex flex-col items-center gap-1 p-3 rounded-xl text-[11px] font-bold text-green-400 hover:bg-green-500/10 transition-all">
+                <Icons.Download size={22} />
+                <span>Zainstaluj</span>
+              </button>
+            )}
+            {currentUser?.role === "admin" && (
+              <button onClick={() => { setView("admin"); setShowMoreMenu(false); }} className={`flex flex-col items-center gap-1 p-3 rounded-xl text-[11px] font-bold transition-all ${view === "admin" ? "text-rose-400" : "text-rose-400/70 hover:bg-[var(--bg-input)]"}`}>
+                <Icons.ShieldAlert size={22} />
+                <span>Admin</span>
+              </button>
+            )}
+            {currentUser?.role === "admin" && (
+              <button onClick={() => { setView("vault"); setShowMoreMenu(false); }} className={`flex flex-col items-center gap-1 p-3 rounded-xl text-[11px] font-bold transition-all ${view === "vault" ? "bg-[var(--primary-glow)] text-[var(--primary)]" : "text-[var(--primary)]/70 hover:bg-[var(--bg-input)]"}`}>
+                <Icons.Box size={22} />
+                <span>Magazyn</span>
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-xl border-t border-[var(--border-light)] px-1 py-2 flex items-center justify-around shadow-2xl">
         <button 
           onClick={() => setView("dashboard")} 
           className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
@@ -1869,26 +1918,6 @@ export default function App() {
           <span>Test</span>
         </button>
         <button 
-          onClick={() => setView("match")} 
-          className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
-            view === "match" ? "text-[var(--primary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-          }`}
-        >
-          <Icons.Zap size={20} />
-          <span>Gry</span>
-        </button>
-        {currentUser?.role === "admin" && (
-          <button 
-            onClick={() => setView("admin")} 
-            className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
-              view === "admin" ? "text-rose-400 font-extrabold" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-            }`}
-          >
-            <Icons.ShieldAlert size={20} />
-            <span>Admin</span>
-          </button>
-        )}
-        <button 
           onClick={() => setView("profile")} 
           className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
             view === "profile" ? "text-[var(--primary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
@@ -1900,6 +1929,17 @@ export default function App() {
             <span className="text-lg leading-none h-5 block">{currentUser.avatar || "👑"}</span>
           )}
           <span>Profil</span>
+        </button>
+        <button 
+          onClick={() => setShowMoreMenu(prev => !prev)}
+          className={`flex flex-col items-center gap-0.5 p-2 rounded-xl text-[10px] font-bold transition-all ${
+            showMoreMenu || ["creator","match","stats","leaderboard","referrals","admin","vault"].includes(view)
+              ? "text-[var(--primary)]" 
+              : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+          }`}
+        >
+          <Icons.MoreHorizontal size={20} />
+          <span>Więcej</span>
         </button>
       </div>
 
