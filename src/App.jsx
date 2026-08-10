@@ -73,6 +73,28 @@ export default function App() {
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const moreMenuRef = useRef(null);
   const [notifications, setNotifications] = useState([]);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
+
   const [isBlocked, setIsBlocked] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [premiumTriggerDeck, setPremiumTriggerDeck] = useState(null);
@@ -1658,6 +1680,11 @@ export default function App() {
               <Icons.MoreHorizontal size={14} /> Więcej
             </button>
             <div className="absolute top-full left-0 mt-1 w-44 bg-[var(--bg-card)] border border-[var(--border-light)] rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col p-1 z-50">
+              {deferredPrompt && (
+                <button onClick={handleInstallClick} className="flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left text-green-500 font-bold mb-1 border-b border-[var(--border-light)]">
+                  <Icons.Download size={16} /> Zainstaluj Appkę
+                </button>
+              )}
               <button onClick={() => setView("stats")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "stats" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.BarChart2 size={16} /> Statystyki</button>
               <button onClick={() => setView("leaderboard")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "leaderboard" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.Trophy size={16} /> Ranking</button>
               <button onClick={() => setView("referrals")} className={`flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-input)] text-left ${view === "referrals" ? "text-[var(--primary)] bg-[var(--primary-glow)]" : "text-[var(--text-primary)]"}`}><Icons.Users size={16} /> Polecenia</button>
