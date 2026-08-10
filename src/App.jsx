@@ -1809,6 +1809,27 @@ export default function App() {
         </div>
       </nav>
 
+      {/* Mobile PWA Install Banner */}
+      {deferredPrompt && (
+        <div className="lg:hidden fixed bottom-[64px] left-2 right-2 z-40 bg-gradient-to-r from-emerald-500 to-green-600 p-3 rounded-2xl shadow-xl flex items-center justify-between animate-slide-up mb-2">
+          <div className="flex items-center gap-3 text-white">
+            <div className="p-2 bg-white/20 rounded-xl">
+              <Icons.Download size={20} />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-bold text-sm">Aplikacja LingoCards</span>
+              <span className="text-[10px] text-white/90">Szybciej. Offline. Na głównym ekranie.</span>
+            </div>
+          </div>
+          <button 
+            onClick={handleInstallClick}
+            className="bg-white text-green-600 px-4 py-2 rounded-xl text-xs font-extrabold shadow-sm active:scale-95 transition-all"
+          >
+            Zainstaluj
+          </button>
+        </div>
+      )}
+
       {/* Bottom Nav Bar for Mobile Screens */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-xl border-t border-[var(--border-light)] px-2 py-2 flex items-center justify-around shadow-2xl">
         <button 
